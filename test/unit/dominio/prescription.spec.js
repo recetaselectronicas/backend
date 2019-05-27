@@ -84,5 +84,31 @@ describe('Prescription', () => {
         expect(prescription.items).toEqual(items)
     })
 
+    it('when you set a valid issue date to a prescription it stores it like a moment', () => {
+        const issuedDate = '01/01/1998 23:00'
+        expect(prescription.issuedDate).toBeNull()
+        prescription.setIssuedDate(issuedDate)
+        expect(moment.isMoment(prescription.issuedDate)).toBeTruthy()
+        expect(prescription.issuedDate.format(formats.dateTimeFormat)).toEqual(issuedDate)
+    })
+
+    it('when you set an invalid issue date to a prescription it stores a null', () => {
+        const issuedDate = '30/02/1998 23:00'
+        expect(prescription.issuedDate).toBeNull()
+        prescription.setIssuedDate(issuedDate)
+        expect(prescription.issuedDate).toBeNull()
+    })
+
+    it('when you get the issued date from a prescription that has an issued date it returns a string representation', () => {
+        const issuedDate = '01/01/1998 23:00'
+        prescription.setIssuedDate(issuedDate)
+        expect(prescription.getIssuedDate()).toEqual(issuedDate)
+    })
+
+    it('when you get the issued date from a prescription that hasn´t an issued data it returns a null', () => {
+        prescription.setIssuedDate(null)
+        expect(prescription.getIssuedDate()).toBeNull()
+    })
+
     //TODO: Testear asignarle un afiliado, un medico, una obra social, items, etc..
 })

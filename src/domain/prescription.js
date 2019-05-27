@@ -27,6 +27,9 @@ class Prescription {
             this.issuedDate = date
         } else {
             this.issuedDate = moment(date, formats.dateTimeFormat)
+            if (!this.issuedDate.isValid()){
+                this.issuedDate = null
+            }
         }
     }
 
