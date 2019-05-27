@@ -42,6 +42,9 @@ class Prescription {
             this.soldDate = date
         } else {
             this.soldDate = moment(date, formats.dateTimeFormat)
+            if (!this.soldDate.isValid()){
+                this.soldDate = null
+            }
         }
     }
 
@@ -54,6 +57,9 @@ class Prescription {
             this.auditedDate = date
         } else {
             this.auditedDate = moment(date, formats.dateTimeFormat)
+            if (!this.auditedDate.isValid()){
+                this.auditedDate = null
+            }
         }
     }
 
@@ -83,9 +89,9 @@ class Prescription {
         let object = typeof json === 'object' ? json : JSON.parse(json)
         const prescription = new Prescription()
         prescription.id = object.id
-        prescription.issuedDate = object.issuedDate ? moment(object.issuedDate, formats.dateTimeFormat) : null
-        prescription.soldDate = object.soldDate ? moment(object.soldDate, formats.dateTimeFormat) : null
-        prescription.auditedDate = object.auditedDate ? moment(object.auditedDate, formats.dateTimeFormat) : null
+        prescription.setIssuedDate(object.issuedDate)
+        prescription.setSoldDate(object.soldDate)
+        prescription.setAuditedDate(object.auditedDate)
         prescription.prolongedTreatment = object.prolongedTreatment
         prescription.diagnosis = object.diagnosis
         prescription.ttl = object.ttl

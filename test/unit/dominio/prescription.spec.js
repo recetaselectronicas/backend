@@ -105,9 +105,61 @@ describe('Prescription', () => {
         expect(prescription.getIssuedDate()).toEqual(issuedDate)
     })
 
-    it('when you get the issued date from a prescription that hasn´t an issued data it returns a null', () => {
+    it('when you get the issued date from a prescription that hasn´t an issued date it returns a null', () => {
         prescription.setIssuedDate(null)
         expect(prescription.getIssuedDate()).toBeNull()
+    })
+
+    it('when you set a valid sold date to a prescription it stores it like a moment', () => {
+        const soldDate = '01/01/1998 23:00'
+        expect(prescription.soldDate).toBeNull()
+        prescription.setSoldDate(soldDate)
+        expect(moment.isMoment(prescription.soldDate)).toBeTruthy()
+        expect(prescription.soldDate.format(formats.dateTimeFormat)).toEqual(soldDate)
+    })
+
+    it('when you set an invalid sold date to a prescription it stores a null', () => {
+        const soldDate = '30/02/1998 23:00'
+        expect(prescription.soldDate).toBeNull()
+        prescription.setSoldDate(soldDate)
+        expect(prescription.soldDate).toBeNull()
+    })
+
+    it('when you get the sold date from a prescription that has a sold date it returns a string representation', () => {
+        const soldDate = '01/01/1998 23:00'
+        prescription.setSoldDate(soldDate)
+        expect(prescription.getSoldDate()).toEqual(soldDate)
+    })
+
+    it('when you get the sold date from a prescription that hasn´t a sold date it returns a null', () => {
+        prescription.setSoldDate(null)
+        expect(prescription.getSoldDate()).toBeNull()
+    })
+
+    it('when you set a valid audited date to a prescription it stores it like a moment', () => {
+        const auditedDate = '01/01/1998 23:00'
+        expect(prescription.auditedDate).toBeNull()
+        prescription.setAuditedDate(auditedDate)
+        expect(moment.isMoment(prescription.auditedDate)).toBeTruthy()
+        expect(prescription.auditedDate.format(formats.dateTimeFormat)).toEqual(auditedDate)
+    })
+
+    it('when you set an invalid audited date to a prescription it stores a null', () => {
+        const auditedDate = '30/02/1998 23:00'
+        expect(prescription.auditedDate).toBeNull()
+        prescription.setAuditedDate(auditedDate)
+        expect(prescription.auditedDate).toBeNull()
+    })
+
+    it('when you get the audited date from a prescription that has an audited date it returns a string representation', () => {
+        const auditedDate = '01/01/1998 23:00'
+        prescription.setAuditedDate(auditedDate)
+        expect(prescription.getAuditedDate()).toEqual(auditedDate)
+    })
+
+    it('when you get the audited date from a prescription that hasn´t an audited date it returns a null', () => {
+        prescription.setAuditedDate(null)
+        expect(prescription.getAuditedDate()).toBeNull()
     })
 
     //TODO: Testear asignarle un afiliado, un medico, una obra social, items, etc..
