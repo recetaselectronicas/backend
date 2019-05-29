@@ -4,6 +4,7 @@ const {formats} = require('../../../src/utils/utils')
 const moment = require('moment')
 
 const affiliate = 1
+const doctor = 1
 const issuedDate = '01/01/1992 12:45'
 const soldDate = '02/01/1992 12:45'
 const auditedDate = '03/01/1992 12:45'
@@ -16,7 +17,7 @@ const norm = 1
 const prolongedTreatment = true
 const status = 'EMITIDA'
 const ttl = 12
-const testPrescription = {affiliate, auditedDate, diagnosis, id, institution, issuedDate, items, medicalInsurance, norm, prolongedTreatment, soldDate, status, ttl}
+const testPrescription = {affiliate, doctor, auditedDate, diagnosis, id, institution, issuedDate, items, medicalInsurance, norm, prolongedTreatment, soldDate, status, ttl}
 
 describe('Prescription', () => {
     let prescription = new Prescription()
@@ -35,6 +36,7 @@ describe('Prescription', () => {
         expect(prescription).toHaveProperty('ttl')
         expect(prescription).toHaveProperty('institution')
         expect(prescription).toHaveProperty('affiliate')
+        expect(prescription).toHaveProperty('doctor')
         expect(prescription).toHaveProperty('medicalInsurance')
         expect(prescription).toHaveProperty('status')
         expect(prescription).toHaveProperty('norm')
@@ -51,6 +53,7 @@ describe('Prescription', () => {
         expect(prescription.ttl).toBeNull()
         expect(prescription.institution).toBeNull()
         expect(prescription.affiliate).toBeNull()
+        expect(prescription.doctor).toBeNull()
         expect(prescription.medicalInsurance).toBeNull()
         expect(prescription.status).toBeNull()
         expect(prescription.norm).toBeNull()
@@ -64,7 +67,7 @@ describe('Prescription', () => {
     })
 
     it('can be transformed to json', () => {
-        expect(prescription.toJson()).toEqual("{\"id\":null,\"issuedDate\":null,\"soldDate\":null,\"auditedDate\":null,\"prolongedTreatment\":false,\"diagnosis\":null,\"ttl\":null,\"institution\":null,\"affiliate\":null,\"medicalInsurance\":null,\"status\":null,\"norm\":null,\"items\":[]}")
+        expect(prescription.toJson()).toEqual("{\"id\":null,\"issuedDate\":null,\"soldDate\":null,\"auditedDate\":null,\"prolongedTreatment\":false,\"diagnosis\":null,\"ttl\":null,\"institution\":null,\"affiliate\":null,\"doctor\":null,\"medicalInsurance\":null,\"status\":null,\"norm\":null,\"items\":[]}")
     })
 
     it('can be obtained from json', () => {
@@ -78,6 +81,7 @@ describe('Prescription', () => {
         expect(prescription.ttl).toEqual(ttl)
         expect(prescription.institution).toEqual(institution)
         expect(prescription.affiliate).toEqual(affiliate)
+        expect(prescription.doctor).toEqual(doctor)
         expect(prescription.medicalInsurance).toEqual(medicalInsurance)
         expect(prescription.status).toEqual(status)
         expect(prescription.norm).toEqual(norm)
