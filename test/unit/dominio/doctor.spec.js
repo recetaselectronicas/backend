@@ -134,7 +134,7 @@ describe('Doctor', () => {
 
 
 
-    it('when you get the birth date from a doctor that has an entry date it returns a string representation', () => {
+    it('when you get the birth date from a doctor that has an birth date it returns a string representation', () => {
         const birthDate = '20/01/1998'
         doctor.setBirthDate(birthDate)
         expect(doctor.getBirthDate()).toEqual(birthDate)

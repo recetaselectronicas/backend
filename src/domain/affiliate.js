@@ -7,7 +7,7 @@ class Affiliate {
         this.id = null
         this.idPatient = null
         this.name = null
-        this.lastName = null
+        this.surname = null
         this.userName = null
         this.birthDate = null
         this.gender = null
@@ -46,7 +46,7 @@ class Affiliate {
         if (moment.isMoment(date)) {
             this.toDate = date
         } else {
-            this.toDate = moment(date, formats.toFormat)
+            this.toDate = moment(date, formats.dateFormat)
             if (!this.toDate.isValid()) {
                 this.toDate = null
             }
@@ -89,7 +89,7 @@ class Affiliate {
             id: this.id,
             idPatient: this.idPatient,
             name: this.name,
-            lastName: this.lastName,
+            surname: this.surname,
             userName: this.userName,
             birthDate: this.getBirthDate(),
             gender: this.gender,
@@ -101,13 +101,13 @@ class Affiliate {
             nicIssueDate: this.getNicIssueDate(),
             nicType: this.nicType,
             nicExemplary: this.nicExemplary,
-            nicPhoto: tthis.nicPhotohis,
+            nicPhoto: this.nicPhoto,
             fromDate: this.getFromDate(),
             toDate: this.getToDate(),
             code: this.code,
             category: this.category,
             imageCredential: this.imageCredential,
-            plan: this.plan ? JSON.parse(this.plan.toJson()) : this.plan,
+            plan: this.plan // this.plan ? JSON.parse(this.plan.toJson()) : this.plan,
         })
     }
 
@@ -117,28 +117,29 @@ class Affiliate {
         affiliate.id = object.id
         affiliate.idPatient = object.idPatient
         affiliate.name = object.name
-        affiliate.lastName = object.lastName
+        affiliate.surname = object.surname
         affiliate.userName = object.userName
-        affiliate.birthDate = object.birthDate ? moment(object.bithDate, formats.birthDate) : null
+        affiliate.birthDate = object.birthDate ? moment(object.birthDate, formats.dateFormat) : null
         affiliate.gender = object.gender
         affiliate.contactNumber = object.contactNumber
         affiliate.email = object.email
         affiliate.address = object.address
         affiliate.nationality = object.nationality
         affiliate.nicNumber = object.nicNumber
-        affiliate.nicIssueDate = object.nicIssueDate ? moment(object.nicIssueDate, formats.nicIssueDate) : null
+        affiliate.nicIssueDate = object.nicIssueDate ? moment(object.nicIssueDate, formats.dateFormat) : null
         affiliate.nicType = object.nicType
-        affiliate.nicExemplary = this.nicExemplary
-        affiliate.nicPhoto = this.nicPhoto
-        affiliate.fromDate = object.fromDate ? moment(object.fromDate, formats.fromDate) : null
-        affiliate.toDate = object.toDate ? moment(object.toDate, formats.toDate) : null
+        affiliate.nicExemplary = object.nicExemplary
+        affiliate.nicPhoto = object.nicPhoto
+        affiliate.fromDate = object.fromDate ? moment(object.fromDate, formats.dateFormat) : null
+        affiliate.toDate = object.toDate ? moment(object.toDate, formats.dateFormat) : null
         affiliate.code = object.code
         affiliate.category = object.category
         affiliate.imageCredential = object.imageCredential
-        affiliate.plan = Plan.fromJson(object.plan)
+        affiliate.plan = object.plan//Plan.fromJson(object.plan)
         return affiliate
 
     }
+
 
 }
 
