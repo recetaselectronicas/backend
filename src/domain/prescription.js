@@ -12,6 +12,7 @@ class Prescription {
         this.ttl = null
         this.institution = null
         this.affiliate = null
+        this.doctor = null
         this.medicalInsurance = null
         this.status = null
         this.norm = null
@@ -42,6 +43,9 @@ class Prescription {
             this.soldDate = date
         } else {
             this.soldDate = moment(date, formats.dateTimeFormat)
+            if (!this.soldDate.isValid()){
+                this.soldDate = null
+            }
         }
     }
 
@@ -54,6 +58,9 @@ class Prescription {
             this.auditedDate = date
         } else {
             this.auditedDate = moment(date, formats.dateTimeFormat)
+            if (!this.auditedDate.isValid()){
+                this.auditedDate = null
+            }
         }
     }
 
@@ -72,6 +79,7 @@ class Prescription {
             ttl: this.ttl,
             institution: this.institution ? JSON.parse(this.institution.toJson()) : this.institution,
             affiliate: this.affiliate ? JSON.parse(this.affiliate.toJson()) : this.affiliate,
+            doctor: this.doctor ? JSON.parse(this.affiliate.toJson()) : this.doctor,
             medicalInsurance: this.medicalInsurance ? JSON.parse(this.medicalInsurance.toJson()) : this.medicalInsurance,
             status: this.status,
             norm: this.norm ? JSON.parse(this.norm.toJson()) : this.norm,
@@ -83,19 +91,27 @@ class Prescription {
         let object = typeof json === 'object' ? json : JSON.parse(json)
         const prescription = new Prescription()
         prescription.id = object.id
-        prescription.issuedDate = object.issuedDate ? moment(object.issuedDate, formats.dateTimeFormat) : null
-        prescription.soldDate = object.soldDate ? moment(object.soldDate, formats.dateTimeFormat) : null
-        prescription.auditedDate = object.auditedDate ? moment(object.auditedDate, formats.dateTimeFormat) : null
+        prescription.setIssuedDate(object.issuedDate)
+        prescription.setSoldDate(object.soldDate)
+        prescription.setAuditedDate(object.auditedDate)
         prescription.prolongedTreatment = object.prolongedTreatment
         prescription.diagnosis = object.diagnosis
         prescription.ttl = object.ttl
         prescription.institution = object.institution
         prescription.affiliate = object.affiliate
+        prescription.doctor = object.doctor
         prescription.medicalInsurance = object.medicalInsurance
         prescription.status = object.status
         prescription.norm = object.norm
         prescription.items = object.items
         return prescription
+    }
+
+    static fromObject(object){
+        if (!(object instanceof Prescription)){
+            return Prescription.fromJson(object)
+        }
+        return object 
     }
 }
 
