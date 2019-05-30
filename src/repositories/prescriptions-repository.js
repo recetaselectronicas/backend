@@ -57,6 +57,15 @@ class PrescriptionRepository {
             return resolve(prescriptions)
         })
     }
+
+    getByStatus(status){
+        return new Promise((resolve, reject) => {
+            const prescriptions = this.prescriptions.filter((prescription) => {
+                return prescription.status === status
+            })
+            return resolve(prescriptions)
+        })
+    }
 }
 
 module.exports = {PrescriptionRepository: new PrescriptionRepository()}
