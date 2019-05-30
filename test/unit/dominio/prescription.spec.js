@@ -88,6 +88,24 @@ describe('Prescription', () => {
         expect(prescription.items).toEqual(items)
     })
 
+    it('can be obtained from an unknown object', () => {
+        prescription = Prescription.fromObject(testPrescription)
+        expect(prescription.id).toEqual(id)
+        expect(prescription.getIssuedDate()).toEqual(issuedDate)
+        expect(prescription.getSoldDate()).toEqual(soldDate)
+        expect(prescription.getAuditedDate()).toEqual(auditedDate)
+        expect(prescription.prolongedTreatment).toEqual(prolongedTreatment)
+        expect(prescription.diagnosis).toEqual(diagnosis)
+        expect(prescription.ttl).toEqual(ttl)
+        expect(prescription.institution).toEqual(institution)
+        expect(prescription.affiliate).toEqual(affiliate)
+        expect(prescription.doctor).toEqual(doctor)
+        expect(prescription.medicalInsurance).toEqual(medicalInsurance)
+        expect(prescription.status).toEqual(status)
+        expect(prescription.norm).toEqual(norm)
+        expect(prescription.items).toEqual(items)
+    })
+
     it('when you set a valid issue date to a prescription it stores it like a moment', () => {
         const issuedDate = '01/01/1998 23:00'
         expect(prescription.issuedDate).toBeNull()

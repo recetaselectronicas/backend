@@ -106,6 +106,13 @@ class Prescription {
         prescription.items = object.items
         return prescription
     }
+
+    static fromObject(object){
+        if (!(object instanceof Prescription)){
+            return Prescription.fromJson(object)
+        }
+        return object 
+    }
 }
 
 module.exports = {Prescription}
