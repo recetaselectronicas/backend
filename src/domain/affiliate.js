@@ -119,19 +119,19 @@ class Affiliate {
         affiliate.name = object.name
         affiliate.surname = object.surname
         affiliate.userName = object.userName
-        affiliate.birthDate = object.birthDate ? moment(object.birthDate, formats.dateFormat) : null
+        affiliate.setBirthDate(object.birthDate)
         affiliate.gender = object.gender
         affiliate.contactNumber = object.contactNumber
         affiliate.email = object.email
         affiliate.address = object.address
         affiliate.nationality = object.nationality
         affiliate.nicNumber = object.nicNumber
-        affiliate.nicIssueDate = object.nicIssueDate ? moment(object.nicIssueDate, formats.dateFormat) : null
+        affiliate.setNicIssueDate(object.nicIssueDate)
         affiliate.nicType = object.nicType
         affiliate.nicExemplary = object.nicExemplary
         affiliate.nicPhoto = object.nicPhoto
-        affiliate.fromDate = object.fromDate ? moment(object.fromDate, formats.dateFormat) : null
-        affiliate.toDate = object.toDate ? moment(object.toDate, formats.dateFormat) : null
+        affiliate.setFromDate(object.fromDate)
+        affiliate.setToDate(object.toDate)
         affiliate.code = object.code
         affiliate.category = object.category
         affiliate.imageCredential = object.imageCredential

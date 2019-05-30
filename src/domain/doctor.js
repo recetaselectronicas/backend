@@ -86,9 +86,9 @@ class Doctor {
         let object = typeof json === 'object' ? json : JSON.parse(json)
         const doctor = new Doctor()
         doctor.id = object.id
-        doctor.birthDate = object.birthDate ? moment(object.birthDate, formats.dateFormat) : null
-        doctor.entryDate = object.entryDate ? moment(object.entryDate, formats.dateFormat) : null
-        doctor.leavingDate = object.entryDate ? moment(object.leavingDate, formats.dateFormat) : null
+        doctor.setBirthDate (object.birthDate) 
+        doctor.setEntryDate ( object.entryDate) 
+        doctor.setLeavingDate( object.leavingDate)
         doctor.name = object.name
         doctor.lastName = object.lastName
         doctor.userName = object.userName
