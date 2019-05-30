@@ -8,7 +8,6 @@ class Doctor {
         this.name = null
         this.lastName = null
         this.userName = null
-        this.password = null
         this.birthDate = null
         this.entryDate = null
         this.leavingDate = null
@@ -70,7 +69,6 @@ class Doctor {
             name: this.name,
             lastName: this.lastName,
             userName: this.userName,
-            password: this.password,
             birthDate: this.getBirthDate(),
             entryDate: this.getEntryDate(),
             leavingDate: this.getLeavingDate(),
@@ -94,7 +92,6 @@ class Doctor {
         doctor.name = object.name
         doctor.lastName = object.lastName
         doctor.userName = object.userName
-        doctor.password = object.password
         doctor.contactNumber = object.contactNumber
         doctor.nationality = object.nationality
         doctor.address = object.address

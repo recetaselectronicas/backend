@@ -7,7 +7,6 @@ const id = 1
 const name = 'Juan'
 const lastName = 'Anoinmo'
 const userName = 'janonimo'
-const password = 'juanonimo123'
 const birthDate = '13/04/1993'
 const entryDate = '04/05/1996'
 const leavingDate = '07/08/1999'
@@ -18,7 +17,7 @@ const email = 'juan.anonimo@correo.com'
 const nationalMatriculation = 665544
 const provincialMatriculation = 887766
 
-const testDoctor = { id, name, lastName, userName, password, birthDate, entryDate, leavingDate, contactNumber, nationality, address, email, nationalMatriculation, provincialMatriculation }
+const testDoctor = { id, name, lastName, userName, birthDate, entryDate, leavingDate, contactNumber, nationality, address, email, nationalMatriculation, provincialMatriculation }
 
 describe('Doctor', () => {
     let doctor = new Doctor()
@@ -32,7 +31,6 @@ describe('Doctor', () => {
         expect(doctor).toHaveProperty('name')
         expect(doctor).toHaveProperty('lastName')
         expect(doctor).toHaveProperty('userName')
-        expect(doctor).toHaveProperty('password')
         expect(doctor).toHaveProperty('birthDate')
         expect(doctor).toHaveProperty('entryDate')
         expect(doctor).toHaveProperty('leavingDate')
@@ -49,7 +47,6 @@ describe('Doctor', () => {
         expect(doctor.name).toBeNull()
         expect(doctor.lastName).toBeNull()
         expect(doctor.userName).toBeNull()
-        expect(doctor.password).toBeNull()
         expect(doctor.birthDate).toBeNull()
         expect(doctor.entryDate).toBeNull()
         expect(doctor.leavingDate).toBeNull()
@@ -64,7 +61,7 @@ describe('Doctor', () => {
     })
 
     it('can be transformed to json', () => {
-        expect(doctor.toJson()).toEqual("{\"id\":null,\"name\":null,\"lastName\":null,\"userName\":null,\"password\":null,\"birthDate\":null,\"entryDate\":null,\"leavingDate\":null,\"contactNumber\":null,\"nationality\":null,\"address\":null,\"email\":null,\"nationalMatriculation\":null,\"provincialMatriculation\":null}")
+        expect(doctor.toJson()).toEqual("{\"id\":null,\"name\":null,\"lastName\":null,\"userName\":null,\"birthDate\":null,\"entryDate\":null,\"leavingDate\":null,\"contactNumber\":null,\"nationality\":null,\"address\":null,\"email\":null,\"nationalMatriculation\":null,\"provincialMatriculation\":null}")
     })
 
     it('can be obtained from json', () => {
@@ -73,7 +70,6 @@ describe('Doctor', () => {
         expect(doctor.name).toEqual(name)
         expect(doctor.lastName).toEqual(lastName)
         expect(doctor.userName).toEqual(userName)
-        expect(doctor.password).toEqual(password)
         expect(doctor.getBirthDate()).toEqual(birthDate)
         expect(doctor.getEntryDate()).toEqual(entryDate)
         expect(doctor.getLeavingDate()).toEqual(leavingDate)
@@ -171,5 +167,5 @@ describe('Doctor', () => {
         doctor.setLeavingDate(null)
         expect(doctor.getLeavingDate()).toBeNull()
     })
-    
+
 })
