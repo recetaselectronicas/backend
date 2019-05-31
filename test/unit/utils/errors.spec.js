@@ -85,6 +85,23 @@ test('new invalidValueError error can be created with custom message, status and
     expect(error.cause).toEqual(cause)
 })
 
+test('new entityAlreadyCreated error can be created with default message, status and cause', () => {
+    const error = errors.newEntityAlreadyCreated()
+    expect(error.message).toBe(errors._errors.ENTITY_ALREADY_CREATED.message)
+    expect(error.status).toBe(errors._errors.ENTITY_ALREADY_CREATED.status)
+    expect(error.cause).toEqual(errors._errors.ENTITY_ALREADY_CREATED.cause)
+})
+
+test('new entityAlreadyCreated error can be created with custom message, status and cause', () => {
+    const message = 'ERROR'
+    const status = 1000
+    const cause = {}
+    const error = errors.newEntityAlreadyCreated(message, status, cause)
+    expect(error.message).toBe(message)
+    expect(error.status).toBe(status)
+    expect(error.cause).toEqual(cause)
+})
+
 test('new notFoundError error can be created with default message, status and cause', () => {
     const error = errors.newNotFoundError()
     expect(error.message).toBe(errors._errors.NOT_FOUND_ERROR.message)

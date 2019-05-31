@@ -11,7 +11,7 @@ const errors = {
     DUPLICATED_VALUE_ERROR: {...error, code: "1-000", message: "Duplicated field values"},
     NULL_OR_EMPTY_VALUE_ERROR: {...error, code: "1-001", message: "Null or empty field value"},
     INVALID_VALUE_ERROR: {...error, code: "1-002", message: "Invalid field value"},
-    ENTITY_ALLREADY_CREATED: {...error, code: "1-003", message: "Entity allready created"},
+    ENTITY_ALREADY_CREATED: {...error, code: "1-003", message: "Entity already created"},
     NOT_FOUND_ERROR: {...error, code: "1-100", message: "Not found"},
     INVALID_USERNAME_OR_PASSWORD_ERROR: {...error, code: "2-000", message: "Invalid username or password", status: 401},
     SESSION_EXPIRED_ERROR: {...error, code: "2-001", message: "Your session has expired", status: 403},
@@ -31,7 +31,7 @@ const newGenericError = (message, status, cause) => {return newError('GENERIC_ER
 const newDuplicatedValueError = (message, status, cause) => {return newError('DUPLICATED_VALUE_ERROR', message, status, cause)}
 const newNullOrEmptyError = (message, status, cause) => {return newError('NULL_OR_EMPTY_VALUE_ERROR', message, status, cause)}
 const newInvalidValueError = (message, status, cause) => {return newError('INVALID_VALUE_ERROR', message, status, cause)}
-const newEntityAllreadyCreated = (message, status, cause) => {return newError('ENTITY_ALLREADY_CREATED', message, status, cause)}
+const newEntityAlreadyCreated = (message, status, cause) => {return newError('ENTITY_ALREADY_CREATED', message, status, cause)}
 const newNotFoundError = (message, status, cause) => {return newError('NOT_FOUND_ERROR', message, status, cause)}
 const newInvalidUsernameOrPasswordError = (message, status, cause) => {return newError('INVALID_USERNAME_OR_PASSWORD_ERROR', message, status, cause)}
 const newSessionExpiredError = (message, status, cause) => {return newError('SESSION_EXPIRED_ERROR', message, status, cause)}
@@ -44,7 +44,7 @@ module.exports = {
     newDuplicatedValueError,
     newNullOrEmptyError,
     newInvalidValueError,
-    newEntityAllreadyCreated,
+    newEntityAlreadyCreated,
     newNotFoundError,
     newInvalidUsernameOrPasswordError,
     newSessionExpiredError,
