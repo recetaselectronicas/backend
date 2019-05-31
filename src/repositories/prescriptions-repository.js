@@ -5,6 +5,13 @@ class PrescriptionRepository {
         this.prescriptions = []
     }
 
+    reset(){
+        return new Promise((resolve, reject) => {
+            this.prescriptions = []
+            return resolve()
+        })
+    }
+
     create(_prescription){
         return new Promise((resolve, reject) => {
             const prescription = Prescription.fromObject(_prescription)
@@ -21,6 +28,12 @@ class PrescriptionRepository {
         return new Promise((resolve, reject) => {
             const prescription = Prescription.fromObject(_prescription)
             return resolve(prescription)
+        })
+    }
+
+    count(){
+        return new Promise((resolve, reject) => {
+            return resolve(this.prescriptions.length)
         })
     }
 

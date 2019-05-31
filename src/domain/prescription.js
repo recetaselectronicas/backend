@@ -68,6 +68,7 @@ class Prescription {
         return moment.isMoment(this.auditedDate) ? this.auditedDate.format(formats.dateTimeFormat) : this.auditedDate
     }
 
+    //TODO: Ver que el json que deberia devolver sea en snake_case
     toJson(){
         return JSON.stringify({
             id: this.id,
@@ -87,6 +88,7 @@ class Prescription {
         })
     }
 
+    //TODO: Ver que el json que recibe deberia ser en snake_case
     static fromJson(json = '{}'){
         let object = typeof json === 'object' ? json : JSON.parse(json)
         const prescription = new Prescription()
