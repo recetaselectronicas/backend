@@ -1,4 +1,5 @@
 const {Prescription} = require('../domain/prescription')
+const {newNotFoundError, newEntityAllreadyCreated} = require('../utils/errors')
 
 class PrescriptionRepository {
     constructor(){
@@ -16,9 +17,9 @@ class PrescriptionRepository {
         return new Promise((resolve, reject) => {
             const prescription = Prescription.fromObject(_prescription)
             if (prescription.id){
-                return reject({error: 'Prescription allready created'})
+                return reject(newEntityAllreadyCreated('Prescription allready created'))
             }
-            prescription.id = Math.floor(Math.random() * 1000)
+            prescription.id = Math.floor(Math.random() * 10000)
             this.prescriptions.push(prescription)
             return resolve(prescription)
         })
@@ -27,7 +28,15 @@ class PrescriptionRepository {
     update(_prescription){
         return new Promise((resolve, reject) => {
             const prescription = Prescription.fromObject(_prescription)
-            return resolve(prescription)
+            if (!prescription.id || !this.prescriptions.some((pres) => {return prescription.id === pres.id})){
+                return reject(newNotFoundError('Prescription not found'))
+            }
+            this.prescriptions = this.prescriptions.filter((pres) => {
+                return pres.id !== prescription.id
+            })
+            const newPrescription = Prescription.fromJson(prescription.toJson())
+            this.prescriptions.push(newPrescription)
+            return resolve(newPrescription)
         })
     }
 

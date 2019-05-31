@@ -123,7 +123,7 @@ const PARTIALLY_RECEIVED = {
 }
 const INCOMPLETE = {
     status: 'INCOMPLETA',
-    validate, validator,
+    validate: validator,
     getStatusError: (prescription) => {
         return getDiferentValueError(prescription.status, PARTIALLY_RECEIVED.status, 'status')
     },
@@ -135,7 +135,7 @@ const INCOMPLETE = {
 }
 const AUDITED = {
     status: 'AUDITADA',
-    validate, validator,
+    validate: validator,
     getStatusError: (prescription) => {
         return getValueNotInListError(prescription.status, [INCOMPLETE.status, RECEIVED.status], 'status')
     },
@@ -153,7 +153,7 @@ const AUDITED = {
 }
 const REJECTED = {
     status: 'RECHAZADA',
-    validate, validator,
+    validate: validator,
     getStatusError: (prescription) => {
         return getValueNotInListError(prescription.status, [INCOMPLETE.status, RECEIVED.status], 'status')
     },
@@ -171,7 +171,7 @@ const REJECTED = {
 }
 const PARTIALLY_REJECTED = {
     status: 'PARCIALMENTE_RECHAZADA',
-    validate, validator,
+    validate: validator,
     getStatusError: (prescription) => {
         return getValueNotInListError(prescription.status, [INCOMPLETE.status, RECEIVED.status], 'status')
     },

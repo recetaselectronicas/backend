@@ -1,5 +1,6 @@
 const {PrescriptionRepository} = require('../../../src/repositories/prescriptions-repository')
 const {Prescription} = require('../../../src/domain/prescription')
+const {states} = require('../../../src/state-machine/state')
 
 test('if you create a prescription ', () => {
 
@@ -81,22 +82,23 @@ test('when prescriptions where created, PrescriptionRepository returns all of th
     })
 })
 
-//TODO: hacer los test para las actualizaciones
-
-describe('when you create some prescriptions', () => {
+describe('when you create some prescriptions by PrescriptionRepository', () => {
     let prescription1 = new Prescription()
     let prescription2 = new Prescription()
     let prescription3 = new Prescription()
     beforeEach(() => {
         prescription1 = new Prescription()
+        prescription1.status = states.ISSUED.status
         prescription2 = new Prescription()
+        prescription2.status = states.CONFIRMED.status
         prescription3 = new Prescription()
+        prescription3.status = states.ISSUED.status
         PrescriptionRepository.reset()
         .then(_ => {
             return Promise.all([
-                PrescriptionRepository.create(prescription1).then(pres => {prescription1 = pres; return pres}),
-                PrescriptionRepository.create(prescription2).then(pres => {prescription2 = pres; return pres}),
-                PrescriptionRepository.create(prescription3).then(pres => {prescription3 = pres; return pres})
+                PrescriptionRepository.create(prescription1).then(pres => {prescription1 = pres.clone(); return pres}),
+                PrescriptionRepository.create(prescription2).then(pres => {prescription2 = pres.clone(); return pres}),
+                PrescriptionRepository.create(prescription3).then(pres => {prescription3 = pres.clone(); return pres})
             ])
         })
     })
@@ -118,5 +120,45 @@ describe('when you create some prescriptions', () => {
         })
     })
 
-    //TODO: hacer el resto de los test de busqueda por ejemplo y pos status
+    describe('and want to update one', () => {
+        describe('and has a valid id', () => {
+            it('it updates it and returns the prescription', () => {
+                const prescription = prescription1.clone()
+                prescription.setIssuedDate('12/12/1990 00:00')
+                prescription.prolongedTreatment = true
+                prescription.status = 'jaja'
+                return PrescriptionRepository.update(prescription)
+                .then(pres => {
+                    expect(pres.getIssuedDate()).toBe(prescription.getIssuedDate())
+                    expect(pres.prolongedTreatment).toBe(prescription.prolongedTreatment)
+                    expect(pres.status).toBe(prescription.status)
+                })
+            })
+        })
+
+        describe('and has an invalid id', () => {
+            it('it rejects the update', () => {
+                const prescription = prescription1.clone()
+                prescription.id++
+                return expect(PrescriptionRepository.update(prescription)).rejects.not.toBeNull()
+            })
+        })
+    })
+
+    describe('and wants to get some by status', () => {
+        it('it returns the matching prescriptions', () => {
+            return PrescriptionRepository.getByStatus(states.ISSUED.status)
+            .then(prescriptions => {
+                expect(prescriptions).toContainEqual(prescription1)
+                expect(prescriptions).toContainEqual(prescription3)
+                expect(prescriptions.every((pres) => {return pres.status = states.ISSUED.status})).toBeTruthy()
+                return PrescriptionRepository.getByStatus(states.PARTIALLY_RECEIVED.status)
+                .then(prescriptions => {
+                    expect(prescriptions.length).toBe(0)
+                })
+            })
+        })
+    })
+
+    //TODO: hacer el resto de los test de busqueda por ejemplo
 })
