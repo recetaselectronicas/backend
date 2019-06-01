@@ -10,6 +10,7 @@ const init = () => {
     app.listen(port, () => {
         logger.info(`Server up & running on ${port}`)
     })
+    return app;
 }
 
 module.exports = {init}
