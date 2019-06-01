@@ -1,37 +1,13 @@
-const checkNotNull = (value, field, errors) => {
-    if (!value){
-        errors.push(new Error(`Prescription must have a value at ${field}`)) 
-    }
-}
-const checkNotEmpty = (value, field, errors) => {
-    if (value instanceof Array){
-        if (!value.length){
-            errors.push(new Error(`Prescription must have at list one value at ${field}`))
-        }
-    } else if (value instanceof Object){
-        if (!Object.keys(value).length){
-            errors.push(new Error(`Prescription must have at list one attribute on ${field}`))
-        }
-    }
-}
-const getDiferentValueError = (value, otherValue, field) => {
-    if (value !== otherValue){
-        return (new Error(`Prescription ${field} must be ${otherValue}`))
-    }
-    return null
-}
-const getValueNotInListError = (value, otherValues, field) => {
-    const found = otherValues.find((aValue) => {
-        return aValue === value
-    })
-    if (!found){
-        return (new Error(`Prescription ${field} must be one of this ${otherValues}`))
-    }
-    return null
-}
+const {newNullOrEmptyError, newInvalidValueError, generateFieldCause} = require('../utils/errors')
+const {checkArrayNotEmpty, checkNotNull, checkDiferentValueError, checkValueNotInListError} = require('../utils/errors')
+const {codes} = require('../codes/entities-codes')
+
 const validator = function(prescription){
+    if (!prescription){
+        throw [newNullOrEmptyError('prescription cant be null or empty', generateFieldCause(codes.PRESCRIPTION.name, null))]
+    }
     const statusError = this.getStatusError(prescription)
-    const errors = this.getErrors(prescription)
+    const errors = this.getErrors(prescription).concat(this.getSpecificErrors(prescription))
     if (statusError){
         errors.push(statusError)
     }
@@ -43,17 +19,23 @@ const ISSUED = {
     status: 'EMITIDA',
     validate: validator,
     getStatusError: (prescription) => {
-        return getDiferentValueError(prescription.status, null, 'status')
+        return checkDiferentValueError(prescription.status, null, codes.PRESCRIPTION.name, codes.PRESCRIPTION.fields.status)
     },
     getErrors: (prescription) => {
         const errors = []
-        checkNotNull(prescription.issuedDate, 'issuedDate', errors)
-        checkNotNull(prescription.ttl, 'ttl', errors)
-        checkNotNull(prescription.affiliate, 'affiliate', errors)
-        checkNotNull(prescription.doctor, 'doctor', errors)
-        checkNotNull(prescription.medicalInsurance, 'medicalInsurance', errors)
-        checkNotNull(prescription.norm, 'norm', errors)
-        checkNotEmpty(prescription.items, 'items', errors)
+        checkNotNull(prescription.issuedDate, codes.PRESCRIPTION.name, codes.PRESCRIPTION.fields.issuedDate, errors)
+        checkNotNull(prescription.ttl, codes.PRESCRIPTION.name, codes.PRESCRIPTION.fields.ttl, errors)
+        checkNotNull(prescription.affiliate, codes.PRESCRIPTION.name, codes.PRESCRIPTION.fields.affiliate, errors)
+        checkNotNull(prescription.doctor, codes.PRESCRIPTION.name, codes.PRESCRIPTION.fields.doctor, errors)
+        checkNotNull(prescription.medicalInsurance, codes.PRESCRIPTION.name, codes.PRESCRIPTION.fields.medicalInsurance, errors)
+        checkNotNull(prescription.norm, codes.PRESCRIPTION.name, codes.PRESCRIPTION.fields.norm, errors)
+        checkArrayNotEmpty(prescription.items, codes.PRESCRIPTION.name, codes.PRESCRIPTION.fields.items, errors)
+        return errors
+    },
+    getSpecificErrors: (prescription) => {
+        const errors = []
+        checkDiferentValueError(prescription.soldDate, null, codes.PRESCRIPTION.name, codes.PRESCRIPTION.fields.soldDate, errors)
+        checkDiferentValueError(prescription.auditedDate, null, codes.PRESCRIPTION.name, codes.PRESCRIPTION.fields.auditedDate, errors)
         return errors
     }
 }
@@ -61,10 +43,14 @@ const CANCELLED = {
     status: 'CANCELADA',
     validate: validator,
     getStatusError: (prescription) => {
-        return getDiferentValueError(prescription.status, ISSUED.status, 'status')
+        return checkDiferentValueError(prescription.status, ISSUED.status, codes.PRESCRIPTION.name, codes.PRESCRIPTION.fields.status)
     },
     getErrors: (prescription) => {
         const errors = ISSUED.getErrors(prescription)
+        return errors
+    },
+    getSpecificErrors: (prescription) => {
+        const errors = []
         return errors
     }
 }
@@ -72,10 +58,14 @@ const CONFIRMED = {
     status: 'CONFIRMADA',
     validate: validator,
     getStatusError: (prescription) => {
-        return getDiferentValueError(prescription.status, ISSUED.status, 'status')
+        return checkDiferentValueError(prescription.status, ISSUED.status, codes.PRESCRIPTION.name, codes.PRESCRIPTION.fields.status)
     },
     getErrors: (prescription) => {
         const errors = ISSUED.getErrors(prescription)
+        return errors
+    },
+    getSpecificErrors: (prescription) => {
+        const errors = []
         return errors
     }
 }
@@ -83,11 +73,15 @@ const EXPIRED = {
     status: 'VENCIDA',
     validate: validator,
     getStatusError: (prescription) => {
-        return getDiferentValueError(prescription.status, CONFIRMED.status, 'status')
+        return checkDiferentValueError(prescription.status, CONFIRMED.status, codes.PRESCRIPTION.name, codes.PRESCRIPTION.fields.status)
     },
     getErrors: (prescription) => {
         const errors = CONFIRMED.getErrors(prescription)
         //TODO: Agregar validaciones para pasar a VENCIDA
+        return errors
+    },
+    getSpecificErrors: (prescription) => {
+        const errors = []
         return errors
     }
 }
@@ -95,7 +89,7 @@ const RECEIVED = {
     status: 'RECEPCIONADA',
     validate: validator,
     getStatusError: (prescription) => {
-        return getValueNotInListError(prescription.status, [CONFIRMED.status, PARTIALLY_RECEIVED.status], 'status')
+        return checkValueNotInListError(prescription.status, [CONFIRMED.status, PARTIALLY_RECEIVED.status], codes.PRESCRIPTION.name, codes.PRESCRIPTION.fields.status)
     },
     getErrors: (prescription) => {
         let errors = []
@@ -107,17 +101,25 @@ const RECEIVED = {
         }
         //TODO: Agregar validaciones para pasar a RECEPCIONADA
         return errors
+    },
+    getSpecificErrors: (prescription) => {
+        const errors = []
+        return errors
     }
 }
 const PARTIALLY_RECEIVED = {
     status: 'PARCIALMENTE_RECEPCIONADA',
     validate: validator,
     getStatusError: (prescription) => {
-        return getDiferentValueError(prescription.status, CONFIRMED.status, 'status')
+        return checkDiferentValueError(prescription.status, CONFIRMED.status, codes.PRESCRIPTION.name, codes.PRESCRIPTION.fields.status)
     },
     getErrors: (prescription) => {
         const errors = CONFIRMED.getErrors(prescription)
         //TODO: Agregar validaciones para pasar a PARCIALMENTE_RECEPCIONADAS
+        return errors
+    },
+    getSpecificErrors: (prescription) => {
+        const errors = []
         return errors
     }
 }
@@ -125,11 +127,15 @@ const INCOMPLETE = {
     status: 'INCOMPLETA',
     validate: validator,
     getStatusError: (prescription) => {
-        return getDiferentValueError(prescription.status, PARTIALLY_RECEIVED.status, 'status')
+        return checkDiferentValueError(prescription.status, PARTIALLY_RECEIVED.status, codes.PRESCRIPTION.name, codes.PRESCRIPTION.fields.status)
     },
     getErrors: (prescription) => {
         const errors = PARTIALLY_RECEIVED.getErrors(prescription)
         //TODO: Agregar validaciones para pasar a INCOMPLETA
+        return errors
+    },
+    getSpecificErrors: (prescription) => {
+        const errors = []
         return errors
     }
 }
@@ -137,7 +143,7 @@ const AUDITED = {
     status: 'AUDITADA',
     validate: validator,
     getStatusError: (prescription) => {
-        return getValueNotInListError(prescription.status, [INCOMPLETE.status, RECEIVED.status], 'status')
+        return checkValueNotInListError(prescription.status, [INCOMPLETE.status, RECEIVED.status], codes.PRESCRIPTION.name, codes.PRESCRIPTION.fields.status)
     },
     getErrors: (prescription) => {
         let errors = []
@@ -149,13 +155,17 @@ const AUDITED = {
         }
         //TODO: Agregar validaciones para pasar a INCOMPLETA
         return errors
+    },
+    getSpecificErrors: (prescription) => {
+        const errors = []
+        return errors
     }
 }
 const REJECTED = {
     status: 'RECHAZADA',
     validate: validator,
     getStatusError: (prescription) => {
-        return getValueNotInListError(prescription.status, [INCOMPLETE.status, RECEIVED.status], 'status')
+        return checkValueNotInListError(prescription.status, [INCOMPLETE.status, RECEIVED.status], codes.PRESCRIPTION.name, codes.PRESCRIPTION.fields.status)
     },
     getErrors: (prescription) => {
         let errors = []
@@ -167,13 +177,17 @@ const REJECTED = {
         }
         //TODO: Agregar validaciones para pasar a RECHAZADA
         return errors
+    },
+    getSpecificErrors: (prescription) => {
+        const errors = []
+        return errors
     }
 }
 const PARTIALLY_REJECTED = {
     status: 'PARCIALMENTE_RECHAZADA',
     validate: validator,
     getStatusError: (prescription) => {
-        return getValueNotInListError(prescription.status, [INCOMPLETE.status, RECEIVED.status], 'status')
+        return checkValueNotInListError(prescription.status, [INCOMPLETE.status, RECEIVED.status], codes.PRESCRIPTION.name, codes.PRESCRIPTION.fields.status)
     },
     getErrors: (prescription) => {
         let errors = []
@@ -184,6 +198,10 @@ const PARTIALLY_REJECTED = {
             errors = RECEIVED.getErrors(prescription)
         }
         //TODO: Agregar validaciones para pasar a PARCIALMENTE_RECHAZADA
+        return errors
+    },
+    getSpecificErrors: (prescription) => {
+        const errors = []
         return errors
     }
 }
