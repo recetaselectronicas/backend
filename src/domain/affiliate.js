@@ -1,5 +1,6 @@
 const moment = require('moment')
 const { formats } = require('../utils/utils')
+const { Plan } = require('./plan')
 
 class Affiliate {
 
@@ -25,7 +26,7 @@ class Affiliate {
         this.code = null
         this.category = null
         this.imageCredential = null
-        this.plan = null
+        this.plan = new Plan()
     }
 
     setFromDate(date) {
@@ -107,7 +108,7 @@ class Affiliate {
             code: this.code,
             category: this.category,
             imageCredential: this.imageCredential,
-            plan: this.plan // this.plan ? JSON.parse(this.plan.toJson()) : this.plan,
+            plan: this.plan ? JSON.parse(this.plan.toJson()) : this.plan
         })
     }
 
@@ -135,7 +136,7 @@ class Affiliate {
         affiliate.code = object.code
         affiliate.category = object.category
         affiliate.imageCredential = object.imageCredential
-        affiliate.plan = object.plan//Plan.fromJson(object.plan)
+        affiliate.plan = Plan.fromJson(object.plan)
         return affiliate
 
     }
