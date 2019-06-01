@@ -24,18 +24,3 @@ describe('MedicalInsuranceRepository',()=>{
         
     })
 });
-
-/*describe('when prescriptions where created, PrescriptionRepository returns all of the prescriptions', () => {
-    return PrescriptionRepository.create(new Prescription())
-    .then(prescription1 => {
-        PrescriptionRepository.create(new Prescription())
-        .then(prescription2 => {
-            PrescriptionRepository.getAll()
-            .then(prescriptions => {
-                expect(prescriptions).toContain(prescription1)
-                expect(prescriptions).toContain(prescription2)
-                expect(prescriptions.length).toBe(2)
-            })
-        })
-    })
-})*/
