@@ -1,6 +1,4 @@
 const { MedicalInsurance } = require('../../../src/domain/medicalInsurance')
-const { formats } = require('../../../src/utils/utils')
-const moment = require('moment')
 
 const id = 45
 const description = 'Osde'

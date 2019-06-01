@@ -1,6 +1,3 @@
-const moment = require('moment')
-const { formats } = require('../utils/utils')
-
 class MedicalInsurance {
     constructor() {
         this.id = null
