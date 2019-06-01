@@ -113,6 +113,10 @@ class Prescription {
         }
         return object 
     }
+
+    clone(){
+        return Prescription.fromJson(this.toJson())
+    }
 }
 
 module.exports = {Prescription}

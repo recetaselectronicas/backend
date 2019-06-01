@@ -11,7 +11,7 @@ test('new unexpectedError error can be created with custom message, status and c
     const message = 'ERROR'
     const status = 1000
     const cause = {}
-    const error = errors.newUnexpectedError(message, status, cause)
+    const error = errors.newUnexpectedError(message, cause, status)
     expect(error.message).toBe(message)
     expect(error.status).toBe(status)
     expect(error.cause).toEqual(cause)
@@ -28,7 +28,7 @@ test('new genericError error can be created with custom message, status and caus
     const message = 'ERROR'
     const status = 1000
     const cause = {}
-    const error = errors.newGenericError(message, status, cause)
+    const error = errors.newGenericError(message, cause, status)
     expect(error.message).toBe(message)
     expect(error.status).toBe(status)
     expect(error.cause).toEqual(cause)
@@ -45,7 +45,7 @@ test('new duplicatedValueError error can be created with custom message, status 
     const message = 'ERROR'
     const status = 1000
     const cause = {}
-    const error = errors.newDuplicatedValueError(message, status, cause)
+    const error = errors.newDuplicatedValueError(message, cause, status)
     expect(error.message).toBe(message)
     expect(error.status).toBe(status)
     expect(error.cause).toEqual(cause)
@@ -62,7 +62,7 @@ test('new nullOrEmptyError error can be created with custom message, status and 
     const message = 'ERROR'
     const status = 1000
     const cause = {}
-    const error = errors.newNullOrEmptyError(message, status, cause)
+    const error = errors.newNullOrEmptyError(message, cause, status)
     expect(error.message).toBe(message)
     expect(error.status).toBe(status)
     expect(error.cause).toEqual(cause)
@@ -79,7 +79,24 @@ test('new invalidValueError error can be created with custom message, status and
     const message = 'ERROR'
     const status = 1000
     const cause = {}
-    const error = errors.newInvalidValueError(message, status, cause)
+    const error = errors.newInvalidValueError(message, cause, status)
+    expect(error.message).toBe(message)
+    expect(error.status).toBe(status)
+    expect(error.cause).toEqual(cause)
+})
+
+test('new entityAlreadyCreated error can be created with default message, status and cause', () => {
+    const error = errors.newEntityAlreadyCreated()
+    expect(error.message).toBe(errors._errors.ENTITY_ALREADY_CREATED.message)
+    expect(error.status).toBe(errors._errors.ENTITY_ALREADY_CREATED.status)
+    expect(error.cause).toEqual(errors._errors.ENTITY_ALREADY_CREATED.cause)
+})
+
+test('new entityAlreadyCreated error can be created with custom message, status and cause', () => {
+    const message = 'ERROR'
+    const status = 1000
+    const cause = {}
+    const error = errors.newEntityAlreadyCreated(message, cause, status)
     expect(error.message).toBe(message)
     expect(error.status).toBe(status)
     expect(error.cause).toEqual(cause)
@@ -96,7 +113,7 @@ test('new notFoundError error can be created with custom message, status and cau
     const message = 'ERROR'
     const status = 1000
     const cause = {}
-    const error = errors.newNotFoundError(message, status, cause)
+    const error = errors.newNotFoundError(message, cause, status)
     expect(error.message).toBe(message)
     expect(error.status).toBe(status)
     expect(error.cause).toEqual(cause)
@@ -113,7 +130,7 @@ test('new invalidUsernameOrPasswordError error can be created with custom messag
     const message = 'ERROR'
     const status = 1000
     const cause = {}
-    const error = errors.newInvalidUsernameOrPasswordError(message, status, cause)
+    const error = errors.newInvalidUsernameOrPasswordError(message, cause, status)
     expect(error.message).toBe(message)
     expect(error.status).toBe(status)
     expect(error.cause).toEqual(cause)
@@ -130,7 +147,7 @@ test('new sessionExpiredError error can be created with custom message, status a
     const message = 'ERROR'
     const status = 1000
     const cause = {}
-    const error = errors.newSessionExpiredError(message, status, cause)
+    const error = errors.newSessionExpiredError(message, cause, status)
     expect(error.message).toBe(message)
     expect(error.status).toBe(status)
     expect(error.cause).toEqual(cause)
@@ -147,7 +164,7 @@ test('new forbiddenResourceError error can be created with custom message, statu
     const message = 'ERROR'
     const status = 1000
     const cause = {}
-    const error = errors.newForbiddenResourceException(message, status, cause)
+    const error = errors.newForbiddenResourceException(message, cause, status)
     expect(error.message).toBe(message)
     expect(error.status).toBe(status)
     expect(error.cause).toEqual(cause)
