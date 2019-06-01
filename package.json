@@ -18,6 +18,12 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
+    "husky": "^2.3.0",
     "jest": "^24.8.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "CI=true npm run test"
+    }
   }
 }
