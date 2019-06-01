@@ -2,10 +2,6 @@ const {PrescriptionRepository} = require('../../../src/repositories/prescription
 const {Prescription} = require('../../../src/domain/prescription')
 const {states} = require('../../../src/state-machine/state')
 
-test('if you create a prescription ', () => {
-
-})
-
 describe('When creating a prescription', () => {
     let prescription = new Prescription()
     beforeEach(() => {

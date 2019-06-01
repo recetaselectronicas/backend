@@ -58,9 +58,9 @@ describe('when state ISSUED has to validate a prescription', () => {
             expect(() => {states.ISSUED.validate(prescription)}).toThrow()
             try {
                 states.ISSUED.validate(prescription)
-            } catch (e) {
-                expect(e.length).toBe(1)
-                const error = e[0]
+            } catch (errors) {
+                expect(errors.length).toBe(1)
+                const error = errors[0]
                 expect(error.code).toBe(_errors.INVALID_VALUE_ERROR.code)
                 expect(error.cause.entity).toBe(codes.PRESCRIPTION.name)
                 expect(error.cause.field).toBe(codes.PRESCRIPTION.fields.status)
@@ -75,9 +75,9 @@ describe('when state ISSUED has to validate a prescription', () => {
             expect(() => {states.ISSUED.validate(prescription)}).toThrow()
             try {
                 states.ISSUED.validate(prescription)
-            } catch (e) {
-                expect(e.length).toBe(1)
-                const error = e[0]
+            } catch (errors) {
+                expect(errors.length).toBe(1)
+                const error = errors[0]
                 expect(error.code).toBe(_errors.NULL_OR_EMPTY_VALUE_ERROR.code)
                 expect(error.cause.entity).toBe(codes.PRESCRIPTION.name)
                 expect(error.cause.field).toBe(codes.PRESCRIPTION.fields.issuedDate)
@@ -92,9 +92,9 @@ describe('when state ISSUED has to validate a prescription', () => {
             expect(() => {states.ISSUED.validate(prescription)}).toThrow()
             try {
                 states.ISSUED.validate(prescription)
-            } catch (e) {
-                expect(e.length).toBe(1)
-                const error = e[0]
+            } catch (errors) {
+                expect(errors.length).toBe(1)
+                const error = errors[0]
                 expect(error.code).toBe(_errors.NULL_OR_EMPTY_VALUE_ERROR.code)
                 expect(error.cause.entity).toBe(codes.PRESCRIPTION.name)
                 expect(error.cause.field).toBe(codes.PRESCRIPTION.fields.ttl)
@@ -109,9 +109,9 @@ describe('when state ISSUED has to validate a prescription', () => {
             expect(() => {states.ISSUED.validate(prescription)}).toThrow()
             try {
                 states.ISSUED.validate(prescription)
-            } catch (e) {
-                expect(e.length).toBe(1)
-                const error = e[0]
+            } catch (errors) {
+                expect(errors.length).toBe(1)
+                const error = errors[0]
                 expect(error.code).toBe(_errors.NULL_OR_EMPTY_VALUE_ERROR.code)
                 expect(error.cause.entity).toBe(codes.PRESCRIPTION.name)
                 expect(error.cause.field).toBe(codes.PRESCRIPTION.fields.affiliate)
@@ -126,9 +126,9 @@ describe('when state ISSUED has to validate a prescription', () => {
             expect(() => {states.ISSUED.validate(prescription)}).toThrow()
             try {
                 states.ISSUED.validate(prescription)
-            } catch (e) {
-                expect(e.length).toBe(1)
-                const error = e[0]
+            } catch (errors) {
+                expect(errors.length).toBe(1)
+                const error = errors[0]
                 expect(error.code).toBe(_errors.NULL_OR_EMPTY_VALUE_ERROR.code)
                 expect(error.cause.entity).toBe(codes.PRESCRIPTION.name)
                 expect(error.cause.field).toBe(codes.PRESCRIPTION.fields.doctor)
@@ -143,9 +143,9 @@ describe('when state ISSUED has to validate a prescription', () => {
             expect(() => {states.ISSUED.validate(prescription)}).toThrow()
             try {
                 states.ISSUED.validate(prescription)
-            } catch (e) {
-                expect(e.length).toBe(1)
-                const error = e[0]
+            } catch (errors) {
+                expect(errors.length).toBe(1)
+                const error = errors[0]
                 expect(error.code).toBe(_errors.NULL_OR_EMPTY_VALUE_ERROR.code)
                 expect(error.cause.entity).toBe(codes.PRESCRIPTION.name)
                 expect(error.cause.field).toBe(codes.PRESCRIPTION.fields.medicalInsurance)
@@ -160,9 +160,9 @@ describe('when state ISSUED has to validate a prescription', () => {
             expect(() => {states.ISSUED.validate(prescription)}).toThrow()
             try {
                 states.ISSUED.validate(prescription)
-            } catch (e) {
-                expect(e.length).toBe(1)
-                const error = e[0]
+            } catch (errors) {
+                expect(errors.length).toBe(1)
+                const error = errors[0]
                 expect(error.code).toBe(_errors.NULL_OR_EMPTY_VALUE_ERROR.code)
                 expect(error.cause.entity).toBe(codes.PRESCRIPTION.name)
                 expect(error.cause.field).toBe(codes.PRESCRIPTION.fields.norm)
@@ -177,9 +177,9 @@ describe('when state ISSUED has to validate a prescription', () => {
             expect(() => {states.ISSUED.validate(prescription)}).toThrow()
             try {
                 states.ISSUED.validate(prescription)
-            } catch (e) {
-                expect(e.length).toBe(1)
-                const error = e[0]
+            } catch (errors) {
+                expect(errors.length).toBe(1)
+                const error = errors[0]
                 expect(error.code).toBe(_errors.NULL_OR_EMPTY_VALUE_ERROR.code)
                 expect(error.cause.entity).toBe(codes.PRESCRIPTION.name)
                 expect(error.cause.field).toBe(codes.PRESCRIPTION.fields.items)
@@ -194,9 +194,9 @@ describe('when state ISSUED has to validate a prescription', () => {
             expect(() => {states.ISSUED.validate(prescription)}).toThrow()
             try {
                 states.ISSUED.validate(prescription)
-            } catch (e) {
-                expect(e.length).toBe(1)
-                const error = e[0]
+            } catch (errors) {
+                expect(errors.length).toBe(1)
+                const error = errors[0]
                 expect(error.code).toBe(_errors.INVALID_VALUE_ERROR.code)
                 expect(error.cause.entity).toBe(codes.PRESCRIPTION.name)
                 expect(error.cause.field).toBe(codes.PRESCRIPTION.fields.soldDate)
@@ -211,9 +211,9 @@ describe('when state ISSUED has to validate a prescription', () => {
             expect(() => {states.ISSUED.validate(prescription)}).toThrow()
             try {
                 states.ISSUED.validate(prescription)
-            } catch (e) {
-                expect(e.length).toBe(1)
-                const error = e[0]
+            } catch (errors) {
+                expect(errors.length).toBe(1)
+                const error = errors[0]
                 expect(error.code).toBe(_errors.INVALID_VALUE_ERROR.code)
                 expect(error.cause.entity).toBe(codes.PRESCRIPTION.name)
                 expect(error.cause.field).toBe(codes.PRESCRIPTION.fields.auditedDate)
@@ -221,10 +221,25 @@ describe('when state ISSUED has to validate a prescription', () => {
         })
     })
 
+    describe('and prescription has various errors', () => {
+        const prescription = getNewPrescriptionForIssued()
+        prescription.status = states.ISSUED.status
+        prescription.setIssuedDate(null)
+        it('it throws an error that specifies all errors', () => {
+            expect(() => {states.ISSUED.validate(prescription)}).toThrow()
+            try {
+                states.ISSUED.validate(prescription)
+            } catch (errors) {
+                expect(errors.length).toBe(2)
+            }
+        })
+    })
+
     describe('and prescription is ok', () => {
         const prescription = getNewPrescriptionForIssued()
-        it('it validates the prescription', () => {
+        it('it validates the prescription and leaves it untouched', () => {
             expect(() => {states.ISSUED.validate(prescription)}).not.toThrow()
+            expect(prescription).toEqual(getNewPrescriptionForIssued())
         })
     })
 })
