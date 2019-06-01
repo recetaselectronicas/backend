@@ -1,5 +1,5 @@
 const {newNullOrEmptyError, generateFieldCause} = require('../utils/errors')
-const {getArrayNotEmptyError, getNotNullError, getDiferentValueError, getValueNotInListError} = require('../utils/errors')
+const {getArrayNotEmptyError, getNotNullError, getDiferentValueError, getValueNotInListError, getBeNullError} = require('../utils/errors')
 const {codes} = require('../codes/entities-codes')
 
 const {name: prescriptionEntity} = codes.PRESCRIPTION
@@ -22,7 +22,7 @@ const ISSUED = {
     status: 'EMITIDA',
     validate: validator,
     getStatusError: (prescription) => {
-        return getDiferentValueError(prescription.status, null, prescriptionEntity, prescriptionFields.status)
+        return getBeNullError(prescription.status, prescriptionEntity, prescriptionFields.status)
     },
     getErrors: (prescription) => {
         const errors = [

@@ -1,5 +1,6 @@
 const {states} = require('./state')
 const {PrescriptionRepository} = require('../repositories/prescriptions-repository')
+const moment = require('moment')
 
 class StateMachine {
     constructor(){
@@ -7,23 +8,20 @@ class StateMachine {
     }
 
     toIssued(prescription){
+        prescription.setIssuedDate(moment())
+        prescription.ttl = 30 //TODO: reemplazar con el llamado a tiempo de vida posta segun OS
+        prescription.norm = 1 //TODO: reemplazar con el llamado a norma vigente segun OS
         return this.validateToIssued(prescription)
         .then(_ => {
-            return PrescriptionRepository.update(prescription)
+            return PrescriptionRepository.create(prescription)
         })
     }
 
     validateToIssued(prescription){
         return new Promise((resolve, reject) => {
-            PrescriptionRepository.getById(prescription.id)
-            .then(_ => {
-                states.ISSUED.validate(prescription)
-                //TODO: Llamar al validador de reglas de negocio
-                return resolve()
-            })
-            .catch(err => {
-                return reject(err)
-            })
+            states.ISSUED.validate(prescription)
+            //TODO: Llamar al validador de reglas de negocio
+            return resolve()
         })
     }
 
@@ -100,4 +98,4 @@ class StateMachine {
     }
 }
 
-module.exports = {StateMachine = new StateMachine()}
+module.exports = {StateMachine: new StateMachine()}

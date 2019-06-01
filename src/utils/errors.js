@@ -17,6 +17,7 @@ const errors = {
     INVALID_VALUE_ERROR: {...error, code: "1-002", message: "Invalid field value"},
     ENTITY_ALREADY_CREATED: {...error, code: "1-003", message: "Entity already created"},
     NOT_FOUND_ERROR: {...error, code: "1-100", message: "Not found"},
+    BAD_REQUEST: {...error, code: "1-101", message: "Please verify the payload and try again", status: 400},
     INVALID_USERNAME_OR_PASSWORD_ERROR: {...error, code: "2-000", message: "Invalid username or password", status: 401},
     SESSION_EXPIRED_ERROR: {...error, code: "2-001", message: "Your session has expired", status: 403},
     FORBIDDEN_RESOURCE_EXCEPTION: {...error, code: "2-002", message: "You can´t perform that action", status: 403}
@@ -37,6 +38,7 @@ const newNullOrEmptyError = (message, cause, status) => {return newError('NULL_O
 const newInvalidValueError = (message, cause, status) => {return newError('INVALID_VALUE_ERROR', message, cause, status)}
 const newEntityAlreadyCreated = (message, cause, status) => {return newError('ENTITY_ALREADY_CREATED', message, cause, status)}
 const newNotFoundError = (message, cause, status) => {return newError('NOT_FOUND_ERROR', message, cause, status)}
+const newBadRequestError = (message, cause, status) => {return newError('BAD_REQUEST', message, cause, status)}
 const newInvalidUsernameOrPasswordError = (message, cause, status) => {return newError('INVALID_USERNAME_OR_PASSWORD_ERROR', message, cause, status)}
 const newSessionExpiredError = (message, cause, status) => {return newError('SESSION_EXPIRED_ERROR', message, cause, status)}
 const newForbiddenResourceException = (message, cause, status) => {return newError('FORBIDDEN_RESOURCE_EXCEPTION', message, cause, status)}
@@ -56,7 +58,12 @@ const generateFieldCause = (entity, field, actualValue, expectedValue) => {
     return cause
 }
 
-
+const getBeNullError = (value, entity, field, message) => {
+    if (value){
+        return newInvalidValueError(message || `${entity} ${field} must be null`, generateFieldCause(entity, field, value))
+    }
+    return null
+}
 const getNotNullError = (value, entity, field, message) => {
     if (!value){
         return newNullOrEmptyError(message || `${entity} must have a value at ${field}`, generateFieldCause(entity, field, value))
@@ -104,6 +111,7 @@ module.exports = {
     newInvalidValueError,
     newEntityAlreadyCreated,
     newNotFoundError,
+    newBadRequestError,
     newInvalidUsernameOrPasswordError,
     newSessionExpiredError,
     newForbiddenResourceException,
@@ -113,5 +121,6 @@ module.exports = {
     getDiferentValueError,
     getNotNullError,
     getObjectNotEmptyError,
-    getValueNotInListError
+    getValueNotInListError,
+    getBeNullError
 }
