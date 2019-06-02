@@ -1,19 +1,18 @@
 const express = require('express')
-const bodyParser = require('body-parser')
 const router = express.Router()
 const {Prescription} = require('../domain/prescription')
-const {logger} = require('../utils/utils')
 const {StateMachine} = require('../state-machine/state-machine')
-const {newBadRequestError} = require('../utils/errors')
+const {newBadRequestError, isBusinessError} = require('../utils/errors')
 
-router.post('/prescriptions', bodyParser.json(), (req, res, next) => {
+router.post('/prescriptions', (req, res, next) => {
+    const {logger} = req.app.locals
     const prescription = Prescription.fromObject(req.body)
-    StateMachine.toIssued(prescription)
+    return StateMachine.toIssued(prescription)
     .then(createdPrescription => {
-        return res.status(200).json({...createdPrescription})
+        return res.status(201).json(createdPrescription.toPlainObject())
     })
     .catch(err => {
-        if (err.length){
+        if (isBusinessError(err)){
             return next(newBadRequestError('Invalid prescription payload', err, 400))
         }
         return next(err)

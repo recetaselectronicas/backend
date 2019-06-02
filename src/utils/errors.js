@@ -34,6 +34,10 @@ const newError = (type, message, cause, status) => {
     return anError
 }
 
+const isBusinessError = (error) => {
+    return error && (error.code || error.length)
+}
+
 const newUnexpectedError = (message, cause, status) => {return newError('UNEXPECTED_ERROR', message, cause, status)}
 const newGenericError = (message, cause, status) => {return newError('GENERIC_ERROR', message, cause, status)}
 const newDuplicatedValueError = (message, cause, status) => {return newError('DUPLICATED_VALUE_ERROR', message, cause, status)}
@@ -164,5 +168,6 @@ module.exports = {
     getValueNotInListError,
     getBeNullError,
     getObjectDoesntMatchError,
-    getArrayDoesntMatchError
+    getArrayDoesntMatchError,
+    isBusinessError
 }

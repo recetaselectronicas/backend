@@ -14,12 +14,22 @@ class Institution {
     }
 
     static fromJson(json = '{}') {
+        if (!json){
+            return new Institution()
+        }
         let object = typeof json === 'object' ? json : JSON.parse(json)
         const institution = new Institution()
-        institution.id = object.id
-        institution.description = object.description
-        institution.address = object.address
+        institution.id = object.id || institution.id
+        institution.description = object.description || institution.description
+        institution.address = object.address  || institution.address
         return institution
+    }
+
+    static fromObject(object){
+        if (!(object instanceof Institution)){
+            return Institution.fromJson(object)
+        }
+        return object 
     }
 }
 

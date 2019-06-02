@@ -69,19 +69,19 @@ class Medicine {
     static fromJson(json = '{}') {
         let object = typeof json === 'object' ? json : JSON.parse(json)
         const medicine = new Medicine()
-        medicine.id = object.id
-        medicine.description = object.description
-        medicine.troquel = object.troquel
-        medicine.pharmaceuticalAction = object.pharmaceuticalAction
+        medicine.id = object.id || medicine.id
+        medicine.description = object.description || medicine.id
+        medicine.troquel = object.troquel || medicine.troquel
+        medicine.pharmaceuticalAction = object.pharmaceuticalAction || medicine.pharmaceuticalAction
         medicine.setEntryDate(object.entryDate)
         medicine.setLeavingDate(object.leavingDate)
-        medicine.barCode = object.barCode
-        medicine.brandDescription = object.brandDescription
-        medicine.sizeDescription = object.sizeDescription
-        medicine.presentationDescription = object.presentationDescription
-        medicine.drugDescription = object.drugDescription
-        medicine.laboratoryDescription = object.laboratoryDescription
-        medicine.potencyDescription = object.potencyDescription
+        medicine.barCode = object.barCode || medicine.barCode
+        medicine.brandDescription = object.brandDescription || medicine.brandDescription
+        medicine.sizeDescription = object.sizeDescription || medicine.sizeDescription
+        medicine.presentationDescription = object.presentationDescription || medicine.presentationDescription
+        medicine.drugDescription = object.drugDescription || medicine.drugDescription
+        medicine.laboratoryDescription = object.laboratoryDescription || medicine.laboratoryDescription
+        medicine.potencyDescription = object.potencyDescription || medicine.potencyDescription
         return medicine
     }
 

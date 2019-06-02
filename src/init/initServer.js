@@ -5,6 +5,8 @@ const init = () => {
     const app = express()
     const port = 8080
 
+    app.locals.logger = logger
+
     app.use('/', require('../routes/index.js'))
 
     app.listen(port, () => {

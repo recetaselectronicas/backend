@@ -12,7 +12,8 @@ class StateMachine {
         prescription.ttl = 30 //TODO: reemplazar con el llamado a tiempo de vida posta segun OS
         prescription.norm = 1 //TODO: reemplazar con el llamado a norma vigente segun OS
         return this.validateToIssued(prescription)
-        .then(_ => {
+        .then(() => {
+            prescription.status = states.ISSUED.status
             return PrescriptionRepository.create(prescription)
         })
     }
