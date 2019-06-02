@@ -4,7 +4,7 @@ const {Prescription} = require('../domain/prescription')
 const {StateMachine} = require('../state-machine/state-machine')
 const {newBadRequestError, isBusinessError} = require('../utils/errors')
 
-router.post('/prescriptions', (req, res, next) => {
+router.post('/', (req, res, next) => {
     const {logger} = req.app.locals
     const prescription = Prescription.fromObject(req.body)
     return StateMachine.toIssued(prescription)
