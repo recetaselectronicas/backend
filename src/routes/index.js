@@ -1,11 +1,13 @@
 const express = require('express')
-const bodyParser = require('body-parser')
 const appRouter = express.Router()
-const medicalInsuranceRouter = require('./medicalInsurance')  
+const medicalInsuranceRouter = require('./medicalInsurance')
+const doctorsRouter = require('./doctors')
+const pingRouter = require('./ping')
 
-appRouter.use('/ping',(req,res)=>res.status(200).send({message:"pong"}));
+appRouter.use('/ping', pingRouter)
 appRouter.use('/', require('./session'))
-appRouter.use('/medical-insurance',medicalInsuranceRouter)
+appRouter.use('/medical-insurances', medicalInsuranceRouter)
+appRouter.use('/doctors', doctorsRouter)
 appRouter.use(require('../middlewares/error-handler'))
 
 module.exports = appRouter
