@@ -9,7 +9,7 @@ describe('when err passed to middleware errorHandler', () => {
 
     beforeEach(() => {
         err = errors.newGenericError()
-        req = {}
+        req = {app: {locals:{logger:{info: () => {}}}}}
         res = {
             json: jest.fn((json) => {}),
             send: jest.fn((data) => {}),
@@ -19,36 +19,37 @@ describe('when err passed to middleware errorHandler', () => {
     })
 
     describe('and res.headersSent is true', () => {
-        it('calls next handler with err as argument', () => {
+        beforeEach(() => {
             res.headersSent = true
+        })
+        it('calls next handler with err as argument', () => {
             errorHandler(err, req, res, next)
             expect(next.mock.calls.length).toBe(1)
             expect(next.mock.calls[0][0]).toEqual(err)
         })
 
         it('doesn´t call res.json', () => {
-            res.headersSent = true
             errorHandler(err, req, res, next)
             expect(res.json.mock.calls.length).toBe(0)
         })
     })
 
     describe('and res.headersSent is false', () => {
-        it('doesn`t call next handler', () => {
+        beforeEach(() => {
             res.headersSent = false
+        })
+        it('doesn`t call next handler', () => {
             errorHandler(err, req, res, next)
             expect(next.mock.calls.length).toBe(0)
         })
 
         it('calls res.status', () => {
-            res.headersSent = false
             errorHandler(err, req, res, next)
             expect(res.status.mock.calls.length).toBe(1)
             expect(res.status.mock.calls[0][0]).toBeTruthy()
         })
 
         it('calls res.json', () => {
-            res.headersSent = false
             errorHandler(err, req, res, next)
             expect(res.json.mock.calls.length).toBe(1)
             expect(res.json.mock.calls[0][0]).toBeTruthy()

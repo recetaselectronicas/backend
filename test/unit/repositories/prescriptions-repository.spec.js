@@ -145,8 +145,8 @@ describe('when you create some prescriptions by PrescriptionRepository', () => {
         it('it returns the matching prescriptions', () => {
             return PrescriptionRepository.getByStatus(states.ISSUED.status)
             .then(prescriptions => {
-                expect(prescriptions).toContainEqual(prescription1)
-                expect(prescriptions).toContainEqual(prescription3)
+                expect(prescriptions.map((pres) => pres.id)).toContainEqual(prescription1.id)
+                expect(prescriptions.map((pres) => pres.id)).toContainEqual(prescription3.id)
                 expect(prescriptions.every((pres) => {return pres.status = states.ISSUED.status})).toBeTruthy()
                 return PrescriptionRepository.getByStatus(states.PARTIALLY_RECEIVED.status)
                 .then(prescriptions => {

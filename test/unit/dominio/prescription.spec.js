@@ -2,20 +2,31 @@ const {Prescription} = require('../../../src/domain/prescription')
 const {Item} = require('../../../src/domain/item')
 const {formats} = require('../../../src/utils/utils')
 const moment = require('moment')
+const {Affiliate} = require('../../../src/domain/affiliate')
+const {Doctor} = require('../../../src/domain/doctor')
+const {MedicalInsurance} = require('../../../src/domain/medicalInsurance')
+const {Institution} = require('../../../src/domain/institution')
+const {states} = require('../../../src/state-machine/state')
 
-const affiliate = 1
-const doctor = 1
+const affiliate = new Affiliate()
+affiliate.id = 12
+const doctor = new Doctor()
+doctor.id = 23
 const issuedDate = '01/01/1992 12:45'
 const soldDate = '02/01/1992 12:45'
 const auditedDate = '03/01/1992 12:45'
 const diagnosis = 'asdf'
 const id = 1
-const institution = null
-const items = ['1']
-const medicalInsurance = 1
+const institution = new Institution()
+institution.id = 13
+const item = new Item()
+item.id = 13
+const items = [item]
+const medicalInsurance = new MedicalInsurance()
+medicalInsurance.id = 44
 const norm = 1
 const prolongedTreatment = true
-const status = 'EMITIDA'
+const status = states.ISSUED.status
 const ttl = 12
 const testPrescription = {affiliate, doctor, auditedDate, diagnosis, id, institution, issuedDate, items, medicalInsurance, norm, prolongedTreatment, soldDate, status, ttl}
 
@@ -68,6 +79,7 @@ describe('Prescription', () => {
 
     it('can be transformed to json', () => {
         expect(prescription.toJson()).toEqual("{\"id\":null,\"issuedDate\":null,\"soldDate\":null,\"auditedDate\":null,\"prolongedTreatment\":false,\"diagnosis\":null,\"ttl\":null,\"institution\":null,\"affiliate\":null,\"doctor\":null,\"medicalInsurance\":null,\"status\":null,\"norm\":null,\"items\":[]}")
+        expect(Prescription.fromJson(testPrescription).toJson()).toEqual("{\"id\":1,\"issuedDate\":\"01/01/1992 12:45\",\"soldDate\":\"03/01/1992 12:45\",\"auditedDate\":\"02/01/1992 12:45\",\"prolongedTreatment\":true,\"diagnosis\":\"asdf\",\"ttl\":12,\"institution\":{\"id\":13,\"description\":null,\"address\":null},\"affiliate\":{\"id\":12,\"idPatient\":null,\"name\":null,\"surname\":null,\"userName\":null,\"birthDate\":null,\"gender\":null,\"contactNumber\":null,\"email\":null,\"address\":null,\"nationality\":null,\"nicNumber\":null,\"nicIssueDate\":null,\"nicType\":null,\"nicExemplary\":null,\"nicPhoto\":null,\"fromDate\":null,\"toDate\":null,\"code\":null,\"category\":null,\"imageCredential\":null,\"plan\":{\"id\":null,\"description\":null,\"entryDate\":null,\"leavingDate\":null,\"percentage\":null,\"idMedicalInsurance\":null}},\"doctor\":{\"id\":23,\"name\":null,\"lastName\":null,\"userName\":null,\"birthDate\":null,\"entryDate\":null,\"leavingDate\":null,\"contactNumber\":null,\"nationality\":null,\"address\":null,\"email\":null,\"nationalMatriculation\":null,\"provincialMatriculation\":null},\"medicalInsurance\":{\"id\":44,\"description\":null,\"userName\":null,\"corporateName\":null,\"email\":null,\"address\":null,\"contactNumber\":null},\"status\":\"EMITIDA\",\"norm\":1,\"items\":[{\"id\":13,\"prescribed\":{\"quantity\":99,\"medicine\":{\"id\":1}},\"received\":{\"quantity\":99,\"soldDate\":\"12/12/12 10:10\",\"medicine\":{\"id\":1},\"pharmacist\":{\"id\":1}},\"audited\":{\"quantity\":99,\"medicine\":{\"id\":1}}}]}")
     })
 
     it('can be obtained from json', () => {

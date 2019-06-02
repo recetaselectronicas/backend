@@ -3,6 +3,7 @@ const { init } = require('../../../src/init/initServer')
 const { MedicalInsuranceRepository } = require('../../../src/repositories/medicalInsuranceRepository')
 
 const app = init()
+app.locals.logger = {info: () => {}, error: () => {}}
 
 describe('when do a get in /medical-insurances', () => {
   describe('and the repository response ok', () => {

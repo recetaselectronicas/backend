@@ -22,16 +22,26 @@ class MedicalInsurance {
     }
 
     static fromJson(json = '{}') {
+        if (!json){
+            return new MedicalInsurance()
+        }
         let object = typeof json === 'object' ? json : JSON.parse(json)
         const medicalInsurance = new MedicalInsurance()
-        medicalInsurance.id = object.id
-        medicalInsurance.description = object.description
-        medicalInsurance.userName = object.userName
-        medicalInsurance.corporateName = object.corporateName
-        medicalInsurance.email = object.email
-        medicalInsurance.address = object.address
-        medicalInsurance.contactNumber = object.contactNumber
+        medicalInsurance.id = object.id || medicalInsurance.id
+        medicalInsurance.description = object.description || medicalInsurance.description
+        medicalInsurance.userName = object.userName || medicalInsurance.userName
+        medicalInsurance.corporateName = object.corporateName || medicalInsurance.corporateName
+        medicalInsurance.email = object.email || medicalInsurance.email
+        medicalInsurance.address = object.address || medicalInsurance.address
+        medicalInsurance.contactNumber = object.contactNumber || medicalInsurance.contactNumber
         return medicalInsurance
+    }
+
+    static fromObject(object){
+        if (!(object instanceof MedicalInsurance)){
+            return MedicalInsurance.fromJson(object)
+        }
+        return object 
     }
 
 }

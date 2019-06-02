@@ -113,34 +113,43 @@ class Affiliate {
     }
 
     static fromJson(json = '{}') {
+        if (!json){
+            return new Affiliate()
+        }
         let object = typeof json === 'object' ? json : JSON.parse(json)
         const affiliate = new Affiliate()
-        affiliate.id = object.id
-        affiliate.idPatient = object.idPatient
-        affiliate.name = object.name
-        affiliate.surname = object.surname
-        affiliate.userName = object.userName
+        affiliate.id = object.id || affiliate.id
+        affiliate.idPatient = object.idPatient || affiliate.idPatient
+        affiliate.name = object.name || affiliate.name
+        affiliate.surname = object.surname || affiliate.surname
+        affiliate.userName = object.userName || affiliate.userName
         affiliate.setBirthDate(object.birthDate)
-        affiliate.gender = object.gender
-        affiliate.contactNumber = object.contactNumber
-        affiliate.email = object.email
-        affiliate.address = object.address
-        affiliate.nationality = object.nationality
-        affiliate.nicNumber = object.nicNumber
+        affiliate.gender = object.gender || affiliate.gender
+        affiliate.contactNumber = object.contactNumber || affiliate.contactNumber
+        affiliate.email = object.email || affiliate.email
+        affiliate.address = object.address || affiliate.address
+        affiliate.nationality = object.nationality || affiliate.nationality
+        affiliate.nicNumber = object.nicNumber || affiliate.nicNumber
         affiliate.setNicIssueDate(object.nicIssueDate)
-        affiliate.nicType = object.nicType
-        affiliate.nicExemplary = object.nicExemplary
-        affiliate.nicPhoto = object.nicPhoto
+        affiliate.nicType = object.nicType || affiliate.nicType
+        affiliate.nicExemplary = object.nicExemplary || affiliate.nicExemplary
+        affiliate.nicPhoto = object.nicPhoto || affiliate.nicPhoto
         affiliate.setFromDate(object.fromDate)
         affiliate.setToDate(object.toDate)
-        affiliate.code = object.code
-        affiliate.category = object.category
-        affiliate.imageCredential = object.imageCredential
+        affiliate.code = object.code || affiliate.code
+        affiliate.category = object.category || affiliate.category
+        affiliate.imageCredential = object.imageCredential || affiliate.imageCredential
         affiliate.plan = Plan.fromJson(object.plan)
         return affiliate
 
     }
 
+    static fromObject(object){
+        if (!(object instanceof Affiliate)){
+            return Affiliate.fromJson(object)
+        }
+        return object 
+    }
 
 }
 
