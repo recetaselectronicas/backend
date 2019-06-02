@@ -83,22 +83,32 @@ class Doctor {
     }
 
     static fromJson(json = '{}') {
+        if (!json){
+            return new Doctor()
+        }
         let object = typeof json === 'object' ? json : JSON.parse(json)
         const doctor = new Doctor()
-        doctor.id = object.id
+        doctor.id = object.id || doctor.id
         doctor.setBirthDate (object.birthDate) 
         doctor.setEntryDate ( object.entryDate) 
         doctor.setLeavingDate( object.leavingDate)
-        doctor.name = object.name
-        doctor.lastName = object.lastName
-        doctor.userName = object.userName
-        doctor.contactNumber = object.contactNumber
-        doctor.nationality = object.nationality
-        doctor.address = object.address
-        doctor.email = object.email
-        doctor.nationalMatriculation = object.nationalMatriculation
-        doctor.provincialMatriculation= object.provincialMatriculation
+        doctor.name = object.name || doctor.name
+        doctor.lastName = object.lastName || doctor.lastName
+        doctor.userName = object.userName || doctor.userName
+        doctor.contactNumber = object.contactNumber || doctor.contactNumber
+        doctor.nationality = object.nationality || doctor.nationality
+        doctor.address = object.address || doctor.address
+        doctor.email = object.email || doctor.email
+        doctor.nationalMatriculation = object.nationalMatriculation || doctor.nationalMatriculation
+        doctor.provincialMatriculation= object.provincialMatriculation || doctor.provincialMatriculation
         return doctor
+    }
+
+    static fromObject(object){
+        if (!(object instanceof Doctor)){
+            return Doctor.fromJson(object)
+        }
+        return object 
     }
 
 }

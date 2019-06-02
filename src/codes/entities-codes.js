@@ -16,6 +16,35 @@ const codes = {
             norm: 'norm',
             items: 'items'
         }
+    },
+    AFFILIATE: {
+        name: 'affiliate',
+        fields: {
+            id: 'id'
+        }
+    },
+    MEDICAL_INSURANCE: {
+        name: 'medicalInsurance',
+        fields: {
+            id: 'id'
+        }
+    },
+    DOCTOR: {
+        name: 'doctor',
+        fields: {
+            id: 'id'
+        }
+    },
+    ITEM: {
+        name: 'items',
+        fields: {
+            prescribed: {
+                quantity: 'prescribed.quantity',
+                medicine: {
+                    id: 'prescribed.medicine.id'
+                }
+            }
+        }
     }
 }
 

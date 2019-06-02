@@ -1,3 +1,6 @@
+const _object = require('lodash/object')
+const _array = require('lodash/array')
+
 const error = {
     code: '', //codigo de error
     message: '', //mensaje descriptivo del error
@@ -17,6 +20,7 @@ const errors = {
     INVALID_VALUE_ERROR: {...error, code: "1-002", message: "Invalid field value"},
     ENTITY_ALREADY_CREATED: {...error, code: "1-003", message: "Entity already created"},
     NOT_FOUND_ERROR: {...error, code: "1-100", message: "Not found"},
+    BAD_REQUEST: {...error, code: "1-101", message: "Please verify the payload and try again", status: 400},
     INVALID_USERNAME_OR_PASSWORD_ERROR: {...error, code: "2-000", message: "Invalid username or password", status: 401},
     SESSION_EXPIRED_ERROR: {...error, code: "2-001", message: "Your session has expired", status: 403},
     FORBIDDEN_RESOURCE_EXCEPTION: {...error, code: "2-002", message: "You can´t perform that action", status: 403}
@@ -30,6 +34,10 @@ const newError = (type, message, cause, status) => {
     return anError
 }
 
+const isBusinessError = (error) => {
+    return error && (error.code || error.length)
+}
+
 const newUnexpectedError = (message, cause, status) => {return newError('UNEXPECTED_ERROR', message, cause, status)}
 const newGenericError = (message, cause, status) => {return newError('GENERIC_ERROR', message, cause, status)}
 const newDuplicatedValueError = (message, cause, status) => {return newError('DUPLICATED_VALUE_ERROR', message, cause, status)}
@@ -37,6 +45,7 @@ const newNullOrEmptyError = (message, cause, status) => {return newError('NULL_O
 const newInvalidValueError = (message, cause, status) => {return newError('INVALID_VALUE_ERROR', message, cause, status)}
 const newEntityAlreadyCreated = (message, cause, status) => {return newError('ENTITY_ALREADY_CREATED', message, cause, status)}
 const newNotFoundError = (message, cause, status) => {return newError('NOT_FOUND_ERROR', message, cause, status)}
+const newBadRequestError = (message, cause, status) => {return newError('BAD_REQUEST', message, cause, status)}
 const newInvalidUsernameOrPasswordError = (message, cause, status) => {return newError('INVALID_USERNAME_OR_PASSWORD_ERROR', message, cause, status)}
 const newSessionExpiredError = (message, cause, status) => {return newError('SESSION_EXPIRED_ERROR', message, cause, status)}
 const newForbiddenResourceException = (message, cause, status) => {return newError('FORBIDDEN_RESOURCE_EXCEPTION', message, cause, status)}
@@ -55,8 +64,18 @@ const generateFieldCause = (entity, field, actualValue, expectedValue) => {
     }
     return cause
 }
+const generateIndexFieldCause = (entity, field, index, actualValue, expectedValue) => {
+    const cause = generateFieldCause(entity, field, actualValue, expectedValue)
+    cause.index = index
+    return cause
+}
 
-
+const getBeNullError = (value, entity, field, message) => {
+    if (value){
+        return newInvalidValueError(message || `${entity} ${field} must be null`, generateFieldCause(entity, field, value))
+    }
+    return null
+}
 const getNotNullError = (value, entity, field, message) => {
     if (!value){
         return newNullOrEmptyError(message || `${entity} must have a value at ${field}`, generateFieldCause(entity, field, value))
@@ -68,6 +87,8 @@ const getObjectNotEmptyError = (value, entity, field, message) => {
         if (!Object.keys(value).length){
             return newNullOrEmptyError(message || `${entity} must have at list one attribute on ${field}`, generateFieldCause(entity, field, value))
         }
+    } else {
+        return newInvalidValueError(message || `${entity} ${field} must be {}`, generateFieldCause(entity, field, value, {}))
     }
     return null
 }
@@ -76,6 +97,8 @@ const getArrayNotEmptyError = (value, entity, field, message) => {
         if (!value.length){
             return newNullOrEmptyError(message || `${entity} must have at list one value at ${field}`, generateFieldCause(entity, field, value))
         }
+    } else {
+        return newInvalidValueError(message || `${entity} ${field} must be []`, generateFieldCause(entity, field, value, []))
     }
     return null
 }
@@ -95,6 +118,33 @@ const getValueNotInListError = (value, otherValues, entity, field, message) => {
     return null
 }
 
+const getObjectDoesntMatchError = (object, path, value, entity, field, nullMessage, invalidValueMessage) => {
+    if (!_object.has(object, path)){
+        return newNullOrEmptyError(nullMessage || `${entity} must have a value at ${field}`, generateFieldCause(entity, field))
+    }
+    if (value !== undefined){
+        if (_object.get(object, path) !== value){
+            return newInvalidValueError(invalidValueMessage || `${entity} ${field} must be ${value}`, generateFieldCause(entity, field, _object.get(object, path), value))
+        }
+    }
+    return null
+}
+
+const getArrayDoesntMatchError = (array, path, value, entity, field, nullMessage, invalidValueMessage) => {
+    const errors = _array.compact(array.map((element, index) => {
+        if (!_object.has(element, path)){
+            return newNullOrEmptyError(nullMessage || `${entity} must have a value at ${field}`, generateIndexFieldCause(entity, field, index))
+        }
+        if (value !== undefined){
+            const actualValue = _object.get(element, path)
+            if (actualValue !== value){
+                return newInvalidValueError(invalidValueMessage || `${entity} ${field} must be ${value}`, generateIndexFieldCause(entity, field, index, actualValue, value))
+            }
+        }
+    }))
+    return errors
+}
+
 module.exports = {
     _errors: errors,
     newUnexpectedError,
@@ -104,14 +154,20 @@ module.exports = {
     newInvalidValueError,
     newEntityAlreadyCreated,
     newNotFoundError,
+    newBadRequestError,
     newInvalidUsernameOrPasswordError,
     newSessionExpiredError,
     newForbiddenResourceException,
     _causes: causes,
     generateFieldCause,
+    generateIndexFieldCause,
     getArrayNotEmptyError,
     getDiferentValueError,
     getNotNullError,
     getObjectNotEmptyError,
-    getValueNotInListError
+    getValueNotInListError,
+    getBeNullError,
+    getObjectDoesntMatchError,
+    getArrayDoesntMatchError,
+    isBusinessError
 }
