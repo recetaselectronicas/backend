@@ -3,6 +3,7 @@ const appRouter = express.Router()
 const bodyParser = require('body-parser')
 
 const medicalInsuranceRouter = require('./medicalInsurance')
+const institutionRouter = require('./institution')
 const doctorsRouter = require('./doctors')
 const pingRouter = require('./ping')
 const prescriptionsRouter = require('./prescriptions')
@@ -17,6 +18,8 @@ appRouter.use('/login', session)
 appRouter.use('/prescriptions', prescriptionsRouter)
 appRouter.use('/medical-insurances', medicalInsuranceRouter)
 appRouter.use('/doctors', doctorsRouter)
+appRouter.use('/institutions', institutionRouter)
 appRouter.use(errorHandler)
+
 
 module.exports = appRouter
