@@ -1,6 +1,14 @@
 const { Affiliate } = require('../../../src/domain/affiliate')
+const { Plan } = require('../../../src/domain/plan')
 const { formats } = require('../../../src/utils/utils')
 const moment = require('moment')
+
+const idPlan = 9
+const description = 'SB04'
+const entryDate = '31/12/2017'
+const leavingDate = '30/11/2027'
+const percentage = 20
+const idMedicalInsurance = 4
 
 const id = 123
 const idPatient = 2
@@ -23,7 +31,7 @@ const toDate = '17/08/1997'
 const code = '800006 0980565'
 const category = '01'
 const imageCredential = '/credentialPedro.jpg'
-const plan = 1
+const plan = new Plan({ idPlan, description, entryDate, leavingDate, percentage, idMedicalInsurance })
 
 const testerAffiliate = {
     id, idPatient, name, surname, userName, birthDate, gender, contactNumber, email, address, nationality, nicNumber, nicIssueDate, nicType, nicExemplary, nicPhoto, fromDate, toDate, code, category, imageCredential, plan
@@ -82,12 +90,12 @@ describe('Affiliate', () => {
         expect(affiliate.code).toBeNull()
         expect(affiliate.category).toBeNull()
         expect(affiliate.imageCredential).toBeNull()
-        expect(affiliate.plan).toBeNull()
+        expect(affiliate.plan).toBeInstanceOf(Plan)
 
     })
 
     it('can be transformed to json', () => {
-        expect(affiliate.toJson()).toEqual("{\"id\":null,\"idPatient\":null,\"name\":null,\"surname\":null,\"userName\":null,\"birthDate\":null,\"gender\":null,\"contactNumber\":null,\"email\":null,\"address\":null,\"nationality\":null,\"nicNumber\":null,\"nicIssueDate\":null,\"nicType\":null,\"nicExemplary\":null,\"nicPhoto\":null,\"fromDate\":null,\"toDate\":null,\"code\":null,\"category\":null,\"imageCredential\":null,\"plan\":null}")
+        expect(affiliate.toJson()).toEqual("{\"id\":null,\"idPatient\":null,\"name\":null,\"surname\":null,\"userName\":null,\"birthDate\":null,\"gender\":null,\"contactNumber\":null,\"email\":null,\"address\":null,\"nationality\":null,\"nicNumber\":null,\"nicIssueDate\":null,\"nicType\":null,\"nicExemplary\":null,\"nicPhoto\":null,\"fromDate\":null,\"toDate\":null,\"code\":null,\"category\":null,\"imageCredential\":null,\"plan\":{\"id\":null,\"description\":null,\"entryDate\":null,\"leavingDate\":null,\"percentage\":null,\"idMedicalInsurance\":null}}")
     })
     it('can be obtained from json', () => {
         affiliate = Affiliate.fromJson(JSON.stringify(testerAffiliate))
