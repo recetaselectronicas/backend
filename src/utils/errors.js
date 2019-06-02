@@ -1,3 +1,6 @@
+const _object = require('lodash/object')
+const _array = require('lodash/array')
+
 const error = {
     code: '', //codigo de error
     message: '', //mensaje descriptivo del error
@@ -57,6 +60,11 @@ const generateFieldCause = (entity, field, actualValue, expectedValue) => {
     }
     return cause
 }
+const generateIndexFieldCause = (entity, field, index, actualValue, expectedValue) => {
+    const cause = generateFieldCause(entity, field, actualValue, expectedValue)
+    cause.index = index
+    return cause
+}
 
 const getBeNullError = (value, entity, field, message) => {
     if (value){
@@ -75,6 +83,8 @@ const getObjectNotEmptyError = (value, entity, field, message) => {
         if (!Object.keys(value).length){
             return newNullOrEmptyError(message || `${entity} must have at list one attribute on ${field}`, generateFieldCause(entity, field, value))
         }
+    } else {
+        return newInvalidValueError(message || `${entity} ${field} must be {}`, generateFieldCause(entity, field, value, {}))
     }
     return null
 }
@@ -83,6 +93,8 @@ const getArrayNotEmptyError = (value, entity, field, message) => {
         if (!value.length){
             return newNullOrEmptyError(message || `${entity} must have at list one value at ${field}`, generateFieldCause(entity, field, value))
         }
+    } else {
+        return newInvalidValueError(message || `${entity} ${field} must be []`, generateFieldCause(entity, field, value, []))
     }
     return null
 }
@@ -102,6 +114,33 @@ const getValueNotInListError = (value, otherValues, entity, field, message) => {
     return null
 }
 
+const getObjectDoesntMatchError = (object, path, value, entity, field, nullMessage, invalidValueMessage) => {
+    if (!_object.has(object, path)){
+        return newNullOrEmptyError(nullMessage || `${entity} must have a value at ${field}`, generateFieldCause(entity, field))
+    }
+    if (value !== undefined){
+        if (_object.get(object, path) !== value){
+            return newInvalidValueError(invalidValueMessage || `${entity} ${field} must be ${value}`, generateFieldCause(entity, field, _object.get(object, path), value))
+        }
+    }
+    return null
+}
+
+const getArrayDoesntMatchError = (array, path, value, entity, field, nullMessage, invalidValueMessage) => {
+    const errors = _array.compact(array.map((element, index) => {
+        if (!_object.has(element, path)){
+            return newNullOrEmptyError(nullMessage || `${entity} must have a value at ${field}`, generateIndexFieldCause(entity, field, index))
+        }
+        if (value !== undefined){
+            const actualValue = _object.get(element, path)
+            if (actualValue !== value){
+                return newInvalidValueError(invalidValueMessage || `${entity} ${field} must be ${value}`, generateIndexFieldCause(entity, field, index, actualValue, value))
+            }
+        }
+    }))
+    return errors
+}
+
 module.exports = {
     _errors: errors,
     newUnexpectedError,
@@ -117,10 +156,13 @@ module.exports = {
     newForbiddenResourceException,
     _causes: causes,
     generateFieldCause,
+    generateIndexFieldCause,
     getArrayNotEmptyError,
     getDiferentValueError,
     getNotNullError,
     getObjectNotEmptyError,
     getValueNotInListError,
-    getBeNullError
+    getBeNullError,
+    getObjectDoesntMatchError,
+    getArrayDoesntMatchError
 }

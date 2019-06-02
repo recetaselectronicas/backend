@@ -1,16 +1,20 @@
 const {newNullOrEmptyError, generateFieldCause} = require('../utils/errors')
-const {getArrayNotEmptyError, getNotNullError, getDiferentValueError, getValueNotInListError, getBeNullError} = require('../utils/errors')
+const {getArrayNotEmptyError, getNotNullError, getDiferentValueError, getValueNotInListError, getBeNullError, getArrayDoesntMatchError, getObjectDoesntMatchError} = require('../utils/errors')
 const {codes} = require('../codes/entities-codes')
+const array = require('lodash/array')
 
-const {name: prescriptionEntity} = codes.PRESCRIPTION
-const {fields: prescriptionFields} = codes.PRESCRIPTION
+const {name: prescriptionEntity, fields: prescriptionFields} = codes.PRESCRIPTION
+const {name: affiliateEntity, fields: affiliateFields} = codes.AFFILIATE
+const {name: doctorEntity, fields: doctorFields} = codes.DOCTOR
+const {name: medicalInsuranceEntity, fields: medicalInsuranceFields} = codes.MEDICAL_INSURANCE
+const {name: itemEntity, fields: itemFields} = codes.ITEM
 
 const validator = function(prescription){
     if (!prescription){
         throw [newNullOrEmptyError('prescription cant be null or empty', generateFieldCause(prescriptionEntity, null))]
     }
     const statusError = this.getStatusError(prescription)
-    const errors = this.getErrors(prescription).concat(this.getSpecificErrors(prescription))
+    const errors = array.compact(this.getErrors(prescription).concat(this.getSpecificErrors(prescription)))
     if (statusError){
         errors.push(statusError)
     }
@@ -29,19 +33,24 @@ const ISSUED = {
             getNotNullError(prescription.issuedDate, prescriptionEntity, prescriptionFields.issuedDate),
             getNotNullError(prescription.ttl, prescriptionEntity, prescriptionFields.ttl),
             getNotNullError(prescription.affiliate, prescriptionEntity, prescriptionFields.affiliate),
+            getObjectDoesntMatchError(prescription, 'affiliate.id', undefined, affiliateEntity, affiliateFields.id),
             getNotNullError(prescription.doctor, prescriptionEntity, prescriptionFields.doctor),
+            getObjectDoesntMatchError(prescription, 'doctor.id', undefined, doctorEntity, doctorFields.id),
             getNotNullError(prescription.medicalInsurance, prescriptionEntity, prescriptionFields.medicalInsurance),
+            getObjectDoesntMatchError(prescription, 'medicalInsurance.id', undefined, medicalInsuranceEntity, medicalInsuranceFields.id),
             getNotNullError(prescription.norm, prescriptionEntity, prescriptionFields.norm),
             getArrayNotEmptyError(prescription.items, prescriptionEntity, prescriptionFields.items),
+            ...getArrayDoesntMatchError(prescription.items, 'prescribed.quantity', undefined, itemEntity, itemFields.prescribed.quantity),
+            ...getArrayDoesntMatchError(prescription.items, 'prescribed.medicine.id', undefined, itemEntity, itemFields.prescribed.medicine.id)
         ]
-        return errors.filter(Boolean)
+        return errors
     },
     getSpecificErrors: (prescription) => {
         const errors = [
             getDiferentValueError(prescription.soldDate, null, prescriptionEntity, prescriptionFields.soldDate),
             getDiferentValueError(prescription.auditedDate, null, prescriptionEntity, prescriptionFields.auditedDate)
         ]
-        return errors.filter(Boolean)
+        return errors
     }
 }
 const CANCELLED = {
