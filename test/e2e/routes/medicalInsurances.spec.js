@@ -1,10 +1,10 @@
 const request = require('supertest')
 const { init } = require('../../../src/init/initServer')
 const { MedicalInsuranceRepository } = require('../../../src/repositories/medicalInsuranceRepository')
-const { InstitutionRepository } = require('../../../src/repositories/institutionRepository')
+
 const app = init()
 
-describe('when do a get in /medical-insurance', () => {
+describe('when do a get in /medical-insurances', () => {
   describe('and the repository response ok', () => {
     const medicalInsurancesValue = [
       {
@@ -23,7 +23,7 @@ describe('when do a get in /medical-insurance', () => {
 
     it('return all avaiables the medicalInsurances', () => {
       return request(app)
-        .get('/medical-insurance')
+        .get('/medical-insurances')
         .expect(200)
         .then(res => {
           const firstMedicalInsurance = res.body[0]
@@ -43,65 +43,54 @@ describe('when do a get in /medical-insurance', () => {
 
     it('respond with 500 ', () => {
       return request(app)
-        .get('/medical-insurance')
+        .get('/medical-insurances')
         .expect(500)
     })
   })
 })
-describe('when do a get in /institution', () => {
+
+describe('when do a get in /doctors/{id}/medical-insurances', () => {
+  const doctorId = 1
   describe('and the repository response ok', () => {
-    const institutionsValue = [
+    const medicalInsurancesValue = [
       {
         id: 0,
-        description: 'Hospital Italiano',
-        address: 'La crujia'
+        description: 'OSDE'
       },
       {
         id: 1,
-        description: 'Corporacion medica',
-        address: 'Olazabal 210'
+        description: 'SWISS MEDICAL'
       }
     ]
 
     beforeAll(() => {
-      InstitutionRepository.institutions = institutionsValue
+      MedicalInsuranceRepository.medicalInsurances = medicalInsurancesValue
     })
 
-    it('return all available the institutions', () => {
+    it('return all avaiables the medicalInsurances for this medic', () => {
       return request(app)
-        .get('/institution')
+        .get(`/doctors/${doctorId}/medical-insurances`)
         .expect(200)
         .then(res => {
-          const firstInstitution = res.body[0]
-          expect(firstInstitution).toHaveProperty('id')
-          expect(firstInstitution).toHaveProperty('description')
-          expect(firstInstitution).toHaveProperty('address')
-          expect(res.body).toEqual(institutionsValue)
+          const firstMedicalInsurance = res.body[0]
+          expect(firstMedicalInsurance).toHaveProperty('id')
+          expect(firstMedicalInsurance).toHaveProperty('description')
+          expect(res.body).toEqual(medicalInsurancesValue)
         })
     })
   })
 
   describe('and the repository fails on search', () => {
     beforeAll(() => {
-      InstitutionRepository.getAll = () => {
+      MedicalInsuranceRepository.getMedicalInsuranceByMedic = () => {
         throw {}
       }
     })
 
     it('respond with 500 ', () => {
       return request(app)
-        .get('/institution')
+        .get(`/doctors/${doctorId}/medical-insurances`)
         .expect(500)
     })
-  })
-})
-describe('when do a get at /ping', () => {
-  it('respond pong', () => {
-    return request(app)
-      .get('/ping')
-      .expect(200)
-      .then(res => {
-        expect(res.body.message).toEqual('pong')
-      })
   })
 })
