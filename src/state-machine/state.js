@@ -33,15 +33,15 @@ const ISSUED = {
             getNotNullError(prescription.issuedDate, prescriptionEntity, prescriptionFields.issuedDate),
             getNotNullError(prescription.ttl, prescriptionEntity, prescriptionFields.ttl),
             getNotNullError(prescription.affiliate, prescriptionEntity, prescriptionFields.affiliate),
-            getObjectDoesntMatchError(prescription, 'affiliate.id', undefined, affiliateEntity, affiliateFields.id),
+            getObjectDoesntMatchError(prescription, 'affiliate.id', (value) => {return typeof value === 'number' && !!value}, affiliateEntity, affiliateFields.id),
             getNotNullError(prescription.doctor, prescriptionEntity, prescriptionFields.doctor),
-            getObjectDoesntMatchError(prescription, 'doctor.id', undefined, doctorEntity, doctorFields.id),
+            getObjectDoesntMatchError(prescription, 'doctor.id', (value) => {return typeof value === 'number' && !!value}, doctorEntity, doctorFields.id),
             getNotNullError(prescription.medicalInsurance, prescriptionEntity, prescriptionFields.medicalInsurance),
-            getObjectDoesntMatchError(prescription, 'medicalInsurance.id', undefined, medicalInsuranceEntity, medicalInsuranceFields.id),
+            getObjectDoesntMatchError(prescription, 'medicalInsurance.id', (value) => {return typeof value === 'number' && !!value}, medicalInsuranceEntity, medicalInsuranceFields.id),
             getNotNullError(prescription.norm, prescriptionEntity, prescriptionFields.norm),
             getArrayNotEmptyError(prescription.items, prescriptionEntity, prescriptionFields.items),
-            ...getArrayDoesntMatchError(prescription.items, 'prescribed.quantity', undefined, itemEntity, itemFields.prescribed.quantity),
-            ...getArrayDoesntMatchError(prescription.items, 'prescribed.medicine.id', undefined, itemEntity, itemFields.prescribed.medicine.id)
+            ...getArrayDoesntMatchError(prescription.items, 'prescribed.quantity', (value) => {return typeof value === 'number' && !!value}, itemEntity, itemFields.prescribed.quantity),
+            ...getArrayDoesntMatchError(prescription.items, 'prescribed.medicine.id', (value) => {return typeof value === 'number' && !!value}, itemEntity, itemFields.prescribed.medicine.id)
         ]
         return errors
     },

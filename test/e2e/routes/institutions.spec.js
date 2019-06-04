@@ -3,6 +3,7 @@ const { init } = require('../../../src/init/initServer')
 const { InstitutionRepository } = require('../../../src/repositories/institutionRepository')
 
 const app = init()
+app.locals.logger = {info: () => {}, error: () => {}}
 
 describe('when do a get in /institutions', () => {
   describe('and the repository response ok', () => {

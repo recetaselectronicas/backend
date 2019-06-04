@@ -8,7 +8,7 @@ describe('when err passed to middleware errorHandler', () => {
     let next = null
 
     beforeEach(() => {
-        err = errors.newGenericError()
+        err = errors.newBadRequestError()
         req = {app: {locals:{logger:{info: () => {}}}}}
         res = {
             json: jest.fn((json) => {}),
