@@ -1,4 +1,5 @@
 const winston = require('winston')
+const moment = require('moment')
 const logger = winston.createLogger({
   transports: [new winston.transports.Console()],
   format: winston.format.combine(
@@ -17,7 +18,55 @@ const formats = {
   timeFormat: 'HH:mm'
 }
 
-module.exports = { 
-  logger, 
-  formats
+const dateFormat = {
+  toString: (date) => {
+    if (moment.isMoment(date)) {
+      if (date.isValid()) {
+        return date.format(formats.dateFormat)
+      }
+      return null
+    }
+    return null
+  },
+  toDate: (date) => {
+    if (moment.isMoment(date)) {
+      return date
+    } else {
+      date = moment(date, formats.dateFormat)
+      if (!date.isValid()) {
+        date = null
+      }
+      return date
+    }
+  }
+}
+
+const dateTimeFormat = {
+  toString: (date) => {
+    if (moment.isMoment(date)) {
+      if (date.isValid()) {
+        return date.format(formats.dateTimeFormat)
+      }
+      return null
+    }
+    return null
+  },
+  toDate: (date) => {
+    if (moment.isMoment(date)) {
+      return date
+    } else {
+      date = moment(date, formats.dateTimeFormat)
+      if (!date.isValid()) {
+        date = null
+      }
+      return date
+    }
+  }
+}
+
+module.exports = {
+  logger,
+  formats,
+  dateFormat,
+  dateTimeFormat
 }
