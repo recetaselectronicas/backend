@@ -1,6 +1,9 @@
 const lang = require('lodash/lang')
+const array = require('lodash/array')
 const {formats} = require('../utils/utils')
 const {states} = require('../state-machine/state')
+const errors = require('../utils/errors')
+const {codes} = require('../codes/entities-codes')
 
 const availableStates = Object.keys(states).reduce((map, state) => {
     map[state] = {
@@ -144,9 +147,64 @@ medicalInsuranceAvailableFilters.orders.values.issuedDate = lang.cloneDeep(presc
 medicalInsuranceAvailableFilters.orders.values.soldDate = lang.cloneDeep(prescriptionFilters.orders.values.soldDate)
 medicalInsuranceAvailableFilters.orders.values.auditedDate = lang.cloneDeep(prescriptionFilters.orders.values.auditedDate)
 
+const getAffiliateAvailableFilters = () => {return lang.cloneDeep(pharmacistAvailableFilters)}
+const getDoctorAvailableFilters = () => {return lang.cloneDeep(doctorAvailableFilters)}
+const getPharmacistAvailableFilters = () => {return lang.cloneDeep(pharmacistAvailableFilters)}
+const getMedicalInsuranceAvailableFilters = () => {return lang.cloneDeep(medicalInsuranceAvailableFilters)}
+
+const getAvailableFilterKeys = (availableFilters) => {
+    return array.concat(
+        Object.keys(availableFilters.filters.singles).map((single) => availableFilters.filters.singles[single].key),
+        Object.keys(availableFilters.filters.ranges).map((single) => availableFilters.filters.ranges[single].keyFrom),
+        Object.keys(availableFilters.filters.ranges).map((single) => availableFilters.filters.ranges[single].keyTo),
+        Object.keys(availableFilters.specialFilters.singles).map((single) => availableFilters.specialFilters.singles[single].key),
+        Object.keys(availableFilters.specialFilters.ranges).map((single) => availableFilters.specialFilters.ranges[single].keyFrom),
+        Object.keys(availableFilters.specialFilters.ranges).map((single) => availableFilters.specialFilters.ranges[single].keyTo)
+    )
+}
+const getAvailableOrderKeys = (availableFilters) => {
+    return array.concat(
+        Object.keys(availableFilters.orders.values).map((value) => availableFilters.orders.values[value].key)
+    )
+}
+
+const affiliateAvailableFilterKeys = getAvailableFilterKeys(getAffiliateAvailableFilters())
+const doctorAvailableFilterKeys = getAvailableFilterKeys(getDoctorAvailableFilters())
+const pharmacistAvailableFilterKeys = getAvailableFilterKeys(getPharmacistAvailableFilters())
+const medicalInsuranceAvailableFilterKey = getAvailableFilterKeys(getMedicalInsuranceAvailableFilters())
+const affiliateAvailableOrderKeys = getAvailableOrderKeys(getAffiliateAvailableFilters())
+const doctorAvailableOrderKeys = getAvailableOrderKeys(getDoctorAvailableFilters())
+const pharmacistAvailableOrderKeys = getAvailableOrderKeys(getPharmacistAvailableFilters())
+const medicalInsuranceAvailableOrderKeys = getAvailableOrderKeys(getMedicalInsuranceAvailableFilters())
+
+
+const queryBuilder = (params, availableFilters, availableFilterKeys, availableOrderKeys) => {
+    // const queryObject = {isValid: true}
+    // if (!params || typeof params !== 'object' || params instanceof Array){
+    //     queryObject.isValid = false
+    //     return queryObject
+    // }
+    // const validKeys = array.intersection(Object.keys(params), array.concat(availableFilterKeys, [availableFilters.orders.key]))
+    // validKeys.every((key) => validateValue(key, params[key], availableFilters))
+}
+
+const validateValue = (key, value, availableFilters) => {
+     if (availableFilters.filters.single[key]){
+         if (availableFilters.filters.single[key].values){
+            availableFilters.filters.single[key].values.map((value) => value.value)
+         } else {
+
+         }
+     }
+}
+
 module.exports = {
-    getAffiliateAvailableFilters: () => {return lang.cloneDeep(pharmacistAvailableFilters)},
-    getDoctorAvailableFilters: () => {return lang.cloneDeep(doctorAvailableFilters)},
-    getPharmacistAvailableFilters: () => {return lang.cloneDeep(pharmacistAvailableFilters)},
-    getMedicalInsuranceAvailableFilters: () => {return lang.cloneDeep(medicalInsuranceAvailableFilters)}
+    getAffiliateAvailableFilters,
+    getDoctorAvailableFilters,
+    getPharmacistAvailableFilters,
+    getMedicalInsuranceAvailableFilters,
+    getAffiliateQueryByParams: (params) => {return queryBuilder(params, getAffiliateAvailableFilters(), affiliateAvailableFilterKeys, affiliateAvailableOrderKeys)},
+    getDoctorQueryByParams: (params) => {return queryBuilder(params, getDoctorAvailableFilters(), doctorAvailableFilterKeys, doctorAvailableOrderKeys)},
+    getPharmacistQueryByParams: (params) => {return queryBuilder(params, getPharmacistAvailableFilters(), pharmacistAvailableFilterKeys, pharmacistAvailableOrderKeys)},
+    getMedicalInsuranceQueryByParams: (params) => {return queryBuilder(params, getMedicalInsuranceAvailableFilters(), medicalInsuranceAvailableFilterKey, medicalInsuranceAvailableOrderKeys)}
 }

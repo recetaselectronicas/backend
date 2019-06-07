@@ -23,7 +23,7 @@ router.post('/', (req, res, next) => {
 
 const secureMiddleware = (req, res, next) => {
     req.identifiedUser = {
-        type: 'doctor',
+        type: 'affiliate',
         id: 1
     }
     return next()
@@ -36,9 +36,17 @@ const filtersBy = {
     medicalInsurance: {getFilters: filters.getMedicalInsuranceAvailableFilters}
 }
 
+const queryBy = {
+    affiliate: {getQuery: filters.getAffiliateQueryByParams},
+    doctor: {getQuery: filters.getDoctorQueryByParams},
+    pharmacist: {getQuery: filters.getPharmacistQueryByParams},
+    medicalInsurance: {getQuery: filters.getMedicalInsuranceQueryByParams},
+}
+
 router.get('/', secureMiddleware, (req, res, next) => {
     const {logger} = req.app.locals
-    return PrescriptionRepository.getByExample({affiliate: {id: req.identifiedUser.id}})
+    const prescriptionQuery = queryBy[req.identifiedUser.type] && queryBy[req.identifiedUser.type].getQuery(req.query) || {}
+    return PrescriptionRepository.getAll()
     .then(prescirptions => {
         const filters = filtersBy[req.identifiedUser.type] && filtersBy[req.identifiedUser.type].getFilters() || {}
         const response = {result: prescirptions.map(pres => pres.toPlainObject()), ...filters}
