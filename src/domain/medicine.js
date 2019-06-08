@@ -1,5 +1,4 @@
-const moment = require('moment')
-const { formats } = require('../utils/utils')
+const { dateFormat } = require('../utils/utils')
 
 class Medicine {
     constructor() {
@@ -18,34 +17,20 @@ class Medicine {
         this.potencyDescription = null
     }
 
-
     setEntryDate(date) {
-        if (moment.isMoment(date)) {
-            this.entryDate = date
-        } else {
-            this.entryDate = moment(date, formats.dateFormat)
-            if (!this.entryDate.isValid()) {
-                this.entryDate = null
-            }
-        }
+        this.entryDate = dateFormat.toDate(date)
     }
+    
     getEntryDate() {
-        return moment.isMoment(this.entryDate) ? this.entryDate.format(formats.dateFormat) : this.entryDate
+        return dateFormat.toString(this.entryDate)
     }
-
 
     setLeavingDate(date) {
-        if (moment.isMoment(date)) {
-            this.leavingDate = date
-        } else {
-            this.leavingDate = moment(date, formats.dateFormat)
-            if (!this.leavingDate.isValid()) {
-                this.leavingDate = null
-            }
-        }
+        this.leavingDate = dateFormat.toDate(date)
     }
+    
     getLeavingDate() {
-        return moment.isMoment(this.leavingDate) ? this.leavingDate.format(formats.dateFormat) : this.leavingDate
+        return dateFormat.toString(this.leavingDate)
     }
 
     toJson() {

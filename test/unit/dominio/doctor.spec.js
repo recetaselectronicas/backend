@@ -61,7 +61,7 @@ describe('Doctor', () => {
     })
 
     it('can be transformed to json', () => {
-        expect(doctor.toJson()).toEqual("{\"id\":null,\"name\":null,\"lastName\":null,\"userName\":null,\"birthDate\":null,\"entryDate\":null,\"leavingDate\":null,\"contactNumber\":null,\"nationality\":null,\"address\":null,\"email\":null,\"nationalMatriculation\":null,\"provincialMatriculation\":null}")
+        expect(doctor.toJson()).toEqual("{\"id\":null,\"name\":null,\"lastName\":null,\"userName\":null,\"birthDate\":null,\"entryDate\":null,\"leavingDate\":null,\"contactNumber\":null,\"nationality\":null,\"address\":null,\"email\":null,\"nationalMatriculation\":null,\"provincialMatriculation\":null,\"specialty\":null}")
     })
 
     it('can be obtained from json', () => {

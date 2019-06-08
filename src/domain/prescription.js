@@ -1,5 +1,4 @@
-const moment = require('moment')
-const {formats} = require('../utils/utils')
+const {dateTimeFormat} = require('../utils/utils')
 const {Institution} = require('../domain/institution')
 const {Doctor} = require('../domain/doctor')
 const {MedicalInsurance} = require('../domain/medicalInsurance')
@@ -29,48 +28,27 @@ class Prescription {
     }
 
     setIssuedDate(date){
-        if (moment.isMoment(date)){
-            this.issuedDate = date
-        } else {
-            this.issuedDate = moment(date, formats.dateTimeFormat)
-            if (!this.issuedDate.isValid()){
-                this.issuedDate = null
-            }
-        }
+        this.issuedDate = dateTimeFormat.toDate(date)
     }
 
     getIssuedDate(){
-        return moment.isMoment(this.issuedDate) ? this.issuedDate.format(formats.dateTimeFormat) : this.issuedDate
+        return dateTimeFormat.toString(this.issuedDate)
     }
 
     setSoldDate(date){
-        if (moment.isMoment(date)){
-            this.soldDate = date
-        } else {
-            this.soldDate = moment(date, formats.dateTimeFormat)
-            if (!this.soldDate.isValid()){
-                this.soldDate = null
-            }
-        }
+        this.soldDate = dateTimeFormat.toDate(date)
     }
 
     getSoldDate(){
-        return moment.isMoment(this.soldDate) ? this.soldDate.format(formats.dateTimeFormat) : this.soldDate
+        return dateTimeFormat.toString(this.soldDate)
     }
 
     setAuditedDate(date){
-        if (moment.isMoment(date)){
-            this.auditedDate = date
-        } else {
-            this.auditedDate = moment(date, formats.dateTimeFormat)
-            if (!this.auditedDate.isValid()){
-                this.auditedDate = null
-            }
-        }
+        this.auditedDate = dateTimeFormat.toDate(date)
     }
 
     getAuditedDate(){
-        return moment.isMoment(this.auditedDate) ? this.auditedDate.format(formats.dateTimeFormat) : this.auditedDate
+        return dateTimeFormat.toString(this.auditedDate)
     }
 
     setInstitution(institution){

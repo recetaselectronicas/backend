@@ -49,9 +49,9 @@ const prescriptionFilters = {
             keyTo: "toIssueDate",
             format: formats.dateTimeFormat
         },
-        receivedDateRange: {
-            keyFrom: "fromReceivedDate",
-            keyTo: "toReceivedDate",
+        soldDateRange: {
+            keyFrom: "fromSoldDate",
+            keyTo: "toSoldDate",
             format: formats.dateTimeFormat
         },
         auditedDateRange: {
@@ -112,7 +112,7 @@ affiliateAvailableFilters.filters.singles.id = lang.cloneDeep(prescriptionFilter
 affiliateAvailableFilters.filters.singles.status = lang.cloneDeep(prescriptionFilters.singles.status)
 affiliateAvailableFilters.filters.singles.status.values = [availableStates.CONFIRMED, availableStates.EXPIRED, availableStates.RECEIVED, availableStates.PARTIALLY_RECEIVED]
 affiliateAvailableFilters.filters.ranges.issueDateRange = lang.cloneDeep(prescriptionFilters.ranges.issueDateRange)
-affiliateAvailableFilters.filters.ranges.receivedDateRange = lang.cloneDeep(prescriptionFilters.ranges.receivedDateRange)
+affiliateAvailableFilters.filters.ranges.soldDateRange = lang.cloneDeep(prescriptionFilters.ranges.soldDateRange)
 affiliateAvailableFilters.specialFilters.singles.institution = lang.cloneDeep(prescriptionFilters.singles.institution)
 affiliateAvailableFilters.specialFilters.singles.medicalInsurance = lang.cloneDeep(prescriptionFilters.singles.medicalInsurance)
 affiliateAvailableFilters.orders.values.id = lang.cloneDeep(prescriptionFilters.orders.values.id)
@@ -124,7 +124,7 @@ pharmacistAvailableFilters.filters.singles.id = lang.cloneDeep(prescriptionFilte
 pharmacistAvailableFilters.filters.singles.status = lang.cloneDeep(prescriptionFilters.singles.status)
 pharmacistAvailableFilters.filters.singles.status.values = [availableStates.RECEIVED, availableStates.PARTIALLY_RECEIVED, availableStates.INCOMPLETE, availableStates.AUDITED, availableStates.REJECTED, availableStates.PARTIALLY_REJECTED]
 pharmacistAvailableFilters.filters.ranges.issueDateRange = lang.cloneDeep(prescriptionFilters.ranges.issueDateRange)
-pharmacistAvailableFilters.filters.ranges.receivedDateRange = lang.cloneDeep(prescriptionFilters.ranges.receivedDateRange)
+pharmacistAvailableFilters.filters.ranges.soldDateRange = lang.cloneDeep(prescriptionFilters.ranges.soldDateRange)
 pharmacistAvailableFilters.specialFilters.singles.institution = lang.cloneDeep(prescriptionFilters.singles.institution)
 pharmacistAvailableFilters.specialFilters.singles.medicalInsurance = lang.cloneDeep(prescriptionFilters.singles.medicalInsurance)
 pharmacistAvailableFilters.specialFilters.singles.medicine = lang.cloneDeep(prescriptionFilters.singles.medicine)
@@ -137,7 +137,7 @@ medicalInsuranceAvailableFilters.filters.singles.id = lang.cloneDeep(prescriptio
 medicalInsuranceAvailableFilters.filters.singles.status = lang.cloneDeep(prescriptionFilters.singles.status)
 medicalInsuranceAvailableFilters.filters.singles.status.values = [availableStates.ISSUED, availableStates.CANCELLED, availableStates.CONFIRMED, availableStates.EXPIRED, availableStates.RECEIVED, availableStates.PARTIALLY_RECEIVED, availableStates.INCOMPLETE, availableStates.AUDITED, availableStates.REJECTED, availableStates.PARTIALLY_REJECTED]
 medicalInsuranceAvailableFilters.filters.ranges.issueDateRange = lang.cloneDeep(prescriptionFilters.ranges.issueDateRange)
-medicalInsuranceAvailableFilters.filters.ranges.receivedDateRange = lang.cloneDeep(prescriptionFilters.ranges.receivedDateRange)
+medicalInsuranceAvailableFilters.filters.ranges.soldDateRange = lang.cloneDeep(prescriptionFilters.ranges.soldDateRange)
 medicalInsuranceAvailableFilters.filters.ranges.auditedDateRange = lang.cloneDeep(prescriptionFilters.ranges.auditedDateRange)
 medicalInsuranceAvailableFilters.specialFilters.singles.institution = lang.cloneDeep(prescriptionFilters.singles.institution)
 medicalInsuranceAvailableFilters.specialFilters.singles.doctor = lang.cloneDeep(prescriptionFilters.singles.doctor)
