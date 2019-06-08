@@ -1,4 +1,4 @@
-class MedicineReposiory {
+class MedicineRepository {
     constructor() {
         this.medicines = []
     }
@@ -17,5 +17,5 @@ class MedicineReposiory {
 }
 
 module.exports = {
-    MedicineReposiory : new MedicineReposiory()
+    MedicineRepository : new MedicineRepository()
 }
