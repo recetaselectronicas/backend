@@ -1,9 +1,9 @@
 const lang = require('lodash/lang')
 const array = require('lodash/array')
+const object = require('lodash/object')
 const {formats} = require('../utils/utils')
 const {states} = require('../state-machine/state')
-const errors = require('../utils/errors')
-const {codes} = require('../codes/entities-codes')
+const moment = require('moment')
 
 const availableStates = Object.keys(states).reduce((map, state) => {
     map[state] = {
@@ -152,50 +152,78 @@ const getDoctorAvailableFilters = () => {return lang.cloneDeep(doctorAvailableFi
 const getPharmacistAvailableFilters = () => {return lang.cloneDeep(pharmacistAvailableFilters)}
 const getMedicalInsuranceAvailableFilters = () => {return lang.cloneDeep(medicalInsuranceAvailableFilters)}
 
-const getAvailableFilterKeys = (availableFilters) => {
-    return array.concat(
-        Object.keys(availableFilters.filters.singles).map((single) => availableFilters.filters.singles[single].key),
-        Object.keys(availableFilters.filters.ranges).map((single) => availableFilters.filters.ranges[single].keyFrom),
-        Object.keys(availableFilters.filters.ranges).map((single) => availableFilters.filters.ranges[single].keyTo),
-        Object.keys(availableFilters.specialFilters.singles).map((single) => availableFilters.specialFilters.singles[single].key),
-        Object.keys(availableFilters.specialFilters.ranges).map((single) => availableFilters.specialFilters.ranges[single].keyFrom),
-        Object.keys(availableFilters.specialFilters.ranges).map((single) => availableFilters.specialFilters.ranges[single].keyTo)
-    )
+const transformToAvailableQueryParams = (availableFilters) => {
+    let transformedFilters = {}
+    let transformedOrders = {}
+    const {singles: commonSimpleFilters} = availableFilters.filters
+    const {ranges: commonRangedFilters} = availableFilters.filters
+    const {singles: specialSimpleFilters} = availableFilters.specialFilters
+    const {ranges: specialRangedFilters} = availableFilters.specialFilters
+    const {values: orderValues} = availableFilters.orders
+    transformedFilters = Object.keys(commonSimpleFilters).reduce((transformed, key) => {
+        transformed[commonSimpleFilters[key].key] = {}
+        if (commonSimpleFilters[key].values){
+            transformed[commonSimpleFilters[key].key].values = commonSimpleFilters[key].values.map((value) => value.id)
+        }
+        return transformed
+    }, transformedFilters)
+    transformedFilters = Object.keys(specialSimpleFilters).reduce((transformed, key) => {
+        transformed[specialSimpleFilters[key].key] = {}
+        if (specialSimpleFilters[key].values){
+            transformed[specialSimpleFilters[key].key].values = specialSimpleFilters[key].values.map((value) => value.id)
+        }
+        return transformed
+    }, transformedFilters)
+    transformedFilters = Object.keys(commonRangedFilters).reduce((transformed, key) => {
+        transformed[commonRangedFilters[key].keyFrom] = {format: commonRangedFilters[key].format}
+        transformed[commonRangedFilters[key].keyTo] = {format: commonRangedFilters[key].format}
+        return transformed
+    }, transformedFilters)
+    transformedFilters = Object.keys(specialRangedFilters).reduce((transformed, key) => {
+        transformed[specialRangedFilters[key].keyFrom] = {format: specialRangedFilters[key].format}
+        transformed[specialRangedFilters[key].keyTo] = {format: specialRangedFilters[key].format}
+        return transformed
+    }, transformedFilters)
+    transformedOrders = Object.keys(orderValues).reduce((transformed, key) => {
+        transformed[orderValues[key].key] = object.invert(orderValues[key].sorting)
+        return transformed
+    }, transformedOrders)
+    return {filters: transformedFilters, orders: transformedOrders}
 }
-const getAvailableOrderKeys = (availableFilters) => {
-    return array.concat(
-        Object.keys(availableFilters.orders.values).map((value) => availableFilters.orders.values[value].key)
-    )
-}
 
-const affiliateAvailableFilterKeys = getAvailableFilterKeys(getAffiliateAvailableFilters())
-const doctorAvailableFilterKeys = getAvailableFilterKeys(getDoctorAvailableFilters())
-const pharmacistAvailableFilterKeys = getAvailableFilterKeys(getPharmacistAvailableFilters())
-const medicalInsuranceAvailableFilterKey = getAvailableFilterKeys(getMedicalInsuranceAvailableFilters())
-const affiliateAvailableOrderKeys = getAvailableOrderKeys(getAffiliateAvailableFilters())
-const doctorAvailableOrderKeys = getAvailableOrderKeys(getDoctorAvailableFilters())
-const pharmacistAvailableOrderKeys = getAvailableOrderKeys(getPharmacistAvailableFilters())
-const medicalInsuranceAvailableOrderKeys = getAvailableOrderKeys(getMedicalInsuranceAvailableFilters())
-
-
-const queryBuilder = (params, availableFilters, availableFilterKeys, availableOrderKeys) => {
-    // const queryObject = {isValid: true}
-    // if (!params || typeof params !== 'object' || params instanceof Array){
-    //     queryObject.isValid = false
-    //     return queryObject
-    // }
-    // const validKeys = array.intersection(Object.keys(params), array.concat(availableFilterKeys, [availableFilters.orders.key]))
-    // validKeys.every((key) => validateValue(key, params[key], availableFilters))
-}
-
-const validateValue = (key, value, availableFilters) => {
-     if (availableFilters.filters.single[key]){
-         if (availableFilters.filters.single[key].values){
-            availableFilters.filters.single[key].values.map((value) => value.value)
-         } else {
-
-         }
-     }
+const queryBuilder = (params, availableFilters) => {
+    let queryObject = {filters: {}, orders: {}}
+    if (!params || typeof params !== 'object' || params instanceof Array){
+        return queryObject
+    }
+    const availableQueryparams = transformToAvailableQueryParams(availableFilters)
+    queryObject = Object.keys(params).reduce((queryObject, key) => {
+        if (availableQueryparams.filters[key]){
+            if (availableQueryparams.filters[key].values){
+                const correctValues = array.intersection(availableQueryparams.filters[key].values, params[key].split(','))
+                if (correctValues.length){
+                    queryObject.filters[key] = correctValues
+                }
+            } else if (availableQueryparams.filters[key].format){
+                const formatedDate = moment(params[key], availableQueryparams.filters[key].format)
+                if (formatedDate.isValid()){
+                    queryObject.filters[key] = params[key]
+                }
+            } else {
+                queryObject.filters[key] = params[key]
+            }
+        } else if (key === availableFilters.orders.key){
+            const orderKey = params[key].split(' ')[0]
+            const sortKey = params[key].split(' ')[1]
+            if (availableQueryparams.orders[orderKey]){
+                if (availableQueryparams.orders[orderKey][sortKey]){
+                    queryObject.orders[orderKey] = sortKey
+                }
+            }
+        }
+        return queryObject
+    }, queryObject)
+    return queryObject
 }
 
 module.exports = {
@@ -203,8 +231,8 @@ module.exports = {
     getDoctorAvailableFilters,
     getPharmacistAvailableFilters,
     getMedicalInsuranceAvailableFilters,
-    getAffiliateQueryByParams: (params) => {return queryBuilder(params, getAffiliateAvailableFilters(), affiliateAvailableFilterKeys, affiliateAvailableOrderKeys)},
-    getDoctorQueryByParams: (params) => {return queryBuilder(params, getDoctorAvailableFilters(), doctorAvailableFilterKeys, doctorAvailableOrderKeys)},
-    getPharmacistQueryByParams: (params) => {return queryBuilder(params, getPharmacistAvailableFilters(), pharmacistAvailableFilterKeys, pharmacistAvailableOrderKeys)},
-    getMedicalInsuranceQueryByParams: (params) => {return queryBuilder(params, getMedicalInsuranceAvailableFilters(), medicalInsuranceAvailableFilterKey, medicalInsuranceAvailableOrderKeys)}
+    getAffiliateQueryByParams: (params) => {return queryBuilder(params, getAffiliateAvailableFilters())},
+    getDoctorQueryByParams: (params) => {return queryBuilder(params, getDoctorAvailableFilters())},
+    getPharmacistQueryByParams: (params) => {return queryBuilder(params, getPharmacistAvailableFilters())},
+    getMedicalInsuranceQueryByParams: (params) => {return queryBuilder(params, getMedicalInsuranceAvailableFilters())}
 }

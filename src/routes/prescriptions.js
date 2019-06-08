@@ -46,7 +46,7 @@ const queryBy = {
 router.get('/', secureMiddleware, (req, res, next) => {
     const {logger} = req.app.locals
     const prescriptionQuery = queryBy[req.identifiedUser.type] && queryBy[req.identifiedUser.type].getQuery(req.query) || {}
-    return PrescriptionRepository.getAll()
+    return PrescriptionRepository.getByQuery(prescriptionQuery)
     .then(prescirptions => {
         const filters = filtersBy[req.identifiedUser.type] && filtersBy[req.identifiedUser.type].getFilters() || {}
         const response = {result: prescirptions.map(pres => pres.toPlainObject()), ...filters}
