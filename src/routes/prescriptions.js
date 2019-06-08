@@ -4,7 +4,7 @@ const {Prescription} = require('../domain/prescription')
 const {StateMachine} = require('../state-machine/state-machine')
 const {newBadRequestError, isBusinessError} = require('../utils/errors')
 const {PrescriptionRepository} = require('../repositories/prescriptions-repository')
-const filters = require('../filters/prescriptionFilters')
+const permissions = require('../permissions/identifiedUser')
 
 router.post('/', (req, res, next) => {
     const {logger} = req.app.locals
@@ -22,39 +22,32 @@ router.post('/', (req, res, next) => {
 })
 
 const secureMiddleware = (req, res, next) => {
-    req.identifiedUser = {
-        type: 'affiliate',
-        id: 1
-    }
+    req.identifiedUser = permissions.getIdentifiedMedicalInsurance(1)
     return next()
-}
-
-const filtersBy = {
-    affiliate: {getFilters: filters.getAffiliateAvailableFilters},
-    doctor: {getFilters: filters.getDoctorAvailableFilters},
-    pharmacist: {getFilters: filters.getPharmacistAvailableFilters},
-    medicalInsurance: {getFilters: filters.getMedicalInsuranceAvailableFilters}
-}
-
-const queryBy = {
-    affiliate: {getQuery: filters.getAffiliateQueryByParams},
-    doctor: {getQuery: filters.getDoctorQueryByParams},
-    pharmacist: {getQuery: filters.getPharmacistQueryByParams},
-    medicalInsurance: {getQuery: filters.getMedicalInsuranceQueryByParams},
 }
 
 router.get('/', secureMiddleware, (req, res, next) => {
     const {logger} = req.app.locals
-    const prescriptionQuery = queryBy[req.identifiedUser.type] && queryBy[req.identifiedUser.type].getQuery(req.query) || {}
+    const {identifiedUser} = req
+    const prescriptionQuery = identifiedUser.getQuery(req.query)
     return PrescriptionRepository.getByQuery(prescriptionQuery)
     .then(prescirptions => {
-        const filters = filtersBy[req.identifiedUser.type] && filtersBy[req.identifiedUser.type].getFilters() || {}
+        const filters = identifiedUser.getFilters()
         const response = {result: prescirptions.map(pres => pres.toPlainObject()), ...filters}
         return res.json(response)
     })
-    .catch(err => {
-        return next(err)
+    .catch(next)
+})
+
+router.get('/:id', secureMiddleware, (req, res, next) => {
+    const {logger} = req.app.locals
+    const {identifiedUser} = req
+    return PrescriptionRepository.getById(req.params.id)
+    .then(prescription => {
+        identifiedUser.checkForbiden(prescription)
+        return res.json(prescription.toPlainObject())
     })
+    .catch(next)
 })
 
 module.exports = router

@@ -53,14 +53,15 @@ class PrescriptionRepository {
     }
 
     getById(id){
+        id = +id
         return new Promise((resolve, reject) => {
             const prescription = this.prescriptions.find((prescription) => {
                 return prescription.id === id
             })
             if (prescription){
-                return resolve(prescription)
+                return resolve(Prescription.fromObject(prescription))
             }
-            return reject()
+            return reject(newNotFoundError(`No prescription was found with id ${id}`))
         })
     }
 

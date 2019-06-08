@@ -94,7 +94,9 @@ const prescriptionFilters = {
     }
 }
 
-const doctorAvailableFilters = {filters: {singles: {}, ranges: {}}, specialFilters: {singles: {}, ranges: {}}, orders: {key: prescriptionFilters.orders.key, values: {}}}
+const filtersModel = {filters: {singles: {}, ranges: {}}, specialFilters: {singles: {}, ranges: {}}, orders: {key: prescriptionFilters.orders.key, values: {}}}
+
+const doctorAvailableFilters = lang.cloneDeep(filtersModel)
 doctorAvailableFilters.filters.singles.id = lang.cloneDeep(prescriptionFilters.singles.id)
 doctorAvailableFilters.filters.singles.status = lang.cloneDeep(prescriptionFilters.singles.status)
 doctorAvailableFilters.filters.singles.status.values = [availableStates.ISSUED, availableStates.CANCELLED, availableStates.CONFIRMED, availableStates.INCOMPLETE, availableStates.AUDITED, availableStates.REJECTED, availableStates.PARTIALLY_REJECTED]
@@ -105,7 +107,7 @@ doctorAvailableFilters.specialFilters.singles.medicine = lang.cloneDeep(prescrip
 doctorAvailableFilters.orders.values.id = lang.cloneDeep(prescriptionFilters.orders.values.id)
 doctorAvailableFilters.orders.values.issuedDate = lang.cloneDeep(prescriptionFilters.orders.values.issuedDate)
 
-const affiliateAvailableFilters = {filters: {singles: {}, ranges: {}}, specialFilters: {singles: {}, ranges: {}}, orders: {key: prescriptionFilters.orders.key, values: {}}}
+const affiliateAvailableFilters = lang.cloneDeep(filtersModel)
 affiliateAvailableFilters.filters.singles.id = lang.cloneDeep(prescriptionFilters.singles.id)
 affiliateAvailableFilters.filters.singles.status = lang.cloneDeep(prescriptionFilters.singles.status)
 affiliateAvailableFilters.filters.singles.status.values = [availableStates.CONFIRMED, availableStates.EXPIRED, availableStates.RECEIVED, availableStates.PARTIALLY_RECEIVED]
@@ -117,7 +119,7 @@ affiliateAvailableFilters.orders.values.id = lang.cloneDeep(prescriptionFilters.
 affiliateAvailableFilters.orders.values.issuedDate = lang.cloneDeep(prescriptionFilters.orders.values.issuedDate)
 affiliateAvailableFilters.orders.values.soldDate = lang.cloneDeep(prescriptionFilters.orders.values.soldDate)
 
-const pharmacistAvailableFilters = {filters: {singles: {}, ranges: {}}, specialFilters: {singles: {}, ranges: {}}, orders: {key: prescriptionFilters.orders.key, values: {}}}
+const pharmacistAvailableFilters = lang.cloneDeep(filtersModel)
 pharmacistAvailableFilters.filters.singles.id = lang.cloneDeep(prescriptionFilters.singles.id)
 pharmacistAvailableFilters.filters.singles.status = lang.cloneDeep(prescriptionFilters.singles.status)
 pharmacistAvailableFilters.filters.singles.status.values = [availableStates.RECEIVED, availableStates.PARTIALLY_RECEIVED, availableStates.INCOMPLETE, availableStates.AUDITED, availableStates.REJECTED, availableStates.PARTIALLY_REJECTED]
@@ -130,7 +132,7 @@ pharmacistAvailableFilters.orders.values.id = lang.cloneDeep(prescriptionFilters
 pharmacistAvailableFilters.orders.values.issuedDate = lang.cloneDeep(prescriptionFilters.orders.values.issuedDate)
 pharmacistAvailableFilters.orders.values.soldDate = lang.cloneDeep(prescriptionFilters.orders.values.soldDate)
 
-const medicalInsuranceAvailableFilters = {filters: {singles: {}, ranges: {}}, specialFilters: {singles: {}, ranges: {}}, orders: {key: prescriptionFilters.orders.key, values: {}}}
+const medicalInsuranceAvailableFilters = lang.cloneDeep(filtersModel)
 medicalInsuranceAvailableFilters.filters.singles.id = lang.cloneDeep(prescriptionFilters.singles.id)
 medicalInsuranceAvailableFilters.filters.singles.status = lang.cloneDeep(prescriptionFilters.singles.status)
 medicalInsuranceAvailableFilters.filters.singles.status.values = [availableStates.ISSUED, availableStates.CANCELLED, availableStates.CONFIRMED, availableStates.EXPIRED, availableStates.RECEIVED, availableStates.PARTIALLY_RECEIVED, availableStates.INCOMPLETE, availableStates.AUDITED, availableStates.REJECTED, availableStates.PARTIALLY_REJECTED]
@@ -191,38 +193,41 @@ const transformToAvailableQueryParams = (availableFilters) => {
     return {filters: transformedFilters, orders: transformedOrders}
 }
 
-const queryBuilder = (params, availableFilters) => {
+const queryBuilder = (params, caller, availableFilters) => {
     let queryObject = {filters: {}, orders: {}}
-    if (!params || typeof params !== 'object' || params instanceof Array){
-        return queryObject
-    }
-    const availableQueryparams = transformToAvailableQueryParams(availableFilters)
-    queryObject = Object.keys(params).reduce((queryObject, key) => {
-        if (availableQueryparams.filters[key]){
-            if (availableQueryparams.filters[key].values){
-                const correctValues = array.intersection(availableQueryparams.filters[key].values, params[key].split(','))
-                if (correctValues.length){
-                    queryObject.filters[key] = correctValues
-                }
-            } else if (availableQueryparams.filters[key].format){
-                const formatedDate = moment(params[key], availableQueryparams.filters[key].format)
-                if (formatedDate.isValid()){
+    if (params && typeof params === 'object' && !(params instanceof Array)){
+        const availableQueryparams = transformToAvailableQueryParams(availableFilters)
+        queryObject = Object.keys(params).reduce((queryObject, key) => {
+            if (availableQueryparams.filters[key]){
+                if (availableQueryparams.filters[key].values){
+                    const correctValues = array.intersection(availableQueryparams.filters[key].values, params[key].split(','))
+                    if (correctValues.length){
+                        queryObject.filters[key] = correctValues
+                    }
+                } else if (availableQueryparams.filters[key].format){
+                    const formatedDate = moment(params[key], availableQueryparams.filters[key].format)
+                    if (formatedDate.isValid()){
+                        queryObject.filters[key] = params[key]
+                    }
+                } else {
                     queryObject.filters[key] = params[key]
                 }
-            } else {
-                queryObject.filters[key] = params[key]
-            }
-        } else if (key === availableFilters.orders.key){
-            const orderKey = params[key].split(' ')[0]
-            const sortKey = params[key].split(' ')[1]
-            if (availableQueryparams.orders[orderKey]){
-                if (availableQueryparams.orders[orderKey][sortKey]){
-                    queryObject.orders[orderKey] = sortKey
+            } else if (key === availableFilters.orders.key){
+                const orderKey = params[key].split(' ')[0]
+                const sortKey = params[key].split(' ')[1]
+                if (availableQueryparams.orders[orderKey]){
+                    if (availableQueryparams.orders[orderKey][sortKey]){
+                        queryObject.orders[orderKey] = sortKey
+                    }
                 }
             }
-        }
-        return queryObject
-    }, queryObject)
+            return queryObject
+        }, queryObject)
+    }
+    if (caller.type === 'affiliate'){ queryObject.filters[prescriptionFilters.singles.affiliate.key] = caller.id}
+    else if (caller.type === 'doctor'){ queryObject.filters[prescriptionFilters.singles.doctor.key] = caller.id}
+    else if (caller.type === 'pharmacist'){ queryObject.filters[prescriptionFilters.singles.pharmacist.key] = caller.id}
+    else if (caller.type === 'medicalInsurance'){ queryObject.filters[prescriptionFilters.singles.medicalInsurance.key] = caller.id}
     return queryObject
 }
 
@@ -231,8 +236,8 @@ module.exports = {
     getDoctorAvailableFilters,
     getPharmacistAvailableFilters,
     getMedicalInsuranceAvailableFilters,
-    getAffiliateQueryByParams: (params) => {return queryBuilder(params, getAffiliateAvailableFilters())},
-    getDoctorQueryByParams: (params) => {return queryBuilder(params, getDoctorAvailableFilters())},
-    getPharmacistQueryByParams: (params) => {return queryBuilder(params, getPharmacistAvailableFilters())},
-    getMedicalInsuranceQueryByParams: (params) => {return queryBuilder(params, getMedicalInsuranceAvailableFilters())}
+    getAffiliateQueryByParams: (params, id) => {return queryBuilder(params, {type: 'affiliate', id}, getAffiliateAvailableFilters())},
+    getDoctorQueryByParams: (params, id) => {return queryBuilder(params, {type: 'doctor', id}, getDoctorAvailableFilters())},
+    getPharmacistQueryByParams: (params, id) => {return queryBuilder(params, {type: 'pharmacist', id}, getPharmacistAvailableFilters())},
+    getMedicalInsuranceQueryByParams: (params, id) => {return queryBuilder(params, {type: 'medicalInsurance', id}, getMedicalInsuranceAvailableFilters())}
 }
