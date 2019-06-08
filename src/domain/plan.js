@@ -1,4 +1,3 @@
-const moment = require('moment')
 const { dateFormat } = require('../utils/utils')
 
 class Plan {

@@ -1,4 +1,3 @@
-const moment = require('moment')
 const { dateFormat } = require('../utils/utils')
 
 class Doctor {
@@ -23,7 +22,7 @@ class Doctor {
     setBirthDate(date) {
         this.birthDate = dateFormat.toDate(date)
     }
-    
+
     getBirthDate() {
         return dateFormat.toString(this.birthDate)
     }
