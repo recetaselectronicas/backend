@@ -88,6 +88,12 @@ class PrescriptionRepository {
             return resolve(prescriptions)
         })
     }
+
+    getByQuery(query){
+        return new Promise((resolve, reject) => {
+            return resolve([...this.prescriptions])
+        })
+    }
 }
 
 module.exports = {PrescriptionRepository: new PrescriptionRepository()}

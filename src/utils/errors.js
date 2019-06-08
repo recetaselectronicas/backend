@@ -4,7 +4,7 @@ const _array = require('lodash/array')
 const error = {
     code: '', //codigo de error
     message: '', //mensaje descriptivo del error
-    status: 400, //statusCode, para web
+    status: undefined, //statusCode, para web
     cause: null //causa del error (se va a crear un handler para esto para transformar la causa a algo estándar)
 }
 
@@ -118,28 +118,25 @@ const getValueNotInListError = (value, otherValues, entity, field, message) => {
     return null
 }
 
-const getObjectDoesntMatchError = (object, path, value, entity, field, nullMessage, invalidValueMessage) => {
+const getObjectDoesntMatchError = (object, path, isValidValue, entity, field, nullMessage, invalidValueMessage) => {
     if (!_object.has(object, path)){
         return newNullOrEmptyError(nullMessage || `${entity} must have a value at ${field}`, generateFieldCause(entity, field))
     }
-    if (value !== undefined){
-        if (_object.get(object, path) !== value){
-            return newInvalidValueError(invalidValueMessage || `${entity} ${field} must be ${value}`, generateFieldCause(entity, field, _object.get(object, path), value))
-        }
+    const actualValue = _object.get(object, path)
+    if (!isValidValue(actualValue)){
+        return newInvalidValueError(invalidValueMessage || `${entity} ${field} has an invalid value`, generateFieldCause(entity, field, actualValue))
     }
     return null
 }
 
-const getArrayDoesntMatchError = (array, path, value, entity, field, nullMessage, invalidValueMessage) => {
+const getArrayDoesntMatchError = (array, path, isValidValue, entity, field, nullMessage, invalidValueMessage) => {
     const errors = _array.compact(array.map((element, index) => {
         if (!_object.has(element, path)){
             return newNullOrEmptyError(nullMessage || `${entity} must have a value at ${field}`, generateIndexFieldCause(entity, field, index))
         }
-        if (value !== undefined){
-            const actualValue = _object.get(element, path)
-            if (actualValue !== value){
-                return newInvalidValueError(invalidValueMessage || `${entity} ${field} must be ${value}`, generateIndexFieldCause(entity, field, index, actualValue, value))
-            }
+        const actualValue = _object.get(element, path)
+        if (!isValidValue(actualValue)){
+            return newInvalidValueError(invalidValueMessage || `${entity} ${field} has an invalid value`, generateIndexFieldCause(entity, field, index, actualValue))
         }
     }))
     return errors
