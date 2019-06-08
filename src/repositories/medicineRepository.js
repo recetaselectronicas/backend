@@ -17,5 +17,5 @@ class MedicineReposiory {
 }
 
 module.exports = {
-    MedicineReposiory = new MedicineReposiory()
+    MedicineReposiory : new MedicineReposiory()
 }
