@@ -9,12 +9,19 @@ const userTypes = {
     MEDICAL_INSURANCE: "medicalInsurance"
 }
 
+const availableActions = {
+    CANCEL: "CANCEL",
+    RECEIVE: "RECEIVE",
+    AUDIT: "AUDIT"
+}
+
 const identifiedUser = {
     id: null,
     type: null,
     getFilters: null,
     getQuery: null,
-    checkForbiden: null
+    checkForbiden: null,
+    getActions: null
 }
 
 const identifiedAffiliate = {
@@ -28,6 +35,9 @@ const identifiedAffiliate = {
         if (prescription.affiliate.id !== this.id){
             throw newForbiddenResourceException("Can't access this prescription")
         }
+    },
+    getActions: (prescription) => {
+        return []
     }
 }
 
@@ -42,6 +52,11 @@ const identifiedDoctor = {
         if (prescription.doctor.id !== this.id){
             throw newForbiddenResourceException("Can't access this prescription")
         }
+    },
+    getActions: (prescription) => {
+        return [
+            availableActions.CANCEL
+        ]
     }
 }
 
@@ -56,6 +71,11 @@ const identifiedPharmacist = {
         if (prescription.items.every(item => item.received.pharmacist.id !== this.id)){
             throw newForbiddenResourceException("Can't access this prescription")
         }
+    },
+    getActions: (prescription) => {
+        return [
+            availableActions.RECEIVE
+        ]
     }
 }
 
@@ -70,6 +90,11 @@ const identifiedMedicalInsurance = {
         if (prescription.medicalInsurance.id !== this.id){
             throw newForbiddenResourceException("Can't access this prescription")
         }
+    },
+    getActions: (prescription) => {
+        return [
+            availableActions.AUDIT
+        ]
     }
 }
 

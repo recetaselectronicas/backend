@@ -22,7 +22,7 @@ router.post('/', (req, res, next) => {
 })
 
 const secureMiddleware = (req, res, next) => {
-    req.identifiedUser = permissions.getIdentifiedMedicalInsurance(1)
+    req.identifiedUser = permissions.getIdentifiedPharmacist(2)
     return next()
 }
 
@@ -31,9 +31,9 @@ router.get('/', secureMiddleware, (req, res, next) => {
     const {identifiedUser} = req
     const prescriptionQuery = identifiedUser.getQuery(req.query)
     return PrescriptionRepository.getByQuery(prescriptionQuery)
-    .then(prescirptions => {
+    .then(prescriptions => {
         const filters = identifiedUser.getFilters()
-        const response = {result: prescirptions.map(pres => pres.toPlainObject()), ...filters}
+        const response = {result: prescriptions.map(pres => pres.toPlainObject()), ...filters}
         return res.json(response)
     })
     .catch(next)
@@ -45,7 +45,8 @@ router.get('/:id', secureMiddleware, (req, res, next) => {
     return PrescriptionRepository.getById(req.params.id)
     .then(prescription => {
         identifiedUser.checkForbiden(prescription)
-        return res.json(prescription.toPlainObject())
+        const actions = identifiedUser.getActions(prescription)
+        return res.json({result: prescription.toPlainObject(), actions})
     })
     .catch(next)
 })
