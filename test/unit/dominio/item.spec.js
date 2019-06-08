@@ -1,4 +1,4 @@
-const { formats } = require('../../../src/utils/utils')
+const { dateTimeFormat } = require('../../../src/utils/utils')
 const { Item } = require('../../../src/domain/item')
 const moment = require('moment')
 
@@ -11,7 +11,7 @@ const prescribed = {
 }
 const received = {
     quantity: 10,
-    soldDate: '15-6-2019 20:00',
+    soldDate: '15/06/2019 20:00',
     medicine: {
         id: 11
     },
@@ -69,7 +69,7 @@ describe('Item', () => {
         item = Item.fromJson(JSON.stringify(testItem))
         expect(item.id).toEqual(id)
         expect(item.prescribed).toEqual(prescribed)
-        expect(item.received).toEqual(received)
+        expect(item.received).toEqual({...received, soldDate: dateTimeFormat.toDate(received.soldDate)})
         expect(item.audited).toEqual(audited)
     })
 
@@ -77,11 +77,11 @@ describe('Item', () => {
         item = Item.fromObject(testItem)
         expect(item.id).toEqual(id)
         expect(item.prescribed).toEqual(prescribed)
-        expect(item.received).toEqual(received)
+        expect(item.received).toEqual({...received, soldDate: dateTimeFormat.toDate(received.soldDate)})
         expect(item.audited).toEqual(audited)
     })
 
-    it('when you prescribe item', () => {
+    it('when you prescribe item with quantity and medicine and is cool', () => {
         let quantity = 20
         let medicine = { id: 54 }
         let testPrecribed = { quantity, medicine }

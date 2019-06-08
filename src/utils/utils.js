@@ -18,21 +18,21 @@ const formats = {
   timeFormat: 'HH:mm'
 }
 
-const dateFormat = {
-  toString: (date) => {
+const formatter = {
+  toString: (date, formatter) => {
     if (moment.isMoment(date)) {
       if (date.isValid()) {
-        return date.format(formats.dateFormat)
+        return date.format(formatter)
       }
       return null
     }
     return null
   },
-  toDate: (date) => {
+  toDate: (date, formatter) => {
     if (moment.isMoment(date)) {
       return date
     } else {
-      date = moment(date, formats.dateFormat)
+      date = moment(date, formatter)
       if (!date.isValid()) {
         date = null
       }
@@ -42,26 +42,12 @@ const dateFormat = {
 }
 
 const dateTimeFormat = {
-  toString: (date) => {
-    if (moment.isMoment(date)) {
-      if (date.isValid()) {
-        return date.format(formats.dateTimeFormat)
-      }
-      return null
-    }
-    return null
-  },
-  toDate: (date) => {
-    if (moment.isMoment(date)) {
-      return date
-    } else {
-      date = moment(date, formats.dateTimeFormat)
-      if (!date.isValid()) {
-        date = null
-      }
-      return date
-    }
-  }
+  toString: (date) => { return formatter.toString(date, formats.dateTimeFormat) },
+  toDate: (date) => { return formatter.toDate(date, formats.dateTimeFormat) }
+}
+const dateFormat = {
+  toString: (date) => { return formatter.toString(date, formats.dateFormat) },
+  toDate: (date) => { return formatter.toDate(date, formats.dateFormat) }
 }
 
 module.exports = {
