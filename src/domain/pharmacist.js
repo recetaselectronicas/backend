@@ -1,7 +1,6 @@
-const moment = require('moment')
 const { dateFormat } = require('../utils/utils')
 
-class Doctor {
+class Pharmacist {
 
     constructor() {
         this.id = null
@@ -15,9 +14,7 @@ class Doctor {
         this.nationality = null
         this.address = null
         this.email = null
-        this.nationalMatriculation = null
-        this.provincialMatriculation = null
-        this.specialty = null
+        this.matriculation = null
     }
 
     setBirthDate(date) {
@@ -56,9 +53,7 @@ class Doctor {
             nationality: this.nationality,
             address: this.address,
             email: this.email,
-            nationalMatriculation: this.nationalMatriculation,
-            provincialMatriculation: this.provincialMatriculation,
-            specialty: this.specialty
+            matriculation: this.matriculation
         })
     }
 
@@ -67,30 +62,28 @@ class Doctor {
             return new Doctor()
         }
         let object = typeof json === 'object' ? json : JSON.parse(json)
-        const doctor = new Doctor()
-        doctor.id = object.id || doctor.id
-        doctor.setBirthDate (object.birthDate) 
-        doctor.setEntryDate ( object.entryDate) 
-        doctor.setLeavingDate( object.leavingDate)
-        doctor.name = object.name || doctor.name
-        doctor.lastName = object.lastName || doctor.lastName
-        doctor.userName = object.userName || doctor.userName
-        doctor.contactNumber = object.contactNumber || doctor.contactNumber
-        doctor.nationality = object.nationality || doctor.nationality
-        doctor.address = object.address || doctor.address
-        doctor.email = object.email || doctor.email
-        doctor.nationalMatriculation = object.nationalMatriculation || doctor.nationalMatriculation
-        doctor.provincialMatriculation = object.provincialMatriculation || doctor.provincialMatriculation
-        doctor.specialty = object.specialty || doctor.specialty
-        return doctor
+        const pharmacist = new Pharmacist()
+        pharmacist.id = object.id || pharmacist.id
+        pharmacist.setBirthDate (object.birthDate) 
+        pharmacist.setEntryDate ( object.entryDate) 
+        pharmacist.setLeavingDate( object.leavingDate)
+        pharmacist.name = object.name || pharmacist.name
+        pharmacist.lastName = object.lastName || pharmacist.lastName
+        pharmacist.userName = object.userName || pharmacist.userName
+        pharmacist.contactNumber = object.contactNumber || pharmacist.contactNumber
+        pharmacist.nationality = object.nationality || pharmacist.nationality
+        pharmacist.address = object.address || pharmacist.address
+        pharmacist.email = object.email || pharmacist.email
+        pharmacist.matriculation = object.matriculation || pharmacist.matriculation
+        return pharmacist
     }
 
     static fromObject(object){
-        if (!(object instanceof Doctor)){
-            return Doctor.fromJson(object)
+        if (!(object instanceof Pharmacist)){
+            return Pharmacist.fromJson(object)
         }
         return object 
     }
 
 }
-module.exports = { Doctor }
+module.exports = { Pharmacist }
