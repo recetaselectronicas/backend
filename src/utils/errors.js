@@ -19,7 +19,7 @@ const errors = {
     NULL_OR_EMPTY_VALUE_ERROR: {...error, code: "1-001", message: "Null or empty field value"},
     INVALID_VALUE_ERROR: {...error, code: "1-002", message: "Invalid field value"},
     ENTITY_ALREADY_CREATED: {...error, code: "1-003", message: "Entity already created"},
-    NOT_FOUND_ERROR: {...error, code: "1-100", message: "Not found"},
+    NOT_FOUND_ERROR: {...error, code: "1-100", message: "Not found", status: 404},
     BAD_REQUEST: {...error, code: "1-101", message: "Please verify the payload and try again", status: 400},
     INVALID_USERNAME_OR_PASSWORD_ERROR: {...error, code: "2-000", message: "Invalid username or password", status: 401},
     SESSION_EXPIRED_ERROR: {...error, code: "2-001", message: "Your session has expired", status: 403},
