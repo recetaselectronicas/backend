@@ -1,5 +1,5 @@
 const {Pharmacist} = require('../domain/pharmacist')
-const {newEntityAlreadyCreated} = require('../utils/errors')
+const {newNotFoundError, newEntityAlreadyCreated} = require('../utils/errors')
 
 class PharmacistRepository {
     constructor() {
@@ -21,6 +21,19 @@ class PharmacistRepository {
     getAll() {
         return new Promise((resolve, reject) => {
             return resolve([...this.pharmacists])
+        })
+    }
+
+    getById(id) {
+        id = +id
+        return new Promise((resolve, reject) => {
+            const pharmacist = this.pharmacists.find((pharmacist) => {
+                return pharmacist.id === id
+            })
+            if (pharmacist) {
+                return resolve(Pharmacist.fromObject(pharmacist))
+            }
+            return reject(newNotFoundError(`No pharmacist was found with id ${id}`))
         })
     }
 }

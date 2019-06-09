@@ -1,5 +1,5 @@
 const {Affiliate} = require('../domain/affiliate')
-const {newEntityAlreadyCreated} = require('../utils/errors')
+const {newNotFoundError, newEntityAlreadyCreated} = require('../utils/errors')
 
 class AffiliateRepository {
     constructor() {
@@ -27,6 +27,19 @@ class AffiliateRepository {
     getByQuery(query) {
         return new Promise((resolve, reject) => {
             return resolve(this.affiliates.filter(affiliate => affiliate.code.includes(query.credential || '')))
+        })
+    }
+
+    getById(id){
+        id = +id
+        return new Promise((resolve, reject) => {
+            const affiliate = this.affiliates.find((affiliate) => {
+                return affiliate.id === id
+            })
+            if (affiliate){
+                return resolve(Affiliate.fromObject(affiliate))
+            }
+            return reject(newNotFoundError(`No affiliate was found with id ${id}`))
         })
     }
 }

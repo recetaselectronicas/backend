@@ -1,5 +1,5 @@
 const {Medicine} = require('../domain/medicine')
-const {newEntityAlreadyCreated} = require('../utils/errors')
+const {newNotFoundError, newEntityAlreadyCreated} = require('../utils/errors')
 
 class MedicineRepository {
     constructor() {
@@ -27,6 +27,19 @@ class MedicineRepository {
     getByQuery(query) {
         return new Promise((resolve, reject) => {
             return resolve(this.medicines.filter(medicine => medicine.description.includes(query.description || '')))
+        })
+    }
+
+    getById(id){
+        id = +id
+        return new Promise((resolve, reject) => {
+            const medicine = this.medicines.find((medicine) => {
+                return medicine.id === id
+            })
+            if (medicine){
+                return resolve(Medicine.fromObject(medicine))
+            }
+            return reject(newNotFoundError(`No medicine was found with id ${id}`))
         })
     }
 }
