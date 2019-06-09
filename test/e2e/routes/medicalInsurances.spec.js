@@ -1,6 +1,7 @@
 const request = require('supertest')
 const { init } = require('../../../src/init/initServer')
 const { MedicalInsuranceRepository } = require('../../../src/repositories/medicalInsuranceRepository')
+const { MedicalInsurance } = require('../../../src/domain/medicalInsurance')
 
 const app = init()
 app.locals.logger = {info: () => {}, error: () => {}}
@@ -8,14 +9,14 @@ app.locals.logger = {info: () => {}, error: () => {}}
 describe('when do a get in /medical-insurances', () => {
   describe('and the repository response ok', () => {
     const medicalInsurancesValue = [
-      {
+      MedicalInsurance.fromObject({
         id: 0,
         description: 'OSDE'
-      },
-      {
+      }),
+      MedicalInsurance.fromObject({
         id: 1,
         description: 'SWISS MEDICAL'
-      }
+      })
     ]
 
     beforeAll(() => {
@@ -54,14 +55,14 @@ describe('when do a get in /doctors/{id}/medical-insurances', () => {
   const doctorId = 1
   describe('and the repository response ok', () => {
     const medicalInsurancesValue = [
-      {
+      MedicalInsurance.fromObject({
         id: 0,
         description: 'OSDE'
-      },
-      {
+      }),
+      MedicalInsurance.fromObject({
         id: 1,
         description: 'SWISS MEDICAL'
-      }
+      })
     ]
 
     beforeAll(() => {

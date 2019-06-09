@@ -1,5 +1,4 @@
-const moment = require('moment')
-const {formats} = require('../utils/utils')
+const {dateTimeFormat} = require('../utils/utils')
 const {Institution} = require('../domain/institution')
 const {Doctor} = require('../domain/doctor')
 const {MedicalInsurance} = require('../domain/medicalInsurance')
@@ -29,48 +28,27 @@ class Prescription {
     }
 
     setIssuedDate(date){
-        if (moment.isMoment(date)){
-            this.issuedDate = date
-        } else {
-            this.issuedDate = moment(date, formats.dateTimeFormat)
-            if (!this.issuedDate.isValid()){
-                this.issuedDate = null
-            }
-        }
+        this.issuedDate = dateTimeFormat.toDate(date)
     }
 
     getIssuedDate(){
-        return moment.isMoment(this.issuedDate) ? this.issuedDate.format(formats.dateTimeFormat) : this.issuedDate
+        return dateTimeFormat.toString(this.issuedDate)
     }
 
     setSoldDate(date){
-        if (moment.isMoment(date)){
-            this.soldDate = date
-        } else {
-            this.soldDate = moment(date, formats.dateTimeFormat)
-            if (!this.soldDate.isValid()){
-                this.soldDate = null
-            }
-        }
+        this.soldDate = dateTimeFormat.toDate(date)
     }
 
     getSoldDate(){
-        return moment.isMoment(this.soldDate) ? this.soldDate.format(formats.dateTimeFormat) : this.soldDate
+        return dateTimeFormat.toString(this.soldDate)
     }
 
     setAuditedDate(date){
-        if (moment.isMoment(date)){
-            this.auditedDate = date
-        } else {
-            this.auditedDate = moment(date, formats.dateTimeFormat)
-            if (!this.auditedDate.isValid()){
-                this.auditedDate = null
-            }
-        }
+        this.auditedDate = dateTimeFormat.toDate(date)
     }
 
     getAuditedDate(){
-        return moment.isMoment(this.auditedDate) ? this.auditedDate.format(formats.dateTimeFormat) : this.auditedDate
+        return dateTimeFormat.toString(this.auditedDate)
     }
 
     setInstitution(institution){
@@ -93,18 +71,18 @@ class Prescription {
         return JSON.stringify({
             id: this.id,
             issuedDate: this.getIssuedDate(),
-            soldDate: this.getAuditedDate(),
-            auditedDate: this.getSoldDate(),
+            soldDate: this.getSoldDate(),
+            auditedDate: this.getAuditedDate(),
             prolongedTreatment: this.prolongedTreatment,
             diagnosis: this.diagnosis,
             ttl: this.ttl,
-            institution: this.institution && JSON.parse(this.institution.toJson()),
-            affiliate: this.affiliate && JSON.parse(this.affiliate.toJson()),
-            doctor: this.doctor && JSON.parse(this.doctor.toJson()),
-            medicalInsurance: this.medicalInsurance && JSON.parse(this.medicalInsurance.toJson()),
+            institution: this.institution && this.institution.toPlainObject(),
+            affiliate: this.affiliate && this.affiliate.toPlainObject(),
+            doctor: this.doctor && this.doctor.toPlainObject(),
+            medicalInsurance: this.medicalInsurance && this.medicalInsurance.toPlainObject(),
             status: this.status,
             norm: this.norm,
-            items: this.items.length !== 0 ? this.items.map(item => JSON.parse(item.toJson())) : this.items
+            items: this.items.length ? this.items.map(item => item.toPlainObject()) : this.items
         })
     }
 

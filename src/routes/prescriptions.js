@@ -22,7 +22,7 @@ router.post('/', (req, res, next) => {
 })
 
 const secureMiddleware = (req, res, next) => {
-    req.identifiedUser = permissions.getIdentifiedPharmacist(2)
+    req.identifiedUser = permissions.getIdentifiedAffiliate(1)
     return next()
 }
 

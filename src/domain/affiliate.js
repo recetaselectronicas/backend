@@ -1,5 +1,3 @@
-const moment = require('moment')
-const { formats } = require('../utils/utils')
 const { dateFormat } = require('../utils/utils')
 const { Plan } = require('./plan')
 
@@ -115,6 +113,10 @@ class Affiliate {
         affiliate.plan = Plan.fromJson(object.plan)
         return affiliate
 
+    }
+
+    toPlainObject(){
+        return JSON.parse(this.toJson())
     }
 
     static fromObject(object) {

@@ -5,7 +5,7 @@ const { InstitutionRepository } = require('../repositories/institutionRepository
 router.get('/', async (req, res, next) => {
   try {
     const institutions = await InstitutionRepository.getAll()
-    return res.status(200).send(institutions)
+    return res.status(200).send(institutions.map(institution => institution.toPlainObject()))
   } catch (error) {
     return next(error)
   }

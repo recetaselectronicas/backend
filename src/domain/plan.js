@@ -1,5 +1,4 @@
-const moment = require('moment')
-const { formats } = require('../utils/utils')
+const { dateFormat } = require('../utils/utils')
 
 class Plan {
 
@@ -13,32 +12,17 @@ class Plan {
     }
 
     setEntryDate(date) {
-        if (moment.isMoment(date)) {
-            this.entryDate = date
-        } else {
-            this.entryDate = moment(date, formats.dateFormat)
-            if (!this.entryDate.isValid()) {
-                this.entryDate = null
-            }
-        }
+        this.entryDate = dateFormat.toDate(date)
     }
     getEntryDate() {
-        return moment.isMoment(this.entryDate) ? this.entryDate.format(formats.dateFormat) : this.entryDate
+        return dateFormat.toString(this.entryDate)
     }
-
 
     setLeavingDate(date) {
-        if (moment.isMoment(date)) {
-            this.leavingDate = date
-        } else {
-            this.leavingDate = moment(date, formats.dateFormat)
-            if (!this.leavingDate.isValid()) {
-                this.leavingDate = null
-            }
-        }
+        this.leavingDate = dateFormat.toDate(date)
     }
     getLeavingDate() {
-        return moment.isMoment(this.leavingDate) ? this.leavingDate.format(formats.dateFormat) : this.leavingDate
+        return dateFormat.toString(this.leavingDate)
     }
 
     toJson() {
@@ -52,15 +36,19 @@ class Plan {
         })
     }
 
+    toPlainObject(){
+        return JSON.parse(this.toJson())
+    }
+
     static fromJson(json = '{}') {
         let object = typeof json === 'object' ? json : JSON.parse(json)
         const plan = new Plan()
-        plan.id = object.id
-        plan.description = object.description
+        plan.id = object.id || plan.id
+        plan.description = object.description || plan.description
         plan.setEntryDate(object.entryDate)
         plan.setLeavingDate(object.leavingDate)
-        plan.percentage = object.percentage
-        plan.idMedicalInsurance = object.idMedicalInsurance
+        plan.percentage = object.percentage || plan.percentage
+        plan.idMedicalInsurance = object.idMedicalInsurance || plan.idMedicalInsurance
         return plan
     }
 

@@ -75,6 +75,10 @@ class Item {
             })
     }
 
+    toPlainObject(){
+        return JSON.parse(this.toJson())
+    }
+
     static fromJson(json) {
         if (!json) {
             return new Item()

@@ -5,7 +5,7 @@ const { MedicalInsuranceRepository } = require('../repositories/medicalInsurance
 router.get('/', async (req, res, next) => {
   try {
     const medicalInsurances = await MedicalInsuranceRepository.getAll()
-    return res.status(200).send(medicalInsurances)
+    return res.status(200).send(medicalInsurances.map(medicalInsurance => medicalInsurance.toPlainObject()))
   } catch (error) {
     return next(error)
   }
