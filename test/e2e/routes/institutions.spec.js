@@ -1,6 +1,7 @@
 const request = require('supertest')
 const { init } = require('../../../src/init/initServer')
 const { InstitutionRepository } = require('../../../src/repositories/institutionRepository')
+const { Institution } = require('../../../src/domain/institution')
 
 const app = init()
 app.locals.logger = {info: () => {}, error: () => {}}
@@ -8,16 +9,16 @@ app.locals.logger = {info: () => {}, error: () => {}}
 describe('when do a get in /institutions', () => {
   describe('and the repository response ok', () => {
     const institutionsValue = [
-      {
+      Institution.fromObject({
         id: 0,
         description: 'Hospital Italiano',
         address: 'La crujia'
-      },
-      {
+      }),
+      Institution.fromObject({
         id: 1,
         description: 'Corporacion medica',
         address: 'Olazabal 210'
-      }
+      })
     ]
 
     beforeAll(() => {

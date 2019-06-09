@@ -115,6 +115,10 @@ class Affiliate {
 
     }
 
+    toPlainObject(){
+        return JSON.parse(this.toJson())
+    }
+
     static fromObject(object) {
         if (!(object instanceof Affiliate)) {
             return Affiliate.fromJson(object)

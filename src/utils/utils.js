@@ -50,9 +50,19 @@ const dateFormat = {
   toDate: (date) => { return formatter.toDate(date, formats.dateFormat) }
 }
 
+const generateNewSequencer = () => {
+  return {
+    actualCount: 0,
+    nextValue: function() {
+      return ++this.actualCount
+    }
+  }
+}
+
 module.exports = {
   logger,
   formats,
   dateFormat,
-  dateTimeFormat
+  dateTimeFormat,
+  generateNewSequencer
 }

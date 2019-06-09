@@ -6,7 +6,7 @@ router.get('/', async (req, res, next) => {
     const query = req.query
     try {
         const affiliates = await AffiliateRepository.getByQuery(query)
-        return res.status(200).send(affiliates)
+        return res.status(200).send(affiliates.map(affiliate => affiliate.toPlainObject()))
     } catch (error) {
         return next(error)
     }

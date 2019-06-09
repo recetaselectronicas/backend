@@ -1,6 +1,24 @@
-class MedicineReposiory {
+const {Medicine} = require('../domain/medicine')
+const {newNotFoundError, newEntityAlreadyCreated} = require('../utils/errors')
+const {generateNewSequencer} = require('../utils/utils')
+
+const sequencer = generateNewSequencer()
+
+class MedicineRepository {
     constructor() {
         this.medicines = []
+    }
+
+    create(_medicine){
+        return new Promise((resolve, reject) => {
+            const medicine = Medicine.fromObject(_medicine)
+            if (medicine.id) {
+              return reject(newEntityAlreadyCreated('Medicine allready created'))
+            }
+            medicine.id = sequencer.nextValue()
+            this.medicines.push(medicine)
+            return resolve(medicine)
+        })
     }
 
     getAll() {
@@ -11,11 +29,24 @@ class MedicineReposiory {
 
     getByQuery(query) {
         return new Promise((resolve, reject) => {
-            return resolve(this.medicines.filter(medicine => medicine.description.includes(query.description)))
+            return resolve(this.medicines.filter(medicine => medicine.description.includes(query.description || '')))
+        })
+    }
+
+    getById(id){
+        id = +id
+        return new Promise((resolve, reject) => {
+            const medicine = this.medicines.find((medicine) => {
+                return medicine.id === id
+            })
+            if (medicine){
+                return resolve(Medicine.fromObject(medicine))
+            }
+            return reject(newNotFoundError(`No medicine was found with id ${id}`))
         })
     }
 }
 
 module.exports = {
-    MedicineReposiory : new MedicineReposiory()
+    MedicineRepository : new MedicineRepository()
 }
