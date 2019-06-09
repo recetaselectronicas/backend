@@ -315,6 +315,7 @@ const generateData = async () => {
         prescription3 = await PrescriptionRepository.create(prescription3)
         logger.info('All mock data generated ok')
     } catch (error) {
+        logger.error('An error ocurred during mock data generation')
         logger.error(error)
     }
 }
