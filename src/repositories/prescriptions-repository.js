@@ -6,6 +6,9 @@ const {MedicalInsuranceRepository} = require('../repositories/medicalInsuranceRe
 const {MedicineRepository} = require('../repositories/medicineRepository')
 const {DoctorRepository} = require('../repositories/doctorRepository')
 const {PharmacistRepository} = require('../repositories/pharmacistRepository')
+const {generateNewSequencer} = require('../utils/utils')
+
+const sequencer = generateNewSequencer()
 
 class PrescriptionRepository {
     constructor(){
@@ -25,22 +28,37 @@ class PrescriptionRepository {
             if (prescription.id){
                 return reject(newEntityAlreadyCreated('Prescription allready created'))
             }
+            const errors = []
             try {
                 prescription.setAffiliate(prescription.affiliate.id && await AffiliateRepository.getById(prescription.affiliate.id) || prescription.affiliate)
+            } catch (error){errors.push(error)}
+            try {
                 prescription.setInstitution(prescription.institution.id && await InstitutionRepository.getById(prescription.institution.id || prescription.institution))
+            } catch (error){errors.push(error)}
+            try {
                 prescription.setMedicalInsurance(prescription.medicalInsurance.id && await MedicalInsuranceRepository.getById(prescription.medicalInsurance.id || prescription.medicalInsurance))
+            } catch (error){errors.push(error)}
+            try {
                 prescription.setDoctor(prescription.doctor.id && await DoctorRepository.getById(prescription.doctor.id || prescription.doctor))
-                for(const item of prescription.items){
+            } catch (error){errors.push(error)}
+            for(const item of prescription.items){
+                try {
                     item.prescribed.medicine = item.prescribed.medicine.id && await MedicineRepository.getById(item.prescribed.medicine.id) || item.prescribed.medicine
+                } catch (error){errors.push(error)}
+                try {
                     item.received.medicine = item.received.medicine.id && await MedicineRepository.getById(item.received.medicine.id) || item.received.medicine
+                } catch (error){errors.push(error)}
+                try {
                     item.received.pharmacist = item.received.pharmacist.id && await PharmacistRepository.getById(item.received.pharmacist.id) || item.received.pharmacist
+                } catch (error){errors.push(error)}
+                try {
                     item.audited.medicine = item.audited.medicine.id && await MedicineRepository.getById(item.audited.medicine.id) || item.audited.medicine
-                }
-            } catch (error) {
-                console.log(prescription)
-                return reject(error)
+                } catch (error){errors.push(error)}
             }
-            prescription.id = Math.floor(Math.random() * 10000)
+            if (errors.length){
+                return reject(errors)
+            }
+            prescription.id = sequencer.nextValue()
             this.prescriptions.push(prescription)
             return resolve(prescription)
         })

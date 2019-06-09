@@ -1,5 +1,8 @@
 const {Affiliate} = require('../domain/affiliate')
 const {newNotFoundError, newEntityAlreadyCreated} = require('../utils/errors')
+const {generateNewSequencer} = require('../utils/utils')
+
+const sequencer = generateNewSequencer()
 
 class AffiliateRepository {
     constructor() {
@@ -12,7 +15,7 @@ class AffiliateRepository {
             if (affiliate.id) {
               return reject(newEntityAlreadyCreated('Affiliate allready created'))
             }
-            affiliate.id = Math.floor(Math.random() * 10000)
+            affiliate.id = sequencer.nextValue()
             this.affiliates.push(affiliate)
             return resolve(affiliate)
         })

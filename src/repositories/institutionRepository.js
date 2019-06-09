@@ -1,5 +1,8 @@
 const { Institution } = require('../domain/institution')
 const { newNotFoundError, newEntityAlreadyCreated } = require('../utils/errors')
+const {generateNewSequencer} = require('../utils/utils')
+
+const sequencer = generateNewSequencer()
 
 class InstitutionRepository {
     constructor() {
@@ -12,7 +15,7 @@ class InstitutionRepository {
             if (institution.id) {
                 return reject(newEntityAlreadyCreated('Institution allready created'))
             }
-            institution.id = Math.floor(Math.random() * 10000)
+            institution.id = sequencer.nextValue()
             this.institutions.push(institution)
             return resolve(institution)
         })

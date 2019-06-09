@@ -1,5 +1,8 @@
 const { MedicalInsurance } = require('../domain/medicalInsurance')
 const { newNotFoundError, newEntityAlreadyCreated } = require('../utils/errors')
+const {generateNewSequencer} = require('../utils/utils')
+
+const sequencer = generateNewSequencer()
 
 class MedicalInsuranceRepository {
     constructor() {
@@ -12,7 +15,7 @@ class MedicalInsuranceRepository {
             if (medicalInsurance.id) {
                 return reject(newEntityAlreadyCreated('Medical Insurance allready created'))
             }
-            medicalInsurance.id = Math.floor(Math.random() * 10000)
+            medicalInsurance.id = sequencer.nextValue()
             this.medicalInsurances.push(medicalInsurance)
             return resolve(medicalInsurance)
         })

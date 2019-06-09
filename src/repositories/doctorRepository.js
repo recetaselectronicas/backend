@@ -1,5 +1,8 @@
 const {Doctor} = require('../domain/doctor')
 const {newNotFoundError, newEntityAlreadyCreated} = require('../utils/errors')
+const {generateNewSequencer} = require('../utils/utils')
+
+const sequencer = generateNewSequencer()
 
 class DoctorRepository {
     constructor() {
@@ -12,7 +15,7 @@ class DoctorRepository {
             if (doctor.id) {
               return reject(newEntityAlreadyCreated('Doctor allready created'))
             }
-            doctor.id = Math.floor(Math.random() * 10000)
+            doctor.id = sequencer.nextValue()
             this.doctors.push(doctor)
             return resolve(doctor)
         })

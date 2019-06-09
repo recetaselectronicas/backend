@@ -76,13 +76,13 @@ class Prescription {
             prolongedTreatment: this.prolongedTreatment,
             diagnosis: this.diagnosis,
             ttl: this.ttl,
-            institution: this.institution && JSON.parse(this.institution.toJson()),
-            affiliate: this.affiliate && JSON.parse(this.affiliate.toJson()),
-            doctor: this.doctor && JSON.parse(this.doctor.toJson()),
-            medicalInsurance: this.medicalInsurance && JSON.parse(this.medicalInsurance.toJson()),
+            institution: this.institution && this.institution.toPlainObject(),
+            affiliate: this.affiliate && this.affiliate.toPlainObject(),
+            doctor: this.doctor && this.doctor.toPlainObject(),
+            medicalInsurance: this.medicalInsurance && this.medicalInsurance.toPlainObject(),
             status: this.status,
             norm: this.norm,
-            items: this.items.length !== 0 ? this.items.map(item => JSON.parse(item.toJson())) : this.items
+            items: this.items.length ? this.items.map(item => item.toPlainObject()) : this.items
         })
     }
 
