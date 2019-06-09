@@ -36,6 +36,10 @@ class Plan {
         })
     }
 
+    toPlainObject(){
+        return JSON.parse(this.toJson())
+    }
+
     static fromJson(json = '{}') {
         let object = typeof json === 'object' ? json : JSON.parse(json)
         const plan = new Plan()

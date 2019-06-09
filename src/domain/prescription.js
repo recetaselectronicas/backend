@@ -71,8 +71,8 @@ class Prescription {
         return JSON.stringify({
             id: this.id,
             issuedDate: this.getIssuedDate(),
-            soldDate: this.getAuditedDate(),
-            auditedDate: this.getSoldDate(),
+            soldDate: this.getSoldDate(),
+            auditedDate: this.getAuditedDate(),
             prolongedTreatment: this.prolongedTreatment,
             diagnosis: this.diagnosis,
             ttl: this.ttl,

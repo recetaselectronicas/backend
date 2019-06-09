@@ -51,6 +51,10 @@ class Medicine {
         })
     }
 
+    toPlainObject(){
+        return JSON.parse(this.toJson())
+    }
+
     static fromJson(json = '{}') {
         let object = typeof json === 'object' ? json : JSON.parse(json)
         const medicine = new Medicine()
@@ -70,5 +74,11 @@ class Medicine {
         return medicine
     }
 
+    static fromObject(object){
+        if (!(object instanceof Medicine)){
+            return Medicine.fromJson(object)
+        }
+        return object 
+    }
 }
 module.exports = { Medicine }
