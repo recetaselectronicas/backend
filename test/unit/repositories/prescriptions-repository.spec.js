@@ -111,7 +111,7 @@ describe('when you create some prescriptions by PrescriptionRepository', () => {
 
         describe('and it`s an invalid id', () => {
             it('it rejects the search', () => {
-                return expect(PrescriptionRepository.getById(prescription1.id + 1)).rejects.not.toBeNull()
+                return expect(PrescriptionRepository.getById(prescription1.id + 9999)).rejects.not.toBeNull()
             })
         })
     })
@@ -135,7 +135,7 @@ describe('when you create some prescriptions by PrescriptionRepository', () => {
         describe('and has an invalid id', () => {
             it('it rejects the update', () => {
                 const prescription = prescription1.clone()
-                prescription.id++
+                prescription.id = prescription.id + 9999
                 return expect(PrescriptionRepository.update(prescription)).rejects.not.toBeNull()
             })
         })
