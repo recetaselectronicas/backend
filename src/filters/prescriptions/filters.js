@@ -1,8 +1,8 @@
-const { formats } = require('../../utils/utils')
 const array = require('lodash/array')
+const moment = require('moment')
+const { formats } = require('../../utils/utils')
 
-
-const getMatchingValues = function (key,values) {
+const getMatchingValues = function (key, values) {
   return array.intersection(this.values.map(({ id }) => id), values)
 }
 module.exports = {
@@ -27,31 +27,29 @@ module.exports = {
     },
     affiliate: {
       key: 'affiliate',
-      getMatchingValues: (key,id) => id
+      getMatchingValues: (key, id) => id,
     },
     doctor: {
       key: 'doctor',
-      getMatchingValues: (key,id) => id
-
+      getMatchingValues: (key, id) => id,
     },
     pharmacist: {
       key: 'pharmacist',
-      getMatchingValues: (key,id) => id
-
+      getMatchingValues: (key, id) => id,
     },
     medicine: {
       key: 'medicine',
-      getMatchingValues: (key,id) => id
-
+      getMatchingValues: (key, id) => id,
     },
   },
   ranges: {
     issueDateRange: {
       keyFrom: 'fromIssueDate',
       keyTo: 'toIssueDate',
-      getMatchingValues: function (key,value){
-        console.log("issueDateRange")
-        console.log(this, value)  },
+      getMatchingValues(key, value) {
+        const formatedDate = moment(value, this.format)
+        return formatedDate.isValid() && value
+      },
       format: formats.dateTimeFormat,
     },
     soldDateRange: {
@@ -67,6 +65,13 @@ module.exports = {
   },
   orders: {
     key: 'orderBy',
+    getMatchingValues(key, value) {
+      console.log('hola', key, value)
+      console.log('this', this)
+      const keys = value.split('-')
+      const orderKey = keys[0]
+      const sortKey = keys[1]
+    },
     values: {
       id: {
         key: 'id',

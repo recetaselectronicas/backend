@@ -13,36 +13,47 @@ const getPharmacistAvailableFilters = () => lang.cloneDeep(pharmacistAvailableFi
 const getMedicalInsuranceAvailableFilters = () => lang.cloneDeep(medicalInsuranceAvailableFilters)
 
 const transformToAvailableQueryParams = (availableFilters) => {
-  const rangedFilters = ['issueDateRange'];
+  const rangedFilters = ['issueDateRange']
   transformedFilters = Object.keys(availableFilters).reduce((transformed, key) => {
     transformed[commonRangedFilters[key].keyFrom] = { format: commonRangedFilters[key].format }
     transformed[commonRangedFilters[key].keyTo] = { format: commonRangedFilters[key].format }
     return transformed
   }, transformedFilters)
 }
-  // dado los parametros (req.query), perfiles, filtros disponibles -> te devuelve el objeto query
- // params -> los parametros que vienen desde la url
-  // caller -> quien nos llama
-  // filtros disponibles para esta entidad -> affiliateAvailableFilters.js ejemplo
+// dado los parametros (req.query), perfiles, filtros disponibles -> te devuelve el objeto query
+// params -> los parametros que vienen desde la url
+// caller -> quien nos llama
+// filtros disponibles para esta entidad -> affiliateAvailableFilters.js ejemplo
 const queryBuilder = (params, caller, availableFilters) => {
   let queryObject = { filters: {}, orders: {} }
-  const rangedKeys = ['fromIssueDate', "toIssueDate"];
+  const rangedKeys = ['fromIssueDate', 'toIssueDate']
+  const relationRangedKey = {
+    fromIssueDate: 'issueDateRange',
+    toIssueDate: 'issueDateRange',
+  }
 
   if (params && typeof params === 'object' && !(params instanceof Array)) {
-    const availableQueryparams = availableFilters
     queryObject = Object.keys(params).reduce((queryObject, key) => {
       const newQueryObject = { ...queryObject }
-      const filter = availableQueryparams.filters[key]
+      const filter = availableFilters.filters[key]
+      const isRangeFilter = rangedKeys.includes(key)
+      const isOrderFilter = key === availableFilters.orders.key
       if (filter) {
         newQueryObject.filters[key] = filter.getMatchingValues(key, params[key])
-      } else if (rangedKeys.includes(key)) {
-        console.log("y ahora que ", key)
+      } else if (isRangeFilter) {
+        newQueryObject.filters[key] = availableFilters.filters[relationRangedKey[key]].getMatchingValues(
+          key,
+          params[key],
+        )
+      } else if (isOrderFilter) {
+        console.log(availableFilters.orders)
+        availableFilters.orders.getMatchingValues(key, params[key])
       }
-    
-      /*if (availableQueryparams.filters[key]) {
-        const filterValues = availableQueryparams.filters[key].values 
+
+      /* if (availableQueryparams.filters[key]) {
+        const filterValues = availableQueryparams.filters[key].values
         if (filterValues) {
-          
+
           const correctValues = array.intersection(getFlattenIds(filterValues), params[key])
           if (correctValues.length) {
             newQueryObject.filters[key] = correctValues
@@ -63,7 +74,7 @@ const queryBuilder = (params, caller, availableFilters) => {
             newQueryObject.orders[orderKey] = sortKey
           }
         }
-      }*/
+      } */
       return newQueryObject
     }, queryObject)
   }
