@@ -4,8 +4,8 @@ const availableStates = require('./availableStates')
 const prescriptionFilters = require('./filters')
 
 const medicalInsuranceAvailableFilters = lang.cloneDeep(filtersModel)
-medicalInsuranceAvailableFilters.filters.id = lang.cloneDeep(prescriptionFilters.singles.id)
-medicalInsuranceAvailableFilters.filters.status = lang.cloneDeep(prescriptionFilters.singles.status)
+medicalInsuranceAvailableFilters.filters.id = lang.cloneDeep(prescriptionFilters.id)
+medicalInsuranceAvailableFilters.filters.status = lang.cloneDeep(prescriptionFilters.status)
 medicalInsuranceAvailableFilters.filters.status.values = [
   availableStates.ISSUED,
   availableStates.CANCELLED,
@@ -18,14 +18,14 @@ medicalInsuranceAvailableFilters.filters.status.values = [
   availableStates.REJECTED,
   availableStates.PARTIALLY_REJECTED,
 ]
-medicalInsuranceAvailableFilters.filters.issueDateRange = lang.cloneDeep(prescriptionFilters.ranges.issueDateRange)
-medicalInsuranceAvailableFilters.filters.soldDateRange = lang.cloneDeep(prescriptionFilters.ranges.soldDateRange)
-medicalInsuranceAvailableFilters.filters.auditedDateRange = lang.cloneDeep(prescriptionFilters.ranges.auditedDateRange)
-medicalInsuranceAvailableFilters.filters.institution = lang.cloneDeep(prescriptionFilters.singles.institution)
-medicalInsuranceAvailableFilters.filters.doctor = lang.cloneDeep(prescriptionFilters.singles.doctor)
-medicalInsuranceAvailableFilters.filters.affiliate = lang.cloneDeep(prescriptionFilters.singles.affiliate)
-medicalInsuranceAvailableFilters.filters.pharmacist = lang.cloneDeep(prescriptionFilters.singles.pharmacist)
-medicalInsuranceAvailableFilters.filters.medicine = lang.cloneDeep(prescriptionFilters.singles.medicine)
+medicalInsuranceAvailableFilters.filters.issueDateRange = lang.cloneDeep(prescriptionFilters.issueDateRange)
+medicalInsuranceAvailableFilters.filters.soldDateRange = lang.cloneDeep(prescriptionFilters.soldDateRange)
+medicalInsuranceAvailableFilters.filters.auditedDateRange = lang.cloneDeep(prescriptionFilters.auditedDateRange)
+medicalInsuranceAvailableFilters.filters.institution = lang.cloneDeep(prescriptionFilters.institution)
+medicalInsuranceAvailableFilters.filters.doctor = lang.cloneDeep(prescriptionFilters.doctor)
+medicalInsuranceAvailableFilters.filters.affiliate = lang.cloneDeep(prescriptionFilters.affiliate)
+medicalInsuranceAvailableFilters.filters.pharmacist = lang.cloneDeep(prescriptionFilters.pharmacist)
+medicalInsuranceAvailableFilters.filters.medicine = lang.cloneDeep(prescriptionFilters.medicine)
 medicalInsuranceAvailableFilters.orders.values.id = lang.cloneDeep(prescriptionFilters.orders.values.id)
 medicalInsuranceAvailableFilters.orders.values.issuedDate = lang.cloneDeep(prescriptionFilters.orders.values.issuedDate)
 medicalInsuranceAvailableFilters.orders.values.soldDate = lang.cloneDeep(prescriptionFilters.orders.values.soldDate)

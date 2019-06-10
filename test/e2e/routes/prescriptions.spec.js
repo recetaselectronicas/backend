@@ -17,28 +17,20 @@ describe.only('when do a get in /prescriptions', () => {
       key: 'status',
       values: [
         {
+          id: 'CONFIRMED',
+          value: 'CONFIRMADA',
+        },
+        {
+          id: 'EXPIRED',
+          value: 'VENCIDA',
+        },
+        {
           id: 'RECEIVED',
           value: 'RECEPCIONADA',
         },
         {
           id: 'PARTIALLY_RECEIVED',
           value: 'PARCIALMENTE_RECEPCIONADA',
-        },
-        {
-          id: 'INCOMPLETE',
-          value: 'INCOMPLETA',
-        },
-        {
-          id: 'AUDITED',
-          value: 'AUDITADA',
-        },
-        {
-          id: 'REJECTED',
-          value: 'RECHAZADA',
-        },
-        {
-          id: 'PARTIALLY_REJECTED',
-          value: 'PARCIALMENTE_RECHAZADA',
         },
       ],
     },

@@ -4,8 +4,8 @@ const availableStates = require('./availableStates')
 const prescriptionFilters = require('./filters')
 
 const pharmacistAvailableFilters = lang.cloneDeep(filtersModel)
-pharmacistAvailableFilters.filters.id = lang.cloneDeep(prescriptionFilters.singles.id)
-pharmacistAvailableFilters.filters.status = lang.cloneDeep(prescriptionFilters.singles.status)
+pharmacistAvailableFilters.filters.id = lang.cloneDeep(prescriptionFilters.id)
+pharmacistAvailableFilters.filters.status = lang.cloneDeep(prescriptionFilters.status)
 pharmacistAvailableFilters.filters.status.values = [
   availableStates.RECEIVED,
   availableStates.PARTIALLY_RECEIVED,
@@ -14,11 +14,11 @@ pharmacistAvailableFilters.filters.status.values = [
   availableStates.REJECTED,
   availableStates.PARTIALLY_REJECTED,
 ]
-pharmacistAvailableFilters.filters.issueDateRange = lang.cloneDeep(prescriptionFilters.ranges.issueDateRange)
-pharmacistAvailableFilters.filters.soldDateRange = lang.cloneDeep(prescriptionFilters.ranges.soldDateRange)
-pharmacistAvailableFilters.filters.institution = lang.cloneDeep(prescriptionFilters.singles.institution)
-pharmacistAvailableFilters.filters.medicalInsurance = lang.cloneDeep(prescriptionFilters.singles.medicalInsurance)
-pharmacistAvailableFilters.filters.medicine = lang.cloneDeep(prescriptionFilters.singles.medicine)
+pharmacistAvailableFilters.filters.issueDateRange = lang.cloneDeep(prescriptionFilters.issueDateRange)
+pharmacistAvailableFilters.filters.soldDateRange = lang.cloneDeep(prescriptionFilters.soldDateRange)
+pharmacistAvailableFilters.filters.institution = lang.cloneDeep(prescriptionFilters.institution)
+pharmacistAvailableFilters.filters.medicalInsurance = lang.cloneDeep(prescriptionFilters.medicalInsurance)
+pharmacistAvailableFilters.filters.medicine = lang.cloneDeep(prescriptionFilters.medicine)
 pharmacistAvailableFilters.orders.values.id = lang.cloneDeep(prescriptionFilters.orders.values.id)
 pharmacistAvailableFilters.orders.values.issuedDate = lang.cloneDeep(prescriptionFilters.orders.values.issuedDate)
 pharmacistAvailableFilters.orders.values.soldDate = lang.cloneDeep(prescriptionFilters.orders.values.soldDate)
