@@ -1,4 +1,4 @@
-const filters = require('../filters/prescriptionFilters')
+const filters = require('../filters/prescriptions/prescriptionFilters')
 const lang = require('lodash/lang')
 const {newForbiddenResourceException} = require('../utils/errors')
 
