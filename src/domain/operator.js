@@ -1,22 +1,34 @@
 
+// opciones de operadores
+// igual
+// distinto
+// menor a
+// mayor a
+// existe
+// no existe
+// []
+
+
 const operator = {
     EQUAL: {
         name: 'EQUAL',
-        execute: (entity, value) => {
-            return entity === value
-        }
+        execute: (entity) => {
+            return entity === operator.EQUAL.value
+        },
+        value: null
     },
     EXIST: {
         name: 'EXIST',
-        execute: (entity,value) => {
+        execute: (entity) => {
             return entity !== null
         }
     },
     LESS: {
         name: 'LESS',
-        execute: (entity,value) => {
-            return entity.length < value
-        }
+        execute: (entity) => {
+            return entity.length < operator.LESS.value
+        },
+        value: null
     }
 
 }

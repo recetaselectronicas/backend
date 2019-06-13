@@ -3,14 +3,14 @@ class Rule {
         this.id = null
         this.description = null
         this.error = 'hola hola puchi puchi'
-        this.shouldSatisfy = null
+        this.condition = null
     }
 
-    setThatSatisfy(entity) {
-        this.shouldSatisfy = entity
+    setCondition(condition) {
+        this.condition = condition
     }
-    satisfy(prescription) {
-        return this.shouldSatisfy.cumple(prescription)
+    satisfies(prescription) {
+        return this.condition.cumple(prescription)
     }
 
 }

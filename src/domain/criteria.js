@@ -2,21 +2,23 @@ class Criteria {
     constructor() {
         this.id = null
         this.type = null
-        this.entity = null
-        this.attribute = null
+        this.registry = null
         this.operator = null
-        this.value = null
     }
 
     cumple(presciption) {
-       let attributee 
-        if (this.entity) {
-            attributee = presciption[this.entity]
-        }
-        if(this.attribute){
-            attributee = attributee[this.attribute]
-        }
-        return this.operator.execute(attributee, this.value)
+        let attribute = presciption
+        // if (this.entity) {
+        //     attributee = presciption[this.entity]
+        // }
+        // if(this.attribute){
+        //     attributee = attributee[this.attribute]
+        // }
+        this.registry.forEach(element => {
+            attribute = attribute[element]
+            console.log(attribute)
+        });
+        return this.operator.execute(attribute)
     }
 }
 
