@@ -16,7 +16,10 @@
     "ecmaVersion": 2018
   },
   "rules": {
-    "max-len": ["warn", 120],
-    "semi": ["error", "never"]
+    "max-len": ["warn", 180],
+    "semi": ["error", "never"],
+    "class-methods-use-this": "off",
+    "comma-dangle": "off",
+    "eol-last": "off"
   }
 }
