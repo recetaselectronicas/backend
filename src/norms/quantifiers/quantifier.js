@@ -24,12 +24,6 @@ class Quantifier extends Predicate {
   doInitialize(model) {
     this.predicates = model.predicates
   }
-
-  // Se obtiene el error como un conjunto de errores
-  // Para todos los cuantificadores se obtienen igual
-  getError() {
-    return this.predicates.map(predicate => predicate.getError())
-  }
 }
 
 // Clase base para los cuantificadores de existencia EXISTS_AT_LEAST y EXIST_EXACTLY

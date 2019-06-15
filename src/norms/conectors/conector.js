@@ -25,11 +25,6 @@ class IsConector extends Conector {
   satisfies() {
     return this.predicate.satisfies()
   }
-
-  // El error es el del predicado
-  getError() {
-    return this.predicate.getError()
-  }
 }
 
 // Conector NOT
@@ -50,11 +45,6 @@ class NotConector extends Conector {
   // Satisface cuando no satisface el predicadd
   satisfies() {
     return !this.predicate.satisfies()
-  }
-
-  // El error es el del predicado
-  getError() {
-    return this.predicate.getError()
   }
 }
 
@@ -82,11 +72,6 @@ class AndConector extends Conector {
   // Satisface cuando satisfacen todos los predicados
   satisfies() {
     return this.predicates.every(predicate => predicate.satisfies())
-  }
-
-  // El error son todos los errores de sus predicados
-  getError() {
-    return this.predicates.map(predicate => predicate.getError())
   }
 }
 

@@ -36,12 +36,6 @@ class Predicate {
   satisfies() {
     throw new Error('Template method. Please override!')
   }
-
-  // Se obtiene el error puntual de que entidad, atriburo, valor actual
-  // y valor esperado se necesita
-  getError() {
-    throw new Error('Template method. Please override!')
-  }
 }
 
 module.exports = { Predicate }

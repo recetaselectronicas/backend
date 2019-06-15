@@ -128,16 +128,6 @@ describe('PrescriptionProlongedTreatmentCriteria predicate', () => {
           it('doesnt satisfies the predicate', () => {
             expect(predicate.satisfies()).not.toBeTruthy()
           })
-
-          it('it returns the corresponging error', () => {
-            const error = predicate.getError()
-            expect(error).not.toBeNull()
-            expect(error.cause.type).toBe(_causes.FIELD_CAUSE)
-            expect(error.cause.entity).toBe('prescription')
-            expect(error.cause.field).toBe('prolongedTreatment')
-            expect(error.cause.actualValue).toBe(prescription.prolongedTreatment)
-            expect(error.cause.expectedValue).toBe(expectedValue)
-          })
         })
       })
     })
