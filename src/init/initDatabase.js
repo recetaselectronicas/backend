@@ -1,7 +1,7 @@
-const {generateData} = require('../bootstrap/bootstrap')
+const { generateData } = require('../bootstrap/bootstrap')
 
 const init = async () => {
-    await generateData()
+  await generateData()
 }
 
-module.exports = {init}
+module.exports = { init }

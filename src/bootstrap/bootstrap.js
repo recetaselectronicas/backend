@@ -1,42 +1,42 @@
-const {Affiliate} = require('../domain/affiliate')
-const {Doctor} = require('../domain/doctor')
-const {Institution} = require('../domain/institution')
-const {Item} = require('../domain/item')
-const {MedicalInsurance} = require('../domain/medicalInsurance')
-const {Medicine} = require('../domain/medicine')
-const {Pharmacist} = require('../domain/pharmacist')
-const {Plan} = require('../domain/plan')
-const {Prescription} = require('../domain/prescription')
-const {AffiliateRepository} = require('../repositories/affiliateRepository')
-const {InstitutionRepository} = require('../repositories/institutionRepository')
-const {MedicalInsuranceRepository} = require('../repositories/medicalInsuranceRepository')
-const {MedicineRepository} = require('../repositories/medicineRepository')
-const {PrescriptionRepository} = require('../repositories/prescriptions-repository')
-const {DoctorRepository} = require('../repositories/doctorRepository')
-const {PharmacistRepository} = require('../repositories/pharmacistRepository')
-const {logger} = require('../utils/utils')
-const {states} = require('../state-machine/state')
+const { Affiliate } = require('../domain/affiliate')
+const { Doctor } = require('../domain/doctor')
+const { Institution } = require('../domain/institution')
+const { Item } = require('../domain/item')
+const { MedicalInsurance } = require('../domain/medicalInsurance')
+const { Medicine } = require('../domain/medicine')
+const { Pharmacist } = require('../domain/pharmacist')
+const { Plan } = require('../domain/plan')
+const { Prescription } = require('../domain/prescription')
+const { AffiliateRepository } = require('../repositories/affiliateRepository')
+const { InstitutionRepository } = require('../repositories/institutionRepository')
+const { MedicalInsuranceRepository } = require('../repositories/medicalInsuranceRepository')
+const { MedicineRepository } = require('../repositories/medicineRepository')
+const { PrescriptionRepository } = require('../repositories/prescriptions-repository')
+const { DoctorRepository } = require('../repositories/doctorRepository')
+const { PharmacistRepository } = require('../repositories/pharmacistRepository')
+const { logger } = require('../utils/utils')
+const { states } = require('../state-machine/state')
 
 let medicalInsurance1 = new MedicalInsurance()
 medicalInsurance1.address = 'Calle falsa 123'
 medicalInsurance1.contactNumber = '1520202020'
 medicalInsurance1.corporateName = 'OSDE S.R.L.'
-medicalInsurance1.description = "OSDE"
-medicalInsurance1.email = "osde@osde.com"
+medicalInsurance1.description = 'OSDE'
+medicalInsurance1.email = 'osde@osde.com'
 
 let medicalInsurance2 = new MedicalInsurance()
 medicalInsurance2.address = 'Joaquin V Gonzales 1'
 medicalInsurance2.contactNumber = '1520202020'
 medicalInsurance2.corporateName = 'HospitalItaliano S.A.'
-medicalInsurance2.description = "Hospital Italiano"
-medicalInsurance2.email = "hospitalItaliano@hi.com"
+medicalInsurance2.description = 'Hospital Italiano'
+medicalInsurance2.email = 'hospitalItaliano@hi.com'
 
 let medicalInsurance3 = new MedicalInsurance()
 medicalInsurance3.address = 'Beiro 1232'
 medicalInsurance3.contactNumber = '1520202020'
 medicalInsurance3.corporateName = 'OSTEL S.A.'
-medicalInsurance3.description = "OSTEL"
-medicalInsurance3.email = "ostel@ostel.com"
+medicalInsurance3.description = 'OSTEL'
+medicalInsurance3.email = 'ostel@ostel.com'
 
 let medicine1 = new Medicine()
 medicine1.description = 'T4 Montpellier 150 Levotiroxina'
@@ -159,7 +159,7 @@ doctor1.nationality = 'ARGENTINO'
 doctor1.email = 'pepe@medic.com'
 doctor1.address = 'Lo loca 412'
 doctor1.contactNumber = '1520202020'
-doctor1.specialty = {id: 1, description: 'Oncologo'}
+doctor1.specialty = { id: 1, description: 'Oncologo' }
 doctor1.setBirthDate('01/02/1957')
 doctor1.setEntryDate('10/10/2013')
 doctor1.setLeavingDate()
@@ -174,7 +174,7 @@ doctor2.nationality = 'ARGENTINO'
 doctor2.email = 'enrrique@medic.com'
 doctor2.address = 'Otra calle fumeta 8323'
 doctor2.contactNumber = '1520202020'
-doctor2.specialty = {id: 2, description: 'Odontologo'}
+doctor2.specialty = { id: 2, description: 'Odontologo' }
 doctor2.setBirthDate('02/10/1933')
 doctor2.setEntryDate('12/08/2013')
 doctor2.setLeavingDate()
@@ -189,7 +189,7 @@ doctor3.nationality = 'VENEZOLANO'
 doctor3.email = 'rosco@medic.com'
 doctor3.address = 'Menro 932'
 doctor3.contactNumber = '1520202020'
-doctor3.specialty = {id: 3, description: 'Clinico'}
+doctor3.specialty = { id: 3, description: 'Clinico' }
 doctor3.setBirthDate('01/02/1952')
 doctor3.setEntryDate('10/10/2014')
 doctor3.setLeavingDate()
@@ -260,66 +260,65 @@ prescription3.prolongedTreatment = false
 prescription3.setIssuedDate('12/04/2019 15:50')
 
 const generateData = async () => {
-    try {
-
-        medicalInsurance1 = await MedicalInsuranceRepository.create(medicalInsurance1)
-        medicalInsurance2 = await MedicalInsuranceRepository.create(medicalInsurance2)
-        medicalInsurance3 = await MedicalInsuranceRepository.create(medicalInsurance3)
-        medicine1 = await MedicineRepository.create(medicine1)
-        medicine2 = await MedicineRepository.create(medicine2)
-        medicine3 = await MedicineRepository.create(medicine3)
-        institution1 = await InstitutionRepository.create(institution1)
-        institution2 = await InstitutionRepository.create(institution2)
-        institution3 = await InstitutionRepository.create(institution3)
-        institution4 = await InstitutionRepository.create(institution4)
-        institution5 = await InstitutionRepository.create(institution5)
-        affiliate1.plan.idMedicalInsurance = medicalInsurance1.id
-        affiliate2.plan.idMedicalInsurance = medicalInsurance2.id
-        affiliate1 = await AffiliateRepository.create(affiliate1)
-        affiliate2 = await AffiliateRepository.create(affiliate2)
-        doctor1 = await DoctorRepository.create(doctor1)
-        doctor2 = await DoctorRepository.create(doctor2)
-        doctor3 = await DoctorRepository.create(doctor3)
-        pharmacist1 = await PharmacistRepository.create(pharmacist1)
-        pharmacist2 = await PharmacistRepository.create(pharmacist2)
-        pharmacist3 = await PharmacistRepository.create(pharmacist3)
-        prescription1.setMedicalInsurance(medicalInsurance1)
-        prescription1.setAffiliate(affiliate1)
-        prescription1.setDoctor(doctor1)
-        prescription1.setInstitution(institution1)
-        const item1 = new Item()
-        item1.prescribe(2, medicine1)
-        prescription1.addItem(item1)
-        prescription2.setMedicalInsurance(medicalInsurance2)
-        prescription2.setAffiliate(affiliate2)
-        prescription2.setDoctor(doctor2)
-        prescription2.setInstitution(institution2)
-        const item2 = new Item()
-        item2.prescribe(2, medicine2)
-        item2.receive(2, '21/05/2019 13:02', medicine2, pharmacist1)
-        prescription2.addItem(item2)
-        prescription2.setSoldDate('21/05/2019 13:02')
-        prescription3.setMedicalInsurance(medicalInsurance1)
-        prescription3.setAffiliate(affiliate1)
-        prescription3.setDoctor(doctor3)
-        prescription3.setInstitution(institution3)
-        const item3 = new Item()
-        item3.prescribe(1, medicine3)
-        item3.receive(1, '13/04/2019 16:00', medicine3, pharmacist2)
-        item3.audit(1, medicine3)
-        prescription3.addItem(item3)
-        prescription3.setSoldDate('13/04/2019 16:00')
-        prescription3.setAuditedDate('15/04/2019 14:24')
-        prescription1 = await PrescriptionRepository.create(prescription1)
-        prescription2 = await PrescriptionRepository.create(prescription2)
-        prescription3 = await PrescriptionRepository.create(prescription3)
-        logger.info('All mock data generated ok')
-    } catch (error) {
-        logger.error('An error ocurred during mock data generation')
-        logger.error(error)
-    }
+  try {
+    medicalInsurance1 = await MedicalInsuranceRepository.create(medicalInsurance1)
+    medicalInsurance2 = await MedicalInsuranceRepository.create(medicalInsurance2)
+    medicalInsurance3 = await MedicalInsuranceRepository.create(medicalInsurance3)
+    medicine1 = await MedicineRepository.create(medicine1)
+    medicine2 = await MedicineRepository.create(medicine2)
+    medicine3 = await MedicineRepository.create(medicine3)
+    institution1 = await InstitutionRepository.create(institution1)
+    institution2 = await InstitutionRepository.create(institution2)
+    institution3 = await InstitutionRepository.create(institution3)
+    institution4 = await InstitutionRepository.create(institution4)
+    institution5 = await InstitutionRepository.create(institution5)
+    affiliate1.plan.idMedicalInsurance = medicalInsurance1.id
+    affiliate2.plan.idMedicalInsurance = medicalInsurance2.id
+    affiliate1 = await AffiliateRepository.create(affiliate1)
+    affiliate2 = await AffiliateRepository.create(affiliate2)
+    doctor1 = await DoctorRepository.create(doctor1)
+    doctor2 = await DoctorRepository.create(doctor2)
+    doctor3 = await DoctorRepository.create(doctor3)
+    pharmacist1 = await PharmacistRepository.create(pharmacist1)
+    pharmacist2 = await PharmacistRepository.create(pharmacist2)
+    pharmacist3 = await PharmacistRepository.create(pharmacist3)
+    prescription1.setMedicalInsurance(medicalInsurance1)
+    prescription1.setAffiliate(affiliate1)
+    prescription1.setDoctor(doctor1)
+    prescription1.setInstitution(institution1)
+    const item1 = new Item()
+    item1.prescribe(2, medicine1)
+    prescription1.addItem(item1)
+    prescription2.setMedicalInsurance(medicalInsurance2)
+    prescription2.setAffiliate(affiliate2)
+    prescription2.setDoctor(doctor2)
+    prescription2.setInstitution(institution2)
+    const item2 = new Item()
+    item2.prescribe(2, medicine2)
+    item2.receive(2, '21/05/2019 13:02', medicine2, pharmacist1)
+    prescription2.addItem(item2)
+    prescription2.setSoldDate('21/05/2019 13:02')
+    prescription3.setMedicalInsurance(medicalInsurance1)
+    prescription3.setAffiliate(affiliate1)
+    prescription3.setDoctor(doctor3)
+    prescription3.setInstitution(institution3)
+    const item3 = new Item()
+    item3.prescribe(1, medicine3)
+    item3.receive(1, '13/04/2019 16:00', medicine3, pharmacist2)
+    item3.audit(1, medicine3)
+    prescription3.addItem(item3)
+    prescription3.setSoldDate('13/04/2019 16:00')
+    prescription3.setAuditedDate('15/04/2019 14:24')
+    prescription1 = await PrescriptionRepository.create(prescription1)
+    prescription2 = await PrescriptionRepository.create(prescription2)
+    prescription3 = await PrescriptionRepository.create(prescription3)
+    logger.info('All mock data generated ok')
+  } catch (error) {
+    logger.error('An error ocurred during mock data generation')
+    logger.error(error)
+  }
 }
 
 module.exports = {
-    generateData
+  generateData,
 }
