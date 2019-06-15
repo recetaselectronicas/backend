@@ -2,8 +2,6 @@
 const { PrescriptionProlongedTreatmentCriteria, PrescriptionItemsCount } = require('../../../src/norms/criterias/criteria')
 const { IsConector, NotConector, AndConector } = require('../../../src/norms/conectors/conector')
 const { EqualOperator } = require('../../../src/norms/operators/operator')
-const { Predicate } = require('../../../src/norms/predicates/predicate')
-const { RuleLoader } = require('../../../src/norms/ruleLoader')
 const { ExistsAtLeastQuantifier, ExistsQuantifier, ForAllQuantifier } = require('../../../src/norms/quantifiers/quantifier')
 const { Prescription } = require('../../../src/domain/prescription')
 const { _causes } = require('../../../src/utils/errors')
@@ -15,8 +13,6 @@ let prescription = null
 let operator = null
 let expectedValue = null
 let model = null
-
-RuleLoader.fromJson({ type: 'CRITERIA' })
 
 describe('PrescriptionProlongedTreatmentCriteria predicate', () => {
   beforeEach(() => {
