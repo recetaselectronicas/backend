@@ -16,42 +16,33 @@ const { DoctorRepository } = require('../repositories/doctorRepository')
 const { PharmacistRepository } = require('../repositories/pharmacistRepository')
 const { logger } = require('../utils/utils')
 const { states } = require('../state-machine/state')
-const knex = require('../init/knexConnection')
 
-let medicalInsurance1 = new MedicalInsurance()
-medicalInsurance1.address = 'Calle falsa 123'
-medicalInsurance1.contactNumber = '1520202020'
-medicalInsurance1.corporateName = 'OSDE S.R.L.'
-medicalInsurance1.description = 'OSDE'
-medicalInsurance1.email = 'osde@osde.com'
-medicalInsurance1.userName = 'osde_1234'
-medicalInsurance1.password = '231231'
-delete medicalInsurance1.id
-console.log(medicalInsurance1.toPlainObject())
-knex('medical_insurance')
-  .insert({ ...medicalInsurance1 })
-  .then((r) => {
-    console.log('salio todo oka', r)
-    knex
-      .select()
-      .table('medical_insurance')
-      .then(responde => console.log(responde))
-  })
-  .catch(e => console.log('todo mal u.u', e))
+let medicalInsurance1Id = new MedicalInsurance()
+medicalInsurance1Id.address = 'Calle falsa 123'
+medicalInsurance1Id.contactNumber = '1520202020'
+medicalInsurance1Id.corporateName = 'OSDE S.R.L.'
+medicalInsurance1Id.description = 'OSDE'
+medicalInsurance1Id.email = 'osde@osde.com'
+medicalInsurance1Id.userName = 'osde_1234'
+medicalInsurance1Id.password = '1234'
 
-let medicalInsurance2 = new MedicalInsurance()
-medicalInsurance2.address = 'Joaquin V Gonzales 1'
-medicalInsurance2.contactNumber = '1520202020'
-medicalInsurance2.corporateName = 'HospitalItaliano S.A.'
-medicalInsurance2.description = 'Hospital Italiano'
-medicalInsurance2.email = 'hospitalItaliano@hi.com'
+let medicalInsurance2Id = new MedicalInsurance()
+medicalInsurance2Id.address = 'Joaquin V Gonzales 1'
+medicalInsurance2Id.contactNumber = '1520202020'
+medicalInsurance2Id.corporateName = 'HospitalItaliano S.A.'
+medicalInsurance2Id.description = 'Hospital Italiano'
+medicalInsurance2Id.email = 'hospitalItaliano@hi.com'
+medicalInsurance2Id.userName = 'Swiss_2312_2'
+medicalInsurance2Id.password = '1234'
 
-let medicalInsurance3 = new MedicalInsurance()
-medicalInsurance3.address = 'Beiro 1232'
-medicalInsurance3.contactNumber = '1520202020'
-medicalInsurance3.corporateName = 'OSTEL S.A.'
-medicalInsurance3.description = 'OSTEL'
-medicalInsurance3.email = 'ostel@ostel.com'
+let medicalInsurance3Id = new MedicalInsurance()
+medicalInsurance3Id.address = 'Beiro 1232'
+medicalInsurance3Id.contactNumber = '1520202020'
+medicalInsurance3Id.corporateName = 'OSTEL S.A.'
+medicalInsurance3Id.description = 'OSTEL'
+medicalInsurance3Id.email = 'ostel@ostel.com'
+medicalInsurance3Id.userName = 'ostel_med'
+medicalInsurance3Id.password = '1234'
 
 let medicine1 = new Medicine()
 medicine1.description = 'T4 Montpellier 150 Levotiroxina'
@@ -276,9 +267,9 @@ prescription3.setIssuedDate('12/04/2019 15:50')
 
 const generateData = async () => {
   try {
-    medicalInsurance1 = await MedicalInsuranceRepository.create(medicalInsurance1)
-    medicalInsurance2 = await MedicalInsuranceRepository.create(medicalInsurance2)
-    medicalInsurance3 = await MedicalInsuranceRepository.create(medicalInsurance3)
+    medicalInsurance1Id = await MedicalInsuranceRepository.create(medicalInsurance1Id)
+    medicalInsurance2Id = await MedicalInsuranceRepository.create(medicalInsurance2Id)
+    medicalInsurance3Id = await MedicalInsuranceRepository.create(medicalInsurance3Id)
     medicine1 = await MedicineRepository.create(medicine1)
     medicine2 = await MedicineRepository.create(medicine2)
     medicine3 = await MedicineRepository.create(medicine3)
@@ -287,8 +278,8 @@ const generateData = async () => {
     institution3 = await InstitutionRepository.create(institution3)
     institution4 = await InstitutionRepository.create(institution4)
     institution5 = await InstitutionRepository.create(institution5)
-    affiliate1.plan.idMedicalInsurance = medicalInsurance1.id
-    affiliate2.plan.idMedicalInsurance = medicalInsurance2.id
+    affiliate1.plan.idMedicalInsurance = medicalInsurance1Id
+    affiliate2.plan.idMedicalInsurance = medicalInsurance2Id
     affiliate1 = await AffiliateRepository.create(affiliate1)
     affiliate2 = await AffiliateRepository.create(affiliate2)
     doctor1 = await DoctorRepository.create(doctor1)
@@ -297,14 +288,14 @@ const generateData = async () => {
     pharmacist1 = await PharmacistRepository.create(pharmacist1)
     pharmacist2 = await PharmacistRepository.create(pharmacist2)
     pharmacist3 = await PharmacistRepository.create(pharmacist3)
-    prescription1.setMedicalInsurance(medicalInsurance1)
+    prescription1.setMedicalInsurance(medicalInsurance1Id)
     prescription1.setAffiliate(affiliate1)
     prescription1.setDoctor(doctor1)
     prescription1.setInstitution(institution1)
     const item1 = new Item()
     item1.prescribe(2, medicine1)
     prescription1.addItem(item1)
-    prescription2.setMedicalInsurance(medicalInsurance2)
+    prescription2.setMedicalInsurance(medicalInsurance2Id)
     prescription2.setAffiliate(affiliate2)
     prescription2.setDoctor(doctor2)
     prescription2.setInstitution(institution2)
@@ -313,7 +304,7 @@ const generateData = async () => {
     item2.receive(2, '21/05/2019 13:02', medicine2, pharmacist1)
     prescription2.addItem(item2)
     prescription2.setSoldDate('21/05/2019 13:02')
-    prescription3.setMedicalInsurance(medicalInsurance1)
+    prescription3.setMedicalInsurance(medicalInsurance1Id)
     prescription3.setAffiliate(affiliate1)
     prescription3.setDoctor(doctor3)
     prescription3.setInstitution(institution3)
@@ -329,6 +320,7 @@ const generateData = async () => {
     prescription3 = await PrescriptionRepository.create(prescription3)
     logger.info('All mock data generated ok')
   } catch (error) {
+    console.log(error)
     logger.error('An error ocurred during mock data generation')
     logger.error(error)
   }

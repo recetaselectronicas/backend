@@ -1,51 +1,57 @@
+/* eslint-disable class-methods-use-this */
 const { MedicalInsurance } = require('../domain/medicalInsurance')
 const { newNotFoundError, newEntityAlreadyCreated } = require('../utils/errors')
-const {generateNewSequencer} = require('../utils/utils')
+const knex = require('../init/knexConnection')
+const { MEDICAL_INSURANCE, MEDICAL_PRIMER } = require('./tablesNames')
 
-const sequencer = generateNewSequencer()
-
+const TABLE_NAME = 'medical_insurance'
 class MedicalInsuranceRepository {
-    constructor() {
-        this.medicalInsurances = []
-    }
+  constructor() {
+    this.medicalInsurances = []
+  }
 
-    create(_medicalInsurance) {
-        return new Promise((resolve, reject) => {
-            const medicalInsurance = MedicalInsurance.fromObject(_medicalInsurance)
-            if (medicalInsurance.id) {
-                return reject(newEntityAlreadyCreated('Medical Insurance allready created'))
-            }
-            medicalInsurance.id = sequencer.nextValue()
-            this.medicalInsurances.push(medicalInsurance)
-            return resolve(medicalInsurance)
-        })
+  create(_medicalInsurance) {
+    const medicalInsurance = MedicalInsurance.fromObject(_medicalInsurance)
+    if (medicalInsurance.id) {
+      throw newEntityAlreadyCreated('Medical Insurance allready created')
     }
+    return knex(MEDICAL_INSURANCE)
+      .insert({ ...medicalInsurance })
+      .then(([id]) => id)
+      .catch(error => console.log('todo mal u.u', error))
+  }
 
-    getAll() {
-        return new Promise((resolve, reject) => {
-            return resolve([...this.medicalInsurances])
-        })
-    }
-    getMedicalInsuranceByMedic(doctorId) {
-        return new Promise((resolve, reject) => {
-            return resolve([...this.medicalInsurances])
-        })
-    }
+  getAll() {
+    return knex
+      .select()
+      .table(MEDICAL_INSURANCE)
+      .then((response) => {
+        console.log(response)
+        return response.map(medicalInsurance => MedicalInsurance.fromObject(medicalInsurance))
+      })
+  }
 
-    getById(id) {
-        id = +id
-        return new Promise((resolve, reject) => {
-            const medicalInsurance = this.medicalInsurances.find((medicalInsurance) => {
-                return medicalInsurance.id === id
-            })
-            if (medicalInsurance) {
-                return resolve(MedicalInsurance.fromObject(medicalInsurance))
-            }
-            return reject(newNotFoundError(`No medicalInsurance was found with id ${id}`))
-        })
-    }
+  getMedicalInsuranceByMedic(doctorId) {
+    return knex
+      .select()
+      .table(MEDICAL_PRIMER)
+      .where(`${MEDICAL_PRIMER}.id_doctor`, Number.parseInt(doctorId, 10))
+      .leftJoin(MEDICAL_INSURANCE, `${MEDICAL_PRIMER}.id_medical_insurance`, `${MEDICAL_INSURANCE}.id`)
+      .then(response => response.map(medicalInsurance => MedicalInsurance.fromObject(medicalInsurance)))
+  }
+
+  getById(id) {
+    id = +id
+    return new Promise((resolve, reject) => {
+      const medicalInsurance = this.medicalInsurances.find(medicalInsurance => medicalInsurance.id === id)
+      if (medicalInsurance) {
+        return resolve(MedicalInsurance.fromObject(medicalInsurance))
+      }
+      return reject(newNotFoundError(`No medicalInsurance was found with id ${id}`))
+    })
+  }
 }
 
 module.exports = {
-    MedicalInsuranceRepository: new MedicalInsuranceRepository()
+  MedicalInsuranceRepository: new MedicalInsuranceRepository(),
 }
