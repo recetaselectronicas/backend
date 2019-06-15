@@ -4,7 +4,6 @@ const { newNotFoundError, newEntityAlreadyCreated } = require('../utils/errors')
 const knex = require('../init/knexConnection')
 const { MEDICAL_INSURANCE, MEDICAL_PRIMER } = require('./tablesNames')
 
-const TABLE_NAME = 'medical_insurance'
 class MedicalInsuranceRepository {
   constructor() {
     this.medicalInsurances = []
@@ -18,17 +17,14 @@ class MedicalInsuranceRepository {
     return knex(MEDICAL_INSURANCE)
       .insert({ ...medicalInsurance })
       .then(([id]) => id)
-      .catch(error => console.log('todo mal u.u', error))
+      .catch(error => console.log('fatal error', error))
   }
 
   getAll() {
     return knex
       .select()
       .table(MEDICAL_INSURANCE)
-      .then((response) => {
-        console.log(response)
-        return response.map(medicalInsurance => MedicalInsurance.fromObject(medicalInsurance))
-      })
+      .then(response => response.map(medicalInsurance => MedicalInsurance.fromObject(medicalInsurance)))
   }
 
   getMedicalInsuranceByMedic(doctorId) {

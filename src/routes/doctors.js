@@ -10,7 +10,6 @@ router.get('/:id/medical-insurances', async (req, res, next) => {
     const medicalInsurances = await MedicalInsuranceRepository.getMedicalInsuranceByMedic(doctorId)
     return res.status(200).send(medicalInsurances.map(medicalInsurance => medicalInsurance.toPlainObject()))
   } catch (error) {
-    console.log('why error', error)
     return next(error)
   }
 })
