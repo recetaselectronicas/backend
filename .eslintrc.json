@@ -10,13 +10,17 @@
     "SharedArrayBuffer": "readonly",
     "describe": true,
     "expect": true,
-    "it": true
+    "it": true,
+    "test": true,
+    "beforeEach": true,
+    "beforeAll": true,
+    "jest": true
   },
   "parserOptions": {
     "ecmaVersion": 2018
   },
   "rules": {
-    "max-len": ["warn", 120],
+    "max-len": ["warn", 160],
     "semi": ["error", "never"]
   }
 }
