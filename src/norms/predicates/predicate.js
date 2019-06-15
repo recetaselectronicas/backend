@@ -12,6 +12,7 @@ class Predicate {
   initialize(model) {
     this.validate(model)
     this.doInitialize(model)
+    return this
   }
 
   // Solo se valida que el modelo sea un objeto

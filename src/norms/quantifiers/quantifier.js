@@ -2,6 +2,7 @@
 /* eslint-disable no-restricted-globals */
 
 const object = require('lodash/object')
+const lang = require('lodash/lang')
 const { Predicate } = require('../predicates/predicate')
 
 // Clase base para los cuantificadores EXISTS, FORALL, etc
@@ -27,12 +28,12 @@ class Quantifier extends Predicate {
 }
 
 // Clase base para los cuantificadores de existencia EXISTS_AT_LEAST y EXIST_EXACTLY
-class ExistsQuantifier extends Predicate {
+class ExistsQuantifier extends Quantifier {
   // Se valida ademas de lo que valida el predicado, que se envie una cantidad
   // valida a verificar existencia
   doValidate(model) {
     super.doValidate(model)
-    if (!object.has(model, 'quantity') || !(model.quantity instanceof Number)) {
+    if (!object.has(model, 'quantity') || !lang.isNumber(model.quantity)) {
       throw new Error('Error while assembling ExistsQuantifier. No quantity given or not a Number.')
     }
     if (isNaN(model.quantity)) {
