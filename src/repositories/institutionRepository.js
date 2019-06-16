@@ -1,8 +1,8 @@
+/* eslint-disable class-methods-use-this */
 const { Institution } = require('../domain/institution')
 const { newNotFoundError, newEntityAlreadyCreated } = require('../utils/errors')
-const { generateNewSequencer } = require('../utils/utils')
-
-const sequencer = generateNewSequencer()
+const knex = require('../init/knexConnection')
+const { INSTITUTION } = require('./tablesNames')
 
 class InstitutionRepository {
   constructor() {
@@ -10,30 +10,25 @@ class InstitutionRepository {
   }
 
   create(_institution) {
-    return new Promise((resolve, reject) => {
-      const institution = Institution.fromObject(_institution)
-      if (institution.id) {
-        return reject(newEntityAlreadyCreated('Institution allready created'))
-      }
-      institution.id = sequencer.nextValue()
-      this.institutions.push(institution)
-      return resolve(institution)
-    })
+    const institution = Institution.fromObject(_institution)
+    if (institution.id) {
+      throw newEntityAlreadyCreated('Institution allready created')
+    }
+    return knex(INSTITUTION)
+      .insert(institution.toPlainObject())
+      .then(([id]) => id)
+      .catch(error => console.log('fatal error', error))
   }
 
   getAll() {
-    return new Promise((resolve, reject) => resolve([...this.institutions]))
+    return knex
+      .select()
+      .table(INSTITUTION)
+      .then(response => response.map(medicalInsurance => Institution.fromObject(medicalInsurance)))
   }
 
   getById(id) {
-    id = +id
-    return new Promise((resolve, reject) => {
-      const institution = this.institutions.find(institution => institution.id === id)
-      if (institution) {
-        return resolve(Institution.fromObject(institution))
-      }
-      return reject(newNotFoundError(`No institution was found with id ${id}`))
-    })
+    throw 'should implement this method !'
   }
 }
 
