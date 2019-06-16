@@ -19,7 +19,6 @@ class StateMachine {
   }
 
   validateToIssued(prescription) {
-    console.log(prescription)
     return new Promise((resolve, reject) => {
       states.ISSUED.validate(prescription)
       // TODO: Llamar al validador de reglas de negocio

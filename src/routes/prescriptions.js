@@ -66,15 +66,16 @@ router.put('/:id', secureMiddleware3, (req, res, next) => {
   const { identifiedUser } = req
   const body = req.body
   return PrescriptionRepository.getById(req.params.id)
-      .then((prescription) =>{
-        return toState[body.status].change(prescription, { ...body.data,identifiedUser })
+    .then((prescription) => {
+      return toState[body.status].change(prescription, { ...body.data, identifiedUser })
 
-      })
-    .then(updatePrescription => res.status(201).json(updatePrescription.toPlainObject()))
+    })
+    .then(updatePrescription => res.status(200).json(updatePrescription.toPlainObject()))
     .catch((err) => {
       if (isBusinessError(err)) {
         return next(newBadRequestError('Invalid prescription payload', err, 400))
       }
+      //TODO:Definir catcheo para no perder errores
       return next(err)
     })
 })
@@ -82,7 +83,7 @@ router.put('/:id', secureMiddleware3, (req, res, next) => {
 
 const toState = {
   CANCELLED: {
-    change : (prescription, data) => {
+    change: (prescription, data) => {
       prescription.statusReason = data.reason
       if (!data.identifiedUser.canCancel()) {
         throw errors.newForbiddenResourceException("No puede cancelar la receta")
@@ -91,19 +92,13 @@ const toState = {
       return StateMachine.toCancelled(prescription)
     }
   },
-  CONFIRMED: {
-    change : (prescription, data) => {
-      //TODO: Agregar en objeto de presciption el atributo statusReason
-      return StateMachine.toConfirmed(prescription)
-    }
-  },
   RECEIVE: {
-    change : (prescription, data) => {
+    change: (prescription, data) => {
       if (!data.identifiedUser.canReceive()) {
         throw errors.newForbiddenResourceException("No puede recepcionar la receta")
       }
       data.items.forEach(item => {
-        let received = prescription.items.find(i=> i.id = item.id).received
+        let received = prescription.items.find(i => i.id = item.id).received
         received.medicine = item.medicine
         received.quantity = item.quantity
         received.pharmacist.id = data.identifiedUser.id

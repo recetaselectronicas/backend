@@ -68,7 +68,6 @@ const CANCELLED = {
     console.log(prescription)
     const errors = [
       getNotNullError(prescription.statusReason, prescriptionEntity, prescriptionFields.statusReason)
-      //TODO: SI pasó determinada cantidad de tiempo no puede cancelar
     ]
     return errors
   },
