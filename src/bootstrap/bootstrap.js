@@ -27,11 +27,9 @@ medicalInsurance1.email = 'osde@osde.com'
 medicalInsurance1.userName = 'osde_1234'
 medicalInsurance1.password = '231231'
 delete medicalInsurance1.id
-console.log(medicalInsurance1.toPlainObject())
 knex('medical_insurance')
   .insert({ ...medicalInsurance1 })
   .then((r) => {
-    console.log('salio todo oka', r)
     knex
       .select()
       .table('medical_insurance')
