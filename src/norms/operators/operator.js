@@ -19,7 +19,26 @@ class Operator extends Predicate {
   // Las subclases que requieran de valores extras,
   // deberán sobreescribir este metodo el el doValidate y llamar a super
   doInitialize(model) {
-    this.attributeValue = model.attributeValue
+    this.loadAttributeValue(model.attributeValue)
+  }
+
+  loadAttributeValue(attributeValue) {
+    this.attributeValue = attributeValue
+  }
+
+  toJson() {
+    return {
+      operator: this.getName(),
+      ...this.getModelToJson()
+    }
+  }
+
+  getName() {
+    throw new Error('Template method. Please override!')
+  }
+
+  getModelToJson() {
+    throw new Error('Template method. Please override!')
   }
 }
 
@@ -48,6 +67,16 @@ class EqualOperator extends Operator {
   satisfies() {
     return this.attributeValue === this.expectedValue
   }
+
+  getName() {
+    return 'EQUAL'
+  }
+
+  getModelToJson() {
+    return {
+      expectedValue: this.expectedValue
+    }
+  }
 }
 
 class GreaterOperator extends Operator {
@@ -65,6 +94,16 @@ class GreaterOperator extends Operator {
 
   satisfies() {
     return this.attributeValue > this.expectedValue
+  }
+
+  getName() {
+    return 'GREATER'
+  }
+
+  getModelToJson() {
+    return {
+      expectedValue: this.expectedValue
+    }
   }
 }
 

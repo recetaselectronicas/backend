@@ -16,14 +16,28 @@ class Quantifier extends Predicate {
     if (!model.predicates.length) {
       throw new Error('Error while assembling Quantifier. No predicate given on predicates array')
     }
-    if (!model.predicates.every(predicate => predicate instanceof Predicate)) {
-      throw new Error('Error while assembling Quantifier. Not all predicates are Predicate')
-    }
+    // if (!model.predicates.every(predicate => predicate instanceof Predicate)) {
+    //   throw new Error('Error while assembling Quantifier. Not all predicates are Predicate')
+    // }
   }
 
   // Se guarda el valor
   doInitialize(model) {
     this.predicates = model.predicates
+  }
+
+  toJson() {
+    return {
+      quantifier: this.getName()
+    }
+  }
+
+  getName() {
+    throw new Error('Template method. Please override!')
+  }
+
+  getModelToJson() {
+    throw new Error('Template method. Please override!')
   }
 }
 
@@ -46,6 +60,13 @@ class ExistsQuantifier extends Quantifier {
     super.doInitialize(model)
     this.quantity = model.quantity
   }
+
+  toJson() {
+    return {
+      ...super.toJson(),
+      quantity: this.quantity
+    }
+  }
 }
 
 // Clase Exists At Least (Existe por lo menos)
@@ -66,6 +87,10 @@ class ExistsAtLeastQuantifier extends ExistsQuantifier {
     }
     return true
   }
+
+  getName() {
+    return 'EXISTS_AT_LEAST'
+  }
 }
 
 // Clase ForAll (Para Todo)
@@ -75,6 +100,10 @@ class ForAllQuantifier extends Quantifier {
   // Valida que todos los predicados cumplan
   satisfies() {
     return this.predicates.every(predicate => predicate.satisfies())
+  }
+
+  getName() {
+    return 'FOR_ALL'
   }
 }
 

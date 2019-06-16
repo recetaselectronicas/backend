@@ -37,6 +37,10 @@ class Predicate {
   satisfies() {
     throw new Error('Template method. Please override!')
   }
+
+  toJson() {
+    throw new Error('Template method. Please override!')
+  }
 }
 
 module.exports = { Predicate }

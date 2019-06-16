@@ -33,6 +33,14 @@ class Rule extends Predicate {
     }
     return null
   }
+
+  toJson() {
+    return {
+      description: this.description,
+      errorMessage: this.errorMessage,
+      predicate: this.predicate.toJson()
+    }
+  }
 }
 
 module.exports = { Rule }

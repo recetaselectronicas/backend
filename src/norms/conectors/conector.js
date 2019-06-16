@@ -3,7 +3,23 @@ const { Predicate } = require('../predicates/predicate')
 // Clase base para los conectores IS, NOT, OR, etc
 // No hay logica que pueda compratirse ya que dependiendo del conector
 // espera un predicado, un array de predicados o dos predicados (pre y pos)
-class Conector extends Predicate { }
+class Conector extends Predicate {
+  toJson() {
+    return {
+      type: 'CONECTOR',
+      name: this.getName(),
+      ...this.getModelToJson()
+    }
+  }
+
+  getName() {
+    throw new Error('Template method. Please override!')
+  }
+
+  getModelToJson() {
+    throw new Error('Template method. Please override!')
+  }
+}
 
 // Conector IS
 // Satisface cuando el predicado que contiene satisface
@@ -25,6 +41,16 @@ class IsConector extends Conector {
   satisfies() {
     return this.predicate.satisfies()
   }
+
+  getName() {
+    return 'IS'
+  }
+
+  getModelToJson() {
+    return {
+      predicate: this.predicate.toJson()
+    }
+  }
 }
 
 // Conector NOT
@@ -42,9 +68,19 @@ class NotConector extends Conector {
     this.predicate = model.predicate
   }
 
-  // Satisface cuando no satisface el predicadd
+  // Satisface cuando no satisface el predicado
   satisfies() {
     return !this.predicate.satisfies()
+  }
+
+  getName() {
+    return 'NOT'
+  }
+
+  getModelToJson() {
+    return {
+      predicate: this.predicate.toJson()
+    }
   }
 }
 
@@ -72,6 +108,16 @@ class AndConector extends Conector {
   // Satisface cuando satisfacen todos los predicados
   satisfies() {
     return this.predicates.every(predicate => predicate.satisfies())
+  }
+
+  getName() {
+    return 'AND'
+  }
+
+  getModelToJson() {
+    return {
+      predicates: this.predicates.map(predicate => predicate.toJson())
+    }
   }
 }
 
