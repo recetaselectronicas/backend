@@ -7,4 +7,8 @@ module.exports = {
   VADEMECUM: 'vademecum',
   COVERAGE: 'coverage',
   COMPOSITION: 'composition',
+  STATE: 'state',
+  AFFILIATE: 'affiliate',
+  PATIENT: 'patient',
+  PLAN: 'plan',
 }
