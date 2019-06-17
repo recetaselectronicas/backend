@@ -20,7 +20,7 @@ describe('when do a get in /medical-insurances', () => {
     ]
 
     beforeAll(() => {
-      MedicalInsuranceRepository.medicalInsurances = medicalInsurancesValue
+      MedicalInsuranceRepository.getAll = () => medicalInsurancesValue
     })
 
     it('return all avaiables the medicalInsurances', () => request(app)
@@ -71,7 +71,7 @@ describe('when do a get in /doctors/{id}/medical-insurances', () => {
     ]
 
     beforeAll(() => {
-      MedicalInsuranceRepository.medicalInsurances = medicalInsurancesValue
+      MedicalInsuranceRepository.getMedicalInsuranceByMedic = () => medicalInsurancesValue
     })
 
     it('return all avaiables the medicalInsurances for this medic', () => request(app)
