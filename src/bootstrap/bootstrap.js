@@ -287,8 +287,13 @@ const generateData = async () => {
     prescription1.setDoctor(doctor1)
     prescription1.setInstitution(institution1)
     const item1 = new Item()
+    const item11 = new Item()
+    item1.id=54 //agrego para ver si funciona el recepcionar
     item1.prescribe(2, medicine1)
+    item11.id=55
+    item11.prescribe(3,medicine2)
     prescription1.addItem(item1)
+    prescription1.addItem(item11)
     prescription2.setMedicalInsurance(medicalInsurance2)
     prescription2.setAffiliate(affiliate2)
     prescription2.setDoctor(doctor2)

@@ -13,7 +13,7 @@ class StateMachine {
     prescription.norm = 1 // TODO: reemplazar con el llamado a norma vigente segun OS
     return this.validateToIssued(prescription)
       .then(() => {
-        prescription.status = states.ISSUED.status
+        prescription.status = states.ISSUED
         return PrescriptionRepository.create(prescription)
       })
   }
@@ -29,7 +29,7 @@ class StateMachine {
   toCancelled(prescription) {
     return this.validateToCancelled(prescription)
       .then(() => {
-        prescription.status = states.CANCELLED.status
+        prescription.status = states.CANCELLED
         return PrescriptionRepository.update(prescription)
       })
   }
@@ -45,7 +45,7 @@ class StateMachine {
   toConfirmed(prescription) {
     return this.validateToConfirmed(prescription)
       .then(() => {
-        prescription.status = states.CONFIRMED.status
+        prescription.status = states.CONFIRMED
         return PrescriptionRepository.update(prescription)
       })
   }
@@ -67,26 +67,43 @@ class StateMachine {
 
   }
   toReceive(prescription) {
-    if (prescription.items.every(item => item.received.quantity)) {
+    prescription.setSoldDate(moment())
+    if (prescription.items.every(item => item.received.quantity !== null)) {
       return this.toReceived(prescription)
     }
     return this.toPartiallyReceived(prescription)
   }
 
   toReceived(prescription) {
-
+    return this.validateToReceived(prescription)
+      .then(() => {
+        prescription.status = states.RECEIVED
+        return PrescriptionRepository.update(prescription)
+      })
   }
 
   validateToReceived(prescription) {
-
+    return new Promise((resolve, reject) => {
+      states.RECEIVED.validate(prescription)
+      // TODO: Llamar al validador de reglas de negocio
+      return resolve()
+    })
   }
 
   toPartiallyReceived(prescription) {
-
+    return this.validateToPartiallyReceived(prescription)
+      .then(() => {
+        prescription.status = states.PARTIALLY_RECEIVED
+        return PrescriptionRepository.update(prescription)
+      })
   }
 
   validateToPartiallyReceived(prescription) {
-
+    return new Promise((resolve, reject) => {
+      states.PARTIALLY_RECEIVED.validate(prescription)
+      // TODO: Llamar al validador de reglas de negocio
+      return resolve()
+    })
   }
 
   toIncomplete(prescription) {

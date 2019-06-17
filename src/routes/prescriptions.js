@@ -7,6 +7,7 @@ const { newBadRequestError, isBusinessError } = require('../utils/errors')
 const { PrescriptionRepository } = require('../repositories/prescriptions-repository')
 const permissions = require('../permissions/identifiedUser')
 const errors = require('../utils/errors')
+const moment = require('moment')
 
 router.post('/', (req, res, next) => {
   const { logger } = req.app.locals
@@ -61,7 +62,7 @@ router.get('/:id', secureMiddleware, (req, res, next) => {
     .catch(next)
 })
 
-router.put('/:id', secureMiddleware3, (req, res, next) => {
+router.put('/:id', secureMiddleware2, (req, res, next) => {
   const { logger } = req.app.locals
   const { identifiedUser } = req
   const body = req.body
@@ -98,13 +99,12 @@ const toState = {
         throw errors.newForbiddenResourceException("No puede recepcionar la receta")
       }
       data.items.forEach(item => {
-        let received = prescription.items.find(i => i.id = item.id).received
-        received.medicine = item.medicine
-        received.quantity = item.quantity
-        received.pharmacist.id = data.identifiedUser.id
-        received.soldDate = item.soldDate
+        let itemToReceive = prescription.items.find(i => i.id == item.id)
+        if (itemToReceive.received.quantity) {
+          throw errors.newEntityAlreadyCreated("El item ya fué recepcionado")
+        }
+        itemToReceive.receive(item.quantity, moment(), item.medicine,{ id: data.identifiedUser.id })
       })
-      //TODO: Agregar en objeto de presciption el atributo statusReason
       return StateMachine.toReceive(prescription)
     }
   }
