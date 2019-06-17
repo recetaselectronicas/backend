@@ -13,5 +13,5 @@ module.exports = {
   PLAN: 'plan',
   PRESCRIPTION: 'prescription',
   NORM: 'norm',
-  INSTITUTION: 'instution',
+  INSTITUTION: 'institution',
 }
