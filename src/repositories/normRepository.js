@@ -5,7 +5,7 @@ class NormRepository {
   async create(norm) {
     const { ops } = await mongoClient.normsCollection.insertOne(norm)
     const createdNorm = ops[0]
-    // await MedicalInsuranceRepository.updateCurrentNorm(createdNorm._id)
+    // await MedicalInsuranceRepository.updateCurrentNorm(createdNorm.medicalInsurance, createdNorm._id)
     return createdNorm
   }
 

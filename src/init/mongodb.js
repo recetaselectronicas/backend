@@ -25,8 +25,11 @@ const initMongoDB = () => new Promise((resolve, reject) => {
     mongoClient.prescriptionDB = cli.db(prescriptionDBName)
     mongoClient.normsCollection = mongoClient.prescriptionDB.collection('norms')
     mongoClient.client = cli
-    logger.info('MongoDB initialized OK')
-    return resolve()
+    mongoClient.normsCollection.deleteMany({})
+      .then(() => {
+        logger.info('MongoDB initialized OK')
+        return resolve()
+      })
   })
 })
 
