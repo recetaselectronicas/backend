@@ -37,14 +37,15 @@ class AffiliateRepository {
   }
 
   getById(id) {
-    id = +id
-    return new Promise((resolve, reject) => {
-      const affiliate = this.affiliates.find(affiliate => affiliate.id === id)
-      if (affiliate) {
-        return resolve(Affiliate.fromObject(affiliate))
-      }
-      return reject(newNotFoundError(`No affiliate was found with id ${id}`))
-    })
+    return knex
+      .select()
+      .table(AFFILIATE)
+      .where('id', id)
+      .first()
+      .catch((error) => {
+        console.log('error getting by id affiliate', error)
+        throw newNotFoundError(`No affiliate was found with id ${id}`)
+      })
   }
 }
 module.exports = {

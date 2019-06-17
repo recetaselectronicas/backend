@@ -36,14 +36,15 @@ class MedicalInsuranceRepository {
   }
 
   getById(id) {
-    id = +id
-    return new Promise((resolve, reject) => {
-      const medicalInsurance = this.medicalInsurances.find(medicalInsurance => medicalInsurance.id === id)
-      if (medicalInsurance) {
-        return resolve(MedicalInsurance.fromObject(medicalInsurance))
-      }
-      return reject(newNotFoundError(`No medicalInsurance was found with id ${id}`))
-    })
+    return knex
+      .select()
+      .table(MEDICAL_INSURANCE)
+      .where('id', id)
+      .first()
+      .catch((error) => {
+        console.log('error getting by id medical insurance', error)
+        throw newNotFoundError(`No medicalInsurance was found with id ${id}`)
+      })
   }
 }
 

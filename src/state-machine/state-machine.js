@@ -3,19 +3,16 @@ const { PrescriptionRepository } = require('../repositories/prescriptions-reposi
 const moment = require('moment')
 
 class StateMachine {
-  constructor() {
-
-  }
+  constructor() {}
 
   toIssued(prescription) {
     prescription.setIssuedDate(moment())
     prescription.ttl = 30 // TODO: reemplazar con el llamado a tiempo de vida posta segun OS
     prescription.norm = 1 // TODO: reemplazar con el llamado a norma vigente segun OS
-    return this.validateToIssued(prescription)
-      .then(() => {
-        prescription.status = states.ISSUED.status
-        return PrescriptionRepository.create(prescription)
-      })
+    return this.validateToIssued(prescription).then(() => {
+      prescription.status = states.ISSUED
+      return PrescriptionRepository.create(prescription)
+    })
   }
 
   validateToIssued(prescription) {
@@ -28,45 +25,39 @@ class StateMachine {
   }
 
   toCancelled(prescription) {
-    return this.validateToCancelled(prescription)
-      .then(() => {
-        prescription.status = states.CANCELLED.status
-        return PrescriptionRepository.update(prescription)
-      })
+    return this.validateToCancelled(prescription).then(() => {
+      prescription.status = states.CANCELLED.status
+      return PrescriptionRepository.update(prescription)
+    })
   }
 
   validateToCancelled(prescription) {
     return new Promise((resolve, reject) => {
       states.CANCELLED.validate(prescription)
-      //TODO: Llamar al validador de reglas de negocio
+      // TODO: Llamar al validador de reglas de negocio
       return resolve()
     })
   }
 
   toConfirmed(prescription) {
-    return this.validateToConfirmed(prescription)
-      .then(() => {
-        prescription.status = states.CONFIRMED.status
-        return PrescriptionRepository.update(prescription)
-      })
+    return this.validateToConfirmed(prescription).then(() => {
+      prescription.status = states.CONFIRMED.status
+      return PrescriptionRepository.update(prescription)
+    })
   }
 
   validateToConfirmed(prescription) {
     return new Promise((resolve, reject) => {
       states.CONFIRMED.validate(prescription)
-      //TODO: Llamar al validador de reglas de negocio
+      // TODO: Llamar al validador de reglas de negocio
       return resolve()
     })
-
   }
 
-  toExpired(prescription) {
+  toExpired(prescription) {}
 
-  }
+  validateToExpired(prescription) {}
 
-  validateToExpired(prescription) {
-
-  }
   toReceive(prescription) {
     if (prescription.items.every(item => item.received.quantity)) {
       return this.toReceived(prescription)
@@ -74,53 +65,29 @@ class StateMachine {
     return this.toPartiallyReceived(prescription)
   }
 
-  toReceived(prescription) {
+  toReceived(prescription) {}
 
-  }
+  validateToReceived(prescription) {}
 
-  validateToReceived(prescription) {
+  toPartiallyReceived(prescription) {}
 
-  }
+  validateToPartiallyReceived(prescription) {}
 
-  toPartiallyReceived(prescription) {
+  toIncomplete(prescription) {}
 
-  }
+  validateToIncomplete(prescription) {}
 
-  validateToPartiallyReceived(prescription) {
+  toAudited(prescription) {}
 
-  }
+  validateToAudited(prescription) {}
 
-  toIncomplete(prescription) {
+  toRejected(prescription) {}
 
-  }
+  validateToRejected(prescription) {}
 
-  validateToIncomplete(prescription) {
+  toPartiallyRejected(prescription) {}
 
-  }
-
-  toAudited(prescription) {
-
-  }
-
-  validateToAudited(prescription) {
-
-  }
-
-  toRejected(prescription) {
-
-  }
-
-  validateToRejected(prescription) {
-
-  }
-
-  toPartiallyRejected(prescription) {
-
-  }
-
-  validateToPartiallyRejected(prescription) {
-
-  }
+  validateToPartiallyRejected(prescription) {}
 }
 
 module.exports = { StateMachine: new StateMachine() }

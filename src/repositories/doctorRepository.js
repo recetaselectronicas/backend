@@ -37,14 +37,15 @@ class DoctorRepository {
   }
 
   getById(id) {
-    id = +id
-    return new Promise((resolve, reject) => {
-      const doctor = this.doctors.find(doctor => doctor.id === id)
-      if (doctor) {
-        return resolve(Doctor.fromObject(doctor))
-      }
-      return reject(newNotFoundError(`No doctor was found with id ${id}`))
-    })
+    return knex
+      .select()
+      .table(DOCTOR)
+      .where('id', id)
+      .first()
+      .catch((error) => {
+        console.log('error getting by id doctor', error)
+        throw newNotFoundError(`No doctor was found with id ${id}`)
+      })
   }
 }
 module.exports = {

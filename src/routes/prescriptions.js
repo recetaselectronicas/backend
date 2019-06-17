@@ -8,17 +8,24 @@ const { PrescriptionRepository } = require('../repositories/prescriptions-reposi
 const permissions = require('../permissions/identifiedUser')
 const errors = require('../utils/errors')
 
-router.post('/', (req, res, next) => {
+router.post('/', async (req, res, next) => {
   const { logger } = req.app.locals
   const prescription = Prescription.fromObject(req.body)
-  return StateMachine.toIssued(prescription)
-    .then(createdPrescription => res.status(201).json(createdPrescription.toPlainObject()))
-    .catch((err) => {
-      if (isBusinessError(err)) {
-        return next(newBadRequestError('Invalid prescription payload', err, 400))
-      }
-      return next(err)
-    })
+  let idCreatedPrescription
+  try {
+    idCreatedPrescription = await StateMachine.toIssued(prescription)
+  } catch (err) {
+    if (isBusinessError(err)) {
+      return next(newBadRequestError('Invalid prescription payload', err, 400))
+    }
+    return next(err)
+  }
+  try {
+    const createdPrescription = await PrescriptionRepository.getById(idCreatedPrescription)
+    return res.status(201).json(createdPrescription.toPlainObject())
+  } catch (err) {
+    return next(err)
+  }
 })
 
 const secureMiddleware = (req, res, next) => {
@@ -64,12 +71,9 @@ router.get('/:id', secureMiddleware, (req, res, next) => {
 router.put('/:id', secureMiddleware3, (req, res, next) => {
   const { logger } = req.app.locals
   const { identifiedUser } = req
-  const body = req.body
+  const { body } = req
   return PrescriptionRepository.getById(req.params.id)
-      .then((prescription) =>{
-        return toState[body.status].change(prescription, { ...body.data,identifiedUser })
-
-      })
+    .then(prescription => toState[body.status].change(prescription, { ...body.data, identifiedUser }))
     .then(updatePrescription => res.status(201).json(updatePrescription.toPlainObject()))
     .catch((err) => {
       if (isBusinessError(err)) {
@@ -79,41 +83,38 @@ router.put('/:id', secureMiddleware3, (req, res, next) => {
     })
 })
 
-
 const toState = {
   CANCELLED: {
-    change : (prescription, data) => {
+    change: (prescription, data) => {
       prescription.statusReason = data.reason
       if (!data.identifiedUser.canCancel()) {
-        throw errors.newForbiddenResourceException("No puede cancelar la receta")
+        throw errors.newForbiddenResourceException('No puede cancelar la receta')
       }
-      //TODO: Agregar en objeto de presciption el atributo statusReason
+      // TODO: Agregar en objeto de presciption el atributo statusReason
       return StateMachine.toCancelled(prescription)
-    }
+    },
   },
   CONFIRMED: {
-    change : (prescription, data) => {
-      //TODO: Agregar en objeto de presciption el atributo statusReason
-      return StateMachine.toConfirmed(prescription)
-    }
+    change: (prescription, data) =>
+      // TODO: Agregar en objeto de presciption el atributo statusReason
+      StateMachine.toConfirmed(prescription),
   },
   RECEIVE: {
-    change : (prescription, data) => {
+    change: (prescription, data) => {
       if (!data.identifiedUser.canReceive()) {
-        throw errors.newForbiddenResourceException("No puede recepcionar la receta")
+        throw errors.newForbiddenResourceException('No puede recepcionar la receta')
       }
-      data.items.forEach(item => {
-        let received = prescription.items.find(i=> i.id = item.id).received
+      data.items.forEach((item) => {
+        const { received } = prescription.items.find(i => (i.id = item.id))
         received.medicine = item.medicine
         received.quantity = item.quantity
         received.pharmacist.id = data.identifiedUser.id
         received.soldDate = item.soldDate
       })
-      //TODO: Agregar en objeto de presciption el atributo statusReason
+      // TODO: Agregar en objeto de presciption el atributo statusReason
       return StateMachine.toReceive(prescription)
-    }
-  }
-
+    },
+  },
 }
 
 module.exports = router

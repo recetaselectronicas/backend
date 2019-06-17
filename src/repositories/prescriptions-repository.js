@@ -76,7 +76,7 @@ class PrescriptionRepository {
       throw errors
     }
     const plainPrescription = prescription.toPlainObject()
-
+    console.log('hola', plainPrescription)
     const insertablePrescription = {
       issued_date: plainPrescription.issuedDate,
       sold_date: plainPrescription.soldDate,
@@ -100,27 +100,13 @@ class PrescriptionRepository {
         prescribed_quantity: prescribed.quantity,
       }))
       await knex(ITEM).insert(insertableItems)
+
+      return prescriptionId
     } catch (e) {
       console.log('error', e)
 
       throw e
     }
-    /* const plainObjectItem = item.toPlainObject()
-      const inserItem = {
-        id_prescription: 1,
-        id_medicine_prescribed: plainObjectItem.prescribed.medicine.id,
-        prescribed_quantity: plainObjectItem.prescribed.quantity,
-        id_medicine_received: plainObjectItem.received.medicine.id,
-        received_quantity: plainObjectItem.received.quantity,
-        id_medicine_audited: plainObjectItem.audited.medicine.id,
-        audited_quantity: plainObjectItem.audited.quantity,
-        sold_date: plainObjectItem.received.soldDate,
-        id_pharmacist: plainObjectItem.received.pharmacist.id,
-      }
-
-      knex(ITEM)
-        .insert(inserItem)
-        .catch(error => console.log('fatal error', error)) */
   }
 
   update(_prescription) {
@@ -145,14 +131,16 @@ class PrescriptionRepository {
   }
 
   getById(id) {
-    id = +id
-    return new Promise((resolve, reject) => {
-      const prescription = this.prescriptions.find(prescription => prescription.id === id)
-      if (prescription) {
-        return resolve(Prescription.fromObject(prescription))
-      }
-      return reject(newNotFoundError(`No prescription was found with id ${id}`))
-    })
+    return knex
+      .select()
+      .table(PRESCRIPTION)
+      .where('id', id)
+      .first()
+      .then(response => Prescription.fromObject(response))
+      .catch((error) => {
+        console.log('error getting by id prescritption', error)
+        throw newNotFoundError(`No prescription was found with id ${id}`)
+      })
   }
 
   getByExample(_prescription) {
