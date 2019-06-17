@@ -3,11 +3,11 @@
 const object = require('lodash/object')
 const { Operator } = require('./operator')
 
-class GreaterOperator extends Operator {
+class GreaterOrEqualOperator extends Operator {
   doValidate(model) {
     super.doValidate(model)
     if (!object.has(model, 'expectedValue')) {
-      throw new Error('Error while assembling GreaterOperator. No expectedValue given')
+      throw new Error('Error while assembling GreaterOrEqualOperator. No expectedValue given')
     }
   }
 
@@ -17,11 +17,11 @@ class GreaterOperator extends Operator {
   }
 
   satisfies() {
-    return this.attributeValue > this.expectedValue
+    return this.attributeValue >= this.expectedValue
   }
 
   getName() {
-    return 'GREATER'
+    return 'GREATER_OR_EQUAL'
   }
 
   getModelToJson() {
@@ -31,4 +31,4 @@ class GreaterOperator extends Operator {
   }
 }
 
-module.exports = { GreaterOperator }
+module.exports = { GreaterOrEqualOperator }
