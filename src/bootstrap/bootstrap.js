@@ -16,6 +16,7 @@ const { DoctorRepository } = require('../repositories/doctorRepository')
 const { PharmacistRepository } = require('../repositories/pharmacistRepository')
 const { logger } = require('../utils/utils')
 const { states } = require('../state-machine/state')
+const knex = require('../init/knexConnection')
 
 let medicalInsurance1 = new MedicalInsurance()
 medicalInsurance1.address = 'Calle falsa 123'
@@ -23,6 +24,18 @@ medicalInsurance1.contactNumber = '1520202020'
 medicalInsurance1.corporateName = 'OSDE S.R.L.'
 medicalInsurance1.description = 'OSDE'
 medicalInsurance1.email = 'osde@osde.com'
+medicalInsurance1.userName = 'osde_1234'
+medicalInsurance1.password = '231231'
+delete medicalInsurance1.id
+knex('medical_insurance')
+  .insert({ ...medicalInsurance1 })
+  .then((r) => {
+    knex
+      .select()
+      .table('medical_insurance')
+      .then(responde => console.log(responde))
+  })
+  .catch(e => console.log('todo mal u.u', e))
 
 let medicalInsurance2 = new MedicalInsurance()
 medicalInsurance2.address = 'Joaquin V Gonzales 1'
