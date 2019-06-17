@@ -293,6 +293,7 @@ const generateData = async () => {
     prescription1.setDoctor(doctor1)
     prescription1.setInstitution(institution1)
     const item1 = new Item()
+    prescription2.setMedicalInsurance(medicalInsurance2)
     item1.prescribe(2, await MedicineRepository.getById(medicine1))
     prescription1.addItem(item1)
     prescription2.setMedicalInsurance(medicalInsurance2Id)

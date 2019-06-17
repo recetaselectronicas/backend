@@ -37,7 +37,7 @@ class Item {
   receive(quantity, soldDate, medicine, pharmacist) {
     this.received = {
       quantity,
-      soldDate: dateTimeFormat.toDate(soldDate),
+      soldDate,
       medicine,
       pharmacist,
     }

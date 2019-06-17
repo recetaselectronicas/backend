@@ -74,7 +74,7 @@ const ISSUED = {
     const errors = [
       getDiferentValueError(prescription.soldDate, null, prescriptionEntity, prescriptionFields.soldDate),
       getDiferentValueError(prescription.auditedDate, null, prescriptionEntity, prescriptionFields.auditedDate),
-      // TODO: Hacer que de error cuando no es null los atributos en received y audited
+      //TODO: Hacer que de error cuando no es null los atributos en received y audited
       // ...getArrayDoesntMatchError(prescription.items, 'received.quantity', value => !value, itemEntity, itemFields.received.quantity),
       // ...getArrayDoesntMatchError(prescription.items, 'received.medicine.id', value => !value, itemEntity, itemFields.received.medicine.id),
     ]
@@ -91,10 +91,9 @@ const CANCELLED = {
     return errors
   },
   getSpecificErrors: (prescription) => {
-    console.log(prescription)
     const errors = [
-      getNotNullError(prescription.statusReason, prescriptionEntity, prescriptionFields.statusReason),
-      // TODO: SI pasó determinada cantidad de tiempo no puede cancelar
+      getNotNullError(prescription.statusReason, prescriptionEntity, prescriptionFields.statusReason)
+
     ]
     return errors
   },
@@ -145,7 +144,15 @@ const RECEIVED = {
     return errors
   },
   getSpecificErrors: (prescription) => {
-    const errors = []
+    const errors = [
+      ...getArrayDoesntMatchError(prescription.items, 'received.quantity', value => typeof value === 'number' && !!value, itemEntity, itemFields.received.quantity),
+      ...getArrayDoesntMatchError(prescription.items, 'received.medicine.id', value => typeof value === 'number' && !!value, itemEntity, itemFields.received.medicine.id),
+      ...getArrayDoesntMatchError(prescription.items, 'received.pharmacist.id', value => typeof value === 'number' && !!value, itemEntity, itemFields.received.pharmacist.id),
+      //...getArrayDoesntMatchError(prescription.items, 'received.soldDate', value => typeof value === 'moment' && !!value, itemEntity, itemFields.received.soldDate),
+      ...getArrayDoesntMatchError(prescription.items, 'audited.quantity', value => !value, itemEntity, itemFields.audited.quantity),
+      ...getArrayDoesntMatchError(prescription.items, 'audited.medicine.id', value => !value, itemEntity, itemFields.audited.medicine.id),
+    
+    ]
     return errors
   },
 }
@@ -153,7 +160,7 @@ const PARTIALLY_RECEIVED = {
   id: 'PARTIALLY_RECEIVED',
   status: 'PARCIALMENTE_RECEPCIONADA',
   validate: validator,
-  getStatusError: prescription => getDiferentValueError(prescription.status, CONFIRMED.status, prescriptionEntity, prescriptionFields.status),
+  getStatusError: prescription => getValueNotInListError(prescription.status, [CONFIRMED.status, PARTIALLY_RECEIVED.status], prescriptionEntity, prescriptionFields.status),
   getErrors: (prescription) => {
     const errors = CONFIRMED.getErrors(prescription)
     // TODO: Agregar validaciones para pasar a PARCIALMENTE_RECEPCIONADAS
