@@ -1,7 +1,9 @@
-// const { generateData } = require('../bootstrap/bootstrap')
+const { initMongoDB } = require('./mongodb')
+const { generateData } = require('../bootstrap/bootstrap')
 
 const init = async () => {
-  // await generateData()
+  await initMongoDB()
+  await generateData()
 }
 
 module.exports = { init }

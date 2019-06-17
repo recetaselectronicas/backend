@@ -255,4 +255,10 @@ const states = {
   PARTIALLY_REJECTED,
 }
 
-module.exports = { states }
+const statesMap = Object.keys(states).reduce((map, state) => {
+  // eslint-disable-next-line no-param-reassign
+  map[states[state].status] = {}
+  return map
+}, {})
+
+module.exports = { states, statesMap }
