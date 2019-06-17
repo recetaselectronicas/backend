@@ -26,12 +26,17 @@ knex migrate:rollback
 
 ```
 
+- Correr los archivos seeds (para popular la base) (por ejemplo los estados)
+
+```
+knex seed:run
+```
 
 #### MongoDB
 
 - Para poder levantar la app sin problemas hay que tener una instancia de mongod levantada en el puerto 27017
 
-Si pudo conectarse correctamente verás el siguiente mensaje: 
+Si pudo conectarse correctamente verás el siguiente mensaje:
 
 ```log
 info 2019-06-17 01:07:21: MongoDB initialized OK

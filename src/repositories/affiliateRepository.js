@@ -1,8 +1,8 @@
+/* eslint-disable class-methods-use-this */
 const { Affiliate } = require('../domain/affiliate')
 const { newNotFoundError, newEntityAlreadyCreated } = require('../utils/errors')
-const { generateNewSequencer } = require('../utils/utils')
-
-const sequencer = generateNewSequencer()
+const { AFFILIATE } = require('./tablesNames')
+const knex = require('../init/knexConnection')
 
 class AffiliateRepository {
   constructor() {
@@ -10,15 +10,22 @@ class AffiliateRepository {
   }
 
   create(_affiliate) {
-    return new Promise((resolve, reject) => {
-      const affiliate = Affiliate.fromObject(_affiliate)
-      if (affiliate.id) {
-        return reject(newEntityAlreadyCreated('Affiliate allready created'))
-      }
-      affiliate.id = sequencer.nextValue()
-      this.affiliates.push(affiliate)
-      return resolve(affiliate)
-    })
+    const affiliate = Affiliate.fromObject(_affiliate)
+    if (affiliate.id) {
+      throw newEntityAlreadyCreated('Affiliate allready created')
+    }
+    const plainAffiliate = affiliate.toPlainObject()
+
+    const insertableAffiliate = {
+      id_patient: plainAffiliate.idPatient,
+      id_plan: plainAffiliate.plan.id,
+      from_date: plainAffiliate.fromDate,
+      to_date: plainAffiliate.toDate,
+      code: plainAffiliate.code,
+      image_credential: plainAffiliate.imageCredential,
+    }
+
+    return knex(AFFILIATE).insert(insertableAffiliate)
   }
 
   getAll() {
@@ -30,14 +37,15 @@ class AffiliateRepository {
   }
 
   getById(id) {
-    id = +id
-    return new Promise((resolve, reject) => {
-      const affiliate = this.affiliates.find(affiliate => affiliate.id === id)
-      if (affiliate) {
-        return resolve(Affiliate.fromObject(affiliate))
-      }
-      return reject(newNotFoundError(`No affiliate was found with id ${id}`))
-    })
+    return knex
+      .select()
+      .table(AFFILIATE)
+      .where('id', id)
+      .first()
+      .catch((error) => {
+        console.log('error getting by id affiliate', error)
+        throw newNotFoundError(`No affiliate was found with id ${id}`)
+      })
   }
 }
 module.exports = {

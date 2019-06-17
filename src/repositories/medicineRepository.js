@@ -22,7 +22,6 @@ class MedicineRepository {
     return knex(MEDICINE)
       .insert(insertableMedicine)
       .then(([id]) => id)
-      .catch(error => console.log('fatal error', error))
   }
 
   getAll() {
@@ -38,7 +37,6 @@ class MedicineRepository {
       .where('id', id)
       .first()
       .catch((error) => {
-        console.log('fatal error', error)
         throw newNotFoundError(`No medicine was found with id ${id}`)
       })
   }

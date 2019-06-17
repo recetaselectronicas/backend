@@ -17,7 +17,6 @@ class InstitutionRepository {
     return knex(INSTITUTION)
       .insert(institution.toPlainObject())
       .then(([id]) => id)
-      .catch(error => console.log('fatal error', error))
   }
 
   getAll() {
@@ -28,7 +27,15 @@ class InstitutionRepository {
   }
 
   getById(id) {
-    throw 'should implement this method !'
+    return knex
+      .select()
+      .table(INSTITUTION)
+      .where('id', id)
+      .first()
+      .catch((error) => {
+        console.log('error getting by id instituion', error)
+        throw newNotFoundError(`No institution was found with id ${id}`)
+      })
   }
 }
 

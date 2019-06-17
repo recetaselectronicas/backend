@@ -16,7 +16,6 @@ const { DoctorRepository } = require('../repositories/doctorRepository')
 const { PharmacistRepository } = require('../repositories/pharmacistRepository')
 const { logger } = require('../utils/utils')
 const { states } = require('../state-machine/state')
-const knex = require('../init/knexConnection')
 
 let medicalInsurance1Id = new MedicalInsurance()
 medicalInsurance1Id.address = 'Calle falsa 123'
