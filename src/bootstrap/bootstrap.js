@@ -17,26 +17,32 @@ const { PharmacistRepository } = require('../repositories/pharmacistRepository')
 const { logger } = require('../utils/utils')
 const { states } = require('../state-machine/state')
 
-let medicalInsurance1 = new MedicalInsurance()
-medicalInsurance1.address = 'Calle falsa 123'
-medicalInsurance1.contactNumber = '1520202020'
-medicalInsurance1.corporateName = 'OSDE S.R.L.'
-medicalInsurance1.description = 'OSDE'
-medicalInsurance1.email = 'osde@osde.com'
+let medicalInsurance1Id = new MedicalInsurance()
+medicalInsurance1Id.address = 'Calle falsa 123'
+medicalInsurance1Id.contactNumber = '1520202020'
+medicalInsurance1Id.corporateName = 'OSDE S.R.L.'
+medicalInsurance1Id.description = 'OSDE'
+medicalInsurance1Id.email = 'osde@osde.com'
+medicalInsurance1Id.userName = 'osde_1234'
+medicalInsurance1Id.password = '1234'
 
-let medicalInsurance2 = new MedicalInsurance()
-medicalInsurance2.address = 'Joaquin V Gonzales 1'
-medicalInsurance2.contactNumber = '1520202020'
-medicalInsurance2.corporateName = 'HospitalItaliano S.A.'
-medicalInsurance2.description = 'Hospital Italiano'
-medicalInsurance2.email = 'hospitalItaliano@hi.com'
+let medicalInsurance2Id = new MedicalInsurance()
+medicalInsurance2Id.address = 'Joaquin V Gonzales 1'
+medicalInsurance2Id.contactNumber = '1520202020'
+medicalInsurance2Id.corporateName = 'HospitalItaliano S.A.'
+medicalInsurance2Id.description = 'Hospital Italiano'
+medicalInsurance2Id.email = 'hospitalItaliano@hi.com'
+medicalInsurance2Id.userName = 'Swiss_2312_2'
+medicalInsurance2Id.password = '1234'
 
-let medicalInsurance3 = new MedicalInsurance()
-medicalInsurance3.address = 'Beiro 1232'
-medicalInsurance3.contactNumber = '1520202020'
-medicalInsurance3.corporateName = 'OSTEL S.A.'
-medicalInsurance3.description = 'OSTEL'
-medicalInsurance3.email = 'ostel@ostel.com'
+let medicalInsurance3Id = new MedicalInsurance()
+medicalInsurance3Id.address = 'Beiro 1232'
+medicalInsurance3Id.contactNumber = '1520202020'
+medicalInsurance3Id.corporateName = 'OSTEL S.A.'
+medicalInsurance3Id.description = 'OSTEL'
+medicalInsurance3Id.email = 'ostel@ostel.com'
+medicalInsurance3Id.userName = 'ostel_med'
+medicalInsurance3Id.password = '1234'
 
 let medicine1 = new Medicine()
 medicine1.description = 'T4 Montpellier 150 Levotiroxina'
@@ -239,7 +245,7 @@ let prescription1 = new Prescription()
 prescription1.diagnosis = 'Malestar general'
 prescription1.norm = 1
 prescription1.ttl = 30
-prescription1.status = states.CONFIRMED
+prescription1.status = states.CONFIRMED.status
 prescription1.prolongedTreatment = true
 prescription1.setIssuedDate('01/06/2019 09:30')
 
@@ -247,7 +253,7 @@ let prescription2 = new Prescription()
 prescription2.diagnosis = 'Diarrea y vómitos'
 prescription2.norm = 1
 prescription2.ttl = 30
-prescription2.status = states.RECEIVED
+prescription2.status = states.RECEIVED.status
 prescription2.prolongedTreatment = false
 prescription2.setIssuedDate('20/05/2019 11:35')
 
@@ -255,15 +261,15 @@ let prescription3 = new Prescription()
 prescription3.diagnosis = 'Erupcion cutanea'
 prescription3.norm = 1
 prescription3.ttl = 30
-prescription3.status = states.AUDITED
+prescription3.status = states.AUDITED.status
 prescription3.prolongedTreatment = false
 prescription3.setIssuedDate('12/04/2019 15:50')
 
 const generateData = async () => {
   try {
-    medicalInsurance1 = await MedicalInsuranceRepository.create(medicalInsurance1)
-    medicalInsurance2 = await MedicalInsuranceRepository.create(medicalInsurance2)
-    medicalInsurance3 = await MedicalInsuranceRepository.create(medicalInsurance3)
+    medicalInsurance1Id = await MedicalInsuranceRepository.create(medicalInsurance1Id)
+    medicalInsurance2Id = await MedicalInsuranceRepository.create(medicalInsurance2Id)
+    medicalInsurance3Id = await MedicalInsuranceRepository.create(medicalInsurance3Id)
     medicine1 = await MedicineRepository.create(medicine1)
     medicine2 = await MedicineRepository.create(medicine2)
     medicine3 = await MedicineRepository.create(medicine3)
@@ -272,8 +278,8 @@ const generateData = async () => {
     institution3 = await InstitutionRepository.create(institution3)
     institution4 = await InstitutionRepository.create(institution4)
     institution5 = await InstitutionRepository.create(institution5)
-    affiliate1.plan.idMedicalInsurance = medicalInsurance1.id
-    affiliate2.plan.idMedicalInsurance = medicalInsurance2.id
+    affiliate1.plan.idMedicalInsurance = medicalInsurance1Id
+    affiliate2.plan.idMedicalInsurance = medicalInsurance2Id
     affiliate1 = await AffiliateRepository.create(affiliate1)
     affiliate2 = await AffiliateRepository.create(affiliate2)
     doctor1 = await DoctorRepository.create(doctor1)
@@ -282,35 +288,33 @@ const generateData = async () => {
     pharmacist1 = await PharmacistRepository.create(pharmacist1)
     pharmacist2 = await PharmacistRepository.create(pharmacist2)
     pharmacist3 = await PharmacistRepository.create(pharmacist3)
-    prescription1.setMedicalInsurance(medicalInsurance1)
+    prescription1.setMedicalInsurance(medicalInsurance1Id)
     prescription1.setAffiliate(affiliate1)
     prescription1.setDoctor(doctor1)
     prescription1.setInstitution(institution1)
     const item1 = new Item()
-    const item11 = new Item()
-    item1.id=54 //agrego para ver si funciona el recepcionar
-    item1.prescribe(2, medicine1)
-    item11.id=55
-    item11.prescribe(3,medicine2)
-    prescription1.addItem(item1)
-    prescription1.addItem(item11)
     prescription2.setMedicalInsurance(medicalInsurance2)
+    item1.prescribe(2, await MedicineRepository.getById(medicine1))
+    prescription1.addItem(item1)
+    prescription2.setMedicalInsurance(medicalInsurance2Id)
     prescription2.setAffiliate(affiliate2)
     prescription2.setDoctor(doctor2)
     prescription2.setInstitution(institution2)
     const item2 = new Item()
-    item2.prescribe(2, medicine2)
-    item2.receive(2, '21/05/2019 13:02', medicine2, pharmacist1)
+    const dbMedicine2 = await MedicineRepository.getById(medicine2)
+    item2.prescribe(2, dbMedicine2)
+    item2.receive(2, '21/05/2019 13:02', dbMedicine2, pharmacist1)
     prescription2.addItem(item2)
     prescription2.setSoldDate('21/05/2019 13:02')
-    prescription3.setMedicalInsurance(medicalInsurance1)
+    prescription3.setMedicalInsurance(medicalInsurance1Id)
     prescription3.setAffiliate(affiliate1)
     prescription3.setDoctor(doctor3)
     prescription3.setInstitution(institution3)
     const item3 = new Item()
-    item3.prescribe(1, medicine3)
-    item3.receive(1, '13/04/2019 16:00', medicine3, pharmacist2)
-    item3.audit(1, medicine3)
+    const dbMedicine3 = await MedicineRepository.getById(medicine3)
+    item3.prescribe(1, dbMedicine3)
+    item3.receive(1, '13/04/2019 16:00', dbMedicine3, pharmacist2)
+    item3.audit(1, dbMedicine3)
     prescription3.addItem(item3)
     prescription3.setSoldDate('13/04/2019 16:00')
     prescription3.setAuditedDate('15/04/2019 14:24')

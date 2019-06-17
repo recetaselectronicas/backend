@@ -23,7 +23,7 @@ const identifiedUser = {
   checkForbiden: null,
   getActions: null,
   canReceive: null,
-  canCancel:null,
+  canCancel: null,
 }
 
 const identifiedAffiliate = {

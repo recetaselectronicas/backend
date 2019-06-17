@@ -8,6 +8,7 @@ affiliateAvailableFilters.filters.id = lang.cloneDeep(prescriptionFilters.id)
 affiliateAvailableFilters.filters.status = lang.cloneDeep(prescriptionFilters.status)
 affiliateAvailableFilters.filters.status.values = [
   availableStates.CONFIRMED,
+  availableStates.ISSUED,
   availableStates.EXPIRED,
   availableStates.RECEIVED,
   availableStates.PARTIALLY_RECEIVED,

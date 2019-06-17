@@ -3,19 +3,19 @@ const { PrescriptionRepository } = require('../repositories/prescriptions-reposi
 const moment = require('moment')
 
 class StateMachine {
-  constructor() {
-
-  }
+  constructor() {}
 
   toIssued(prescription) {
     prescription.setIssuedDate(moment())
     prescription.ttl = 30 // TODO: reemplazar con el llamado a tiempo de vida posta segun OS
     prescription.norm = 1 // TODO: reemplazar con el llamado a norma vigente segun OS
+
     return this.validateToIssued(prescription)
       .then(() => {
         prescription.status = states.ISSUED
         return PrescriptionRepository.create(prescription)
       })
+
   }
 
   validateToIssued(prescription) {
@@ -37,35 +37,31 @@ class StateMachine {
   validateToCancelled(prescription) {
     return new Promise((resolve, reject) => {
       states.CANCELLED.validate(prescription)
-      //TODO: Llamar al validador de reglas de negocio
+      // TODO: Llamar al validador de reglas de negocio
       return resolve()
     })
   }
 
   toConfirmed(prescription) {
-    return this.validateToConfirmed(prescription)
-      .then(() => {
-        prescription.status = states.CONFIRMED
-        return PrescriptionRepository.update(prescription)
-      })
+
+    return this.validateToConfirmed(prescription).then(() => {
+      prescription.status = states.CONFIRMED.status
+      return PrescriptionRepository.update(prescription)
+    })
   }
 
   validateToConfirmed(prescription) {
     return new Promise((resolve, reject) => {
       states.CONFIRMED.validate(prescription)
-      //TODO: Llamar al validador de reglas de negocio
+      // TODO: Llamar al validador de reglas de negocio
       return resolve()
     })
-
   }
 
-  toExpired(prescription) {
+  toExpired(prescription) {}
 
-  }
+  validateToExpired(prescription) {}
 
-  validateToExpired(prescription) {
-
-  }
   toReceive(prescription) {
     prescription.setSoldDate(moment())
     if (prescription.items.every(item => item.received.quantity !== null)) {
@@ -106,37 +102,22 @@ class StateMachine {
     })
   }
 
-  toIncomplete(prescription) {
 
-  }
+  toIncomplete(prescription) {}
 
-  validateToIncomplete(prescription) {
+  validateToIncomplete(prescription) {}
 
-  }
+  toAudited(prescription) {}
 
-  toAudited(prescription) {
+  validateToAudited(prescription) {}
 
-  }
+  toRejected(prescription) {}
 
-  validateToAudited(prescription) {
+  validateToRejected(prescription) {}
 
-  }
+  toPartiallyRejected(prescription) {}
 
-  toRejected(prescription) {
-
-  }
-
-  validateToRejected(prescription) {
-
-  }
-
-  toPartiallyRejected(prescription) {
-
-  }
-
-  validateToPartiallyRejected(prescription) {
-
-  }
+  validateToPartiallyRejected(prescription) {}
 }
 
 module.exports = { StateMachine: new StateMachine() }

@@ -9,17 +9,24 @@ const permissions = require('../permissions/identifiedUser')
 const errors = require('../utils/errors')
 const moment = require('moment')
 
-router.post('/', (req, res, next) => {
+router.post('/', async (req, res, next) => {
   const { logger } = req.app.locals
   const prescription = Prescription.fromObject(req.body)
-  return StateMachine.toIssued(prescription)
-    .then(createdPrescription => res.status(201).json(createdPrescription.toPlainObject()))
-    .catch((err) => {
-      if (isBusinessError(err)) {
-        return next(newBadRequestError('Invalid prescription payload', err, 400))
-      }
-      return next(err)
-    })
+  let idCreatedPrescription
+  try {
+    idCreatedPrescription = await StateMachine.toIssued(prescription)
+  } catch (err) {
+    if (isBusinessError(err)) {
+      return next(newBadRequestError('Invalid prescription payload', err, 400))
+    }
+    return next(err)
+  }
+  try {
+    const createdPrescription = await PrescriptionRepository.getById(idCreatedPrescription)
+    return res.status(201).json(createdPrescription.toPlainObject())
+  } catch (err) {
+    return next(err)
+  }
 })
 
 const secureMiddleware = (req, res, next) => {
@@ -38,9 +45,7 @@ const secureMiddleware3 = (req, res, next) => {
 router.get('/', secureMiddleware, (req, res, next) => {
   const { logger } = req.app.locals
   const { identifiedUser } = req
-  console.log(req.query.status)
   const prescriptionQuery = identifiedUser.getQuery(req.query)
-  console.log('prescriptionQuery', prescriptionQuery)
   return PrescriptionRepository.getByQuery(prescriptionQuery)
     .then((prescriptions) => {
       const filters = identifiedUser.getFilters()
@@ -65,13 +70,14 @@ router.get('/:id', secureMiddleware, (req, res, next) => {
 router.put('/:id', secureMiddleware2, (req, res, next) => {
   const { logger } = req.app.locals
   const { identifiedUser } = req
-  const body = req.body
+  const { body } = req
   return PrescriptionRepository.getById(req.params.id)
     .then((prescription) => {
       return toState[body.status].change(prescription, { ...body.data, identifiedUser })
 
     })
     .then(updatePrescription => res.status(200).json(updatePrescription.toPlainObject()))
+
     .catch((err) => {
       if (isBusinessError(err)) {
         return next(newBadRequestError('Invalid prescription payload', err, 400))
@@ -81,22 +87,21 @@ router.put('/:id', secureMiddleware2, (req, res, next) => {
     })
 })
 
-
 const toState = {
   CANCELLED: {
     change: (prescription, data) => {
       prescription.statusReason = data.reason
       if (!data.identifiedUser.canCancel()) {
-        throw errors.newForbiddenResourceException("No puede cancelar la receta")
+        throw errors.newForbiddenResourceException('No puede cancelar la receta')
       }
-      //TODO: Agregar en objeto de presciption el atributo statusReason
+      // TODO: Agregar en objeto de presciption el atributo statusReason
       return StateMachine.toCancelled(prescription)
-    }
+    },
   },
   RECEIVE: {
     change: (prescription, data) => {
       if (!data.identifiedUser.canReceive()) {
-        throw errors.newForbiddenResourceException("No puede recepcionar la receta")
+        throw errors.newForbiddenResourceException('No puede recepcionar la receta')
       }
       data.items.forEach(item => {
         let itemToReceive = prescription.items.find(i => i.id == item.id)
@@ -105,10 +110,10 @@ const toState = {
         }
         itemToReceive.receive(item.quantity, moment(), item.medicine,{ id: data.identifiedUser.id })
       })
-      return StateMachine.toReceive(prescription)
-    }
-  }
 
+      return StateMachine.toReceive(prescription)
+    },
+  },
 }
 
 module.exports = router

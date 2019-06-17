@@ -1,24 +1,27 @@
+/* eslint-disable class-methods-use-this */
 const { Medicine } = require('../domain/medicine')
 const { newNotFoundError, newEntityAlreadyCreated } = require('../utils/errors')
-const { generateNewSequencer } = require('../utils/utils')
-
-const sequencer = generateNewSequencer()
+const { MEDICINE } = require('./tablesNames')
+const knex = require('../init/knexConnection')
 
 class MedicineRepository {
-  constructor() {
-    this.medicines = []
-  }
-
   create(_medicine) {
-    return new Promise((resolve, reject) => {
-      const medicine = Medicine.fromObject(_medicine)
-      if (medicine.id) {
-        return reject(newEntityAlreadyCreated('Medicine allready created'))
-      }
-      medicine.id = sequencer.nextValue()
-      this.medicines.push(medicine)
-      return resolve(medicine)
-    })
+    const medicine = Medicine.fromObject(_medicine)
+    if (medicine.id) {
+      throw newEntityAlreadyCreated('Medicine allready created')
+    }
+
+    const insertableMedicine = medicine.toPlainObject()
+    delete insertableMedicine.brandDescription
+    delete insertableMedicine.drugDescription
+    delete insertableMedicine.laboratoryDescription
+    delete insertableMedicine.potencyDescription
+    delete insertableMedicine.presentationDescription
+    delete insertableMedicine.sizeDescription
+
+    return knex(MEDICINE)
+      .insert(insertableMedicine)
+      .then(([id]) => id)
   }
 
   getAll() {
@@ -30,14 +33,12 @@ class MedicineRepository {
   }
 
   getById(id) {
-    id = +id
-    return new Promise((resolve, reject) => {
-      const medicine = this.medicines.find(medicine => medicine.id === id)
-      if (medicine) {
-        return resolve(Medicine.fromObject(medicine))
-      }
-      return reject(newNotFoundError(`No medicine was found with id ${id}`))
-    })
+    return knex(MEDICINE)
+      .where('id', id)
+      .first()
+      .catch((error) => {
+        throw newNotFoundError(`No medicine was found with id ${id}`)
+      })
   }
 }
 

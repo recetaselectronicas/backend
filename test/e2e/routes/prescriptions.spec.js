@@ -17,6 +17,10 @@ describe('when do a get in /prescriptions', () => {
           value: 'CONFIRMADA',
         },
         {
+          id: 'ISSUED',
+          value: 'EMITIDA',
+        },
+        {
           id: 'EXPIRED',
           value: 'VENCIDA',
         },
