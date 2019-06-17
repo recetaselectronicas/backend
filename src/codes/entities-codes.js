@@ -14,6 +14,7 @@ const codes = {
       medicalInsurance: 'medicalInsurance',
       status: 'status',
       norm: 'norm',
+      statusReason: 'statusReason',
       items: 'items',
     },
   },

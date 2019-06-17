@@ -22,6 +22,8 @@ const identifiedUser = {
   getQuery: null,
   checkForbiden: null,
   getActions: null,
+  canReceive: null,
+  canCancel:null,
 }
 
 const identifiedAffiliate = {
@@ -37,6 +39,8 @@ const identifiedAffiliate = {
     }
   },
   getActions: prescription => [],
+  canReceive: () => false,
+  canCancel: () => false,
 }
 
 const identifiedDoctor = {
@@ -54,6 +58,8 @@ const identifiedDoctor = {
   getActions: prescription => [
     availableActions.CANCEL,
   ],
+  canReceive: () => false,
+  canCancel: () => true,
 }
 
 const identifiedPharmacist = {
@@ -71,6 +77,8 @@ const identifiedPharmacist = {
   getActions: prescription => [
     availableActions.RECEIVE,
   ],
+  canReceive: () => true,
+  canCancel: () => false,
 }
 
 const identifiedMedicalInsurance = {
@@ -88,6 +96,8 @@ const identifiedMedicalInsurance = {
   getActions: prescription => [
     availableActions.AUDIT,
   ],
+  canReceive: () => false,
+  canCancel: () => false,
 }
 
 const getIdentifiedAffiliate = (id) => {

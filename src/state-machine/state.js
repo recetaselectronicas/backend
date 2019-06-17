@@ -49,6 +49,9 @@ const ISSUED = {
     const errors = [
       getDiferentValueError(prescription.soldDate, null, prescriptionEntity, prescriptionFields.soldDate),
       getDiferentValueError(prescription.auditedDate, null, prescriptionEntity, prescriptionFields.auditedDate),
+      //TODO: Hacer que de error cuando no es null los atributos en received y audited
+      //...getArrayDoesntMatchError(prescription.items, 'received.quantity', value => !value, itemEntity, itemFields.received.quantity),
+      // ...getArrayDoesntMatchError(prescription.items, 'received.medicine.id', value => !value, itemEntity, itemFields.received.medicine.id),
     ]
     return errors
   },
@@ -62,7 +65,11 @@ const CANCELLED = {
     return errors
   },
   getSpecificErrors: (prescription) => {
-    const errors = []
+    console.log(prescription)
+    const errors = [
+      getNotNullError(prescription.statusReason, prescriptionEntity, prescriptionFields.statusReason)
+      //TODO: SI pasó determinada cantidad de tiempo no puede cancelar
+    ]
     return errors
   },
 }

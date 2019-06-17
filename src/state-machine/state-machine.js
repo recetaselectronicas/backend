@@ -19,6 +19,7 @@ class StateMachine {
   }
 
   validateToIssued(prescription) {
+    console.log(prescription)
     return new Promise((resolve, reject) => {
       states.ISSUED.validate(prescription)
       // TODO: Llamar al validador de reglas de negocio
@@ -27,18 +28,35 @@ class StateMachine {
   }
 
   toCancelled(prescription) {
-
+    return this.validateToCancelled(prescription)
+      .then(() => {
+        prescription.status = states.CANCELLED.status
+        return PrescriptionRepository.update(prescription)
+      })
   }
 
   validateToCancelled(prescription) {
-
+    return new Promise((resolve, reject) => {
+      states.CANCELLED.validate(prescription)
+      //TODO: Llamar al validador de reglas de negocio
+      return resolve()
+    })
   }
 
   toConfirmed(prescription) {
-
+    return this.validateToConfirmed(prescription)
+      .then(() => {
+        prescription.status = states.CONFIRMED.status
+        return PrescriptionRepository.update(prescription)
+      })
   }
 
   validateToConfirmed(prescription) {
+    return new Promise((resolve, reject) => {
+      states.CONFIRMED.validate(prescription)
+      //TODO: Llamar al validador de reglas de negocio
+      return resolve()
+    })
 
   }
 
@@ -48,6 +66,12 @@ class StateMachine {
 
   validateToExpired(prescription) {
 
+  }
+  toReceive(prescription) {
+    if (prescription.items.every(item => item.received.quantity)) {
+      return this.toReceived(prescription)
+    }
+    return this.toPartiallyReceived(prescription)
   }
 
   toReceived(prescription) {
