@@ -7,7 +7,7 @@ const { MedicalInsuranceRepository } = require('../repositories/medicalInsurance
 const { MedicineRepository } = require('../repositories/medicineRepository')
 const { DoctorRepository } = require('../repositories/doctorRepository')
 const { PharmacistRepository } = require('../repositories/pharmacistRepository')
-const { ITEM } = require('./tablesNames')
+const { ITEM, PRESCRIPTION } = require('./tablesNames')
 const knex = require('../init/knexConnection')
 
 class PrescriptionRepository {
@@ -71,9 +71,42 @@ class PrescriptionRepository {
       } catch (error) {
         errors.push(error)
       }
+    }
+    if (errors.length) {
+      throw errors
+    }
+    const plainPrescription = prescription.toPlainObject()
 
-      const plainObjectItem = item.toPlainObject()
-      const insertableItem = {
+    const insertablePrescription = {
+      issued_date: plainPrescription.issuedDate,
+      sold_date: plainPrescription.soldDate,
+      audited_date: plainPrescription.auditedDate,
+      prolonged_treatment: plainPrescription.prolongedTreatment,
+      diagnosis: plainPrescription.diagnosis,
+      ttl: plainPrescription.ttl,
+      id_medical_insurance: plainPrescription.medicalInsurance.id,
+      id_affiliate: plainPrescription.affiliate.id,
+      id_doctor: plainPrescription.doctor.id,
+      id_state: plainPrescription.status.id,
+      id_norm: plainPrescription.norm,
+      id_institution: plainPrescription.institution.id,
+    }
+
+    try {
+      const [prescriptionId] = await knex(PRESCRIPTION).insert(insertablePrescription)
+      const insertableItems = plainPrescription.items.map(({ prescribed }) => ({
+        id_prescription: prescriptionId,
+        id_medicine_prescribed: prescribed.medicine.id,
+        prescribed_quantity: prescribed.quantity,
+      }))
+      await knex(ITEM).insert(insertableItems)
+    } catch (e) {
+      console.log('error', e)
+
+      throw e
+    }
+    /* const plainObjectItem = item.toPlainObject()
+      const inserItem = {
         id_prescription: 1,
         id_medicine_prescribed: plainObjectItem.prescribed.medicine.id,
         prescribed_quantity: plainObjectItem.prescribed.quantity,
@@ -86,12 +119,8 @@ class PrescriptionRepository {
       }
 
       knex(ITEM)
-        .insert(insertableItem)
-        .catch(error => console.log('fatal error', error))
-    }
-    if (errors.length) {
-      throw errors
-    }
+        .insert(inserItem)
+        .catch(error => console.log('fatal error', error)) */
   }
 
   update(_prescription) {

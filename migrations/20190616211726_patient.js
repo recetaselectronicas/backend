@@ -2,14 +2,8 @@ const { PATIENT } = require('../src/repositories/tablesNames')
 
 exports.up = knex => knex.schema.withSchema('recetas').createTable(PATIENT, (table) => {
   table.increments('id')
-  table
-    .integer('user_name')
-    .unsigned()
-    .notNullable()
-  table
-    .integer('password')
-    .unsigned()
-    .notNullable()
+  table.string('user_name').notNullable()
+  table.string('password').notNullable()
   table.string('contact_number', 255)
   table.string('name', 255).notNullable()
   table.string('surname', 255).notNullable()

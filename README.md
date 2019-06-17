@@ -25,3 +25,9 @@ knex migrate:latest
 knex migrate:rollback
 
 ```
+
+- Correr los archivos seeds (para popular la base) (por ejemplo los estados)
+
+```
+knex seed:run
+```

@@ -17,7 +17,6 @@ class InstitutionRepository {
     return knex(INSTITUTION)
       .insert(institution.toPlainObject())
       .then(([id]) => id)
-      .catch(error => console.log('fatal error', error))
   }
 
   getAll() {

@@ -1,6 +1,12 @@
 const { newNullOrEmptyError, generateFieldCause } = require('../utils/errors')
 const {
-  getArrayNotEmptyError, getNotNullError, getDiferentValueError, getValueNotInListError, getBeNullError, getArrayDoesntMatchError, getObjectDoesntMatchError,
+  getArrayNotEmptyError,
+  getNotNullError,
+  getDiferentValueError,
+  getValueNotInListError,
+  getBeNullError,
+  getArrayDoesntMatchError,
+  getObjectDoesntMatchError,
 } = require('../utils/errors')
 const { codes } = require('../codes/entities-codes')
 const array = require('lodash/array')
@@ -25,6 +31,7 @@ const validator = function (prescription) {
   }
 }
 const ISSUED = {
+  id: 'ISSUED',
   status: 'EMITIDA',
   validate: validator,
   getStatusError: prescription => getBeNullError(prescription.status, prescriptionEntity, prescriptionFields.status),
@@ -37,11 +44,29 @@ const ISSUED = {
       getNotNullError(prescription.doctor, prescriptionEntity, prescriptionFields.doctor),
       getObjectDoesntMatchError(prescription, 'doctor.id', value => typeof value === 'number' && !!value, doctorEntity, doctorFields.id),
       getNotNullError(prescription.medicalInsurance, prescriptionEntity, prescriptionFields.medicalInsurance),
-      getObjectDoesntMatchError(prescription, 'medicalInsurance.id', value => typeof value === 'number' && !!value, medicalInsuranceEntity, medicalInsuranceFields.id),
+      getObjectDoesntMatchError(
+        prescription,
+        'medicalInsurance.id',
+        value => typeof value === 'number' && !!value,
+        medicalInsuranceEntity,
+        medicalInsuranceFields.id,
+      ),
       getNotNullError(prescription.norm, prescriptionEntity, prescriptionFields.norm),
       getArrayNotEmptyError(prescription.items, prescriptionEntity, prescriptionFields.items),
-      ...getArrayDoesntMatchError(prescription.items, 'prescribed.quantity', value => typeof value === 'number' && !!value, itemEntity, itemFields.prescribed.quantity),
-      ...getArrayDoesntMatchError(prescription.items, 'prescribed.medicine.id', value => typeof value === 'number' && !!value, itemEntity, itemFields.prescribed.medicine.id),
+      ...getArrayDoesntMatchError(
+        prescription.items,
+        'prescribed.quantity',
+        value => typeof value === 'number' && !!value,
+        itemEntity,
+        itemFields.prescribed.quantity,
+      ),
+      ...getArrayDoesntMatchError(
+        prescription.items,
+        'prescribed.medicine.id',
+        value => typeof value === 'number' && !!value,
+        itemEntity,
+        itemFields.prescribed.medicine.id,
+      ),
     ]
     return errors
   },
@@ -49,14 +74,15 @@ const ISSUED = {
     const errors = [
       getDiferentValueError(prescription.soldDate, null, prescriptionEntity, prescriptionFields.soldDate),
       getDiferentValueError(prescription.auditedDate, null, prescriptionEntity, prescriptionFields.auditedDate),
-      //TODO: Hacer que de error cuando no es null los atributos en received y audited
-      //...getArrayDoesntMatchError(prescription.items, 'received.quantity', value => !value, itemEntity, itemFields.received.quantity),
+      // TODO: Hacer que de error cuando no es null los atributos en received y audited
+      // ...getArrayDoesntMatchError(prescription.items, 'received.quantity', value => !value, itemEntity, itemFields.received.quantity),
       // ...getArrayDoesntMatchError(prescription.items, 'received.medicine.id', value => !value, itemEntity, itemFields.received.medicine.id),
     ]
     return errors
   },
 }
 const CANCELLED = {
+  id: 'CANCELLED',
   status: 'CANCELADA',
   validate: validator,
   getStatusError: prescription => getDiferentValueError(prescription.status, ISSUED.status, prescriptionEntity, prescriptionFields.status),
@@ -67,13 +93,14 @@ const CANCELLED = {
   getSpecificErrors: (prescription) => {
     console.log(prescription)
     const errors = [
-      getNotNullError(prescription.statusReason, prescriptionEntity, prescriptionFields.statusReason)
-      //TODO: SI pasó determinada cantidad de tiempo no puede cancelar
+      getNotNullError(prescription.statusReason, prescriptionEntity, prescriptionFields.statusReason),
+      // TODO: SI pasó determinada cantidad de tiempo no puede cancelar
     ]
     return errors
   },
 }
 const CONFIRMED = {
+  id: 'CONFIRMED',
   status: 'CONFIRMADA',
   validate: validator,
   getStatusError: prescription => getDiferentValueError(prescription.status, ISSUED.status, prescriptionEntity, prescriptionFields.status),
@@ -87,6 +114,7 @@ const CONFIRMED = {
   },
 }
 const EXPIRED = {
+  id: 'EXPIRED',
   status: 'VENCIDA',
   validate: validator,
   getStatusError: prescription => getDiferentValueError(prescription.status, CONFIRMED.status, prescriptionEntity, prescriptionFields.status),
@@ -101,6 +129,7 @@ const EXPIRED = {
   },
 }
 const RECEIVED = {
+  id: 'RECEIVED',
   status: 'RECEPCIONADA',
   validate: validator,
   getStatusError: prescription => getValueNotInListError(prescription.status, [CONFIRMED.status, PARTIALLY_RECEIVED.status], prescriptionEntity, prescriptionFields.status),
@@ -121,6 +150,7 @@ const RECEIVED = {
   },
 }
 const PARTIALLY_RECEIVED = {
+  id: 'PARTIALLY_RECEIVED',
   status: 'PARCIALMENTE_RECEPCIONADA',
   validate: validator,
   getStatusError: prescription => getDiferentValueError(prescription.status, CONFIRMED.status, prescriptionEntity, prescriptionFields.status),
@@ -135,6 +165,7 @@ const PARTIALLY_RECEIVED = {
   },
 }
 const INCOMPLETE = {
+  id: 'INCOMPLETE',
   status: 'INCOMPLETA',
   validate: validator,
   getStatusError: prescription => getDiferentValueError(prescription.status, PARTIALLY_RECEIVED.status, prescriptionEntity, prescriptionFields.status),
@@ -149,6 +180,7 @@ const INCOMPLETE = {
   },
 }
 const AUDITED = {
+  id: 'AUDITED',
   status: 'AUDITADA',
   validate: validator,
   getStatusError: prescription => getValueNotInListError(prescription.status, [INCOMPLETE.status, RECEIVED.status], prescriptionEntity, prescriptionFields.status),
@@ -169,6 +201,7 @@ const AUDITED = {
   },
 }
 const REJECTED = {
+  id: 'REJECTED',
   status: 'RECHAZADA',
   validate: validator,
   getStatusError: prescription => getValueNotInListError(prescription.status, [INCOMPLETE.status, RECEIVED.status], prescriptionEntity, prescriptionFields.status),
@@ -189,6 +222,7 @@ const REJECTED = {
   },
 }
 const PARTIALLY_REJECTED = {
+  id: 'PARTIALLY_REJECTED',
   status: 'PARCIALMENTE_RECHAZADA',
   validate: validator,
   getStatusError: prescription => getValueNotInListError(prescription.status, [INCOMPLETE.status, RECEIVED.status], prescriptionEntity, prescriptionFields.status),

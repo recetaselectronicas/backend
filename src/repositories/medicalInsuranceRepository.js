@@ -17,7 +17,6 @@ class MedicalInsuranceRepository {
     return knex(MEDICAL_INSURANCE)
       .insert({ ...medicalInsurance })
       .then(([id]) => id)
-      .catch(error => console.log('fatal error', error))
   }
 
   getAll() {

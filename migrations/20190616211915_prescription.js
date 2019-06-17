@@ -13,10 +13,7 @@ exports.up = knex => knex.schema.withSchema('recetas').createTable(PRESCRIPTION,
   table.integer('id_medical_insurance').unsigned()
   table.integer('id_affiliate').unsigned()
   table.integer('id_doctor').unsigned()
-  table
-    .integer('id_state')
-    .unsigned()
-    .notNullable()
+  table.string('id_state').notNullable()
   table.integer('id_norm').unsigned()
   table.integer('id_institution').unsigned()
 
