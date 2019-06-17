@@ -11,4 +11,6 @@ module.exports = {
   AFFILIATE: 'affiliate',
   PATIENT: 'patient',
   PLAN: 'plan',
+  PRESCRIPTION: 'prescription',
+  NORM: 'norm',
 }
