@@ -1,5 +1,10 @@
 const { Predicate } = require('../predicates/predicate')
 
+
+// Clase que representa una regla propiamente dicha
+// Tiene una descripcion con la que se muestra y un
+// mensaje de error que devuelve cuando no se cumple
+// la regla
 class Rule extends Predicate {
   doValidate(model) {
     if (!model.description) {

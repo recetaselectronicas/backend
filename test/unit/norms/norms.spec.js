@@ -1,10 +1,7 @@
 /* eslint-disable no-undef */
-const { PrescriptionProlongedTreatmentCriteria, PrescriptionItemsCount } = require('../../../src/norms/criterias/criteria')
-const { IsConector, NotConector, AndConector } = require('../../../src/norms/conectors/conector')
-const { EqualOperator } = require('../../../src/norms/operators/operator')
-const { ExistsAtLeastQuantifier, ExistsQuantifier, ForAllQuantifier } = require('../../../src/norms/quantifiers/quantifier')
+const { PrescriptionProlongedTreatmentCriteria } = require('../../../src/norms/criterias/prescriptionCriteria/prescriptionProlongedTreatmentCriteria')
+const { EqualOperator } = require('../../../src/norms/operators/equalOperator')
 const { Prescription } = require('../../../src/domain/prescription')
-const { _causes } = require('../../../src/utils/errors')
 
 const getPrescription = () => Prescription.fromObject({})
 
