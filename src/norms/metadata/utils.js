@@ -4,6 +4,12 @@ const getFunctions = types => ({
     if (json.predicates) {
       return json.predicates.map(predicate => types[predicate.type].loadPredicate(predicate))
     }
+    if (json.states) {
+      return json.states.map(state => types[state.type].loadPredicate(state))
+    }
+    if (json.rules) {
+      return json.rules.map(rule => types[rule.type].loadPredicate(rule))
+    }
     return null
   },
   loadPredicate(json) {
