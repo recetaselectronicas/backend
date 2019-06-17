@@ -14,14 +14,15 @@ const types = {
 
 // Se generan las funciones que cargan los diferentes tipos y se las bindean
 // a la constante types
-const { loadPredicate, loadPredicates } = getFunctions(types)
+const { loadPredicate, loadPredicates, loadAntecedentAndConsequent } = getFunctions(types)
 
-// El motivo de los exports acá es porder desde todos los metadata poder accede
-// a estas funiones loadPredicate y loadPredicates que relacionana los metadata
-// entre si
+// El motivo de los exports acá es para poder desde todos los metadata acceder
+// a estas funiones loadPredicate, loadPredicates y loadAntecedentAndConsequent que
+// relacionana los metadata entre si
 exports.types = types
 exports.loadPredicate = loadPredicate
 exports.loadPredicates = loadPredicates
+exports.loadAntecedentAndConsequent = loadAntecedentAndConsequent
 
 const { EXECUTABLE_METADATA } = require('./executableMetadata')
 const { CONECTOR_METADATA } = require('./conectorsMetadata')
