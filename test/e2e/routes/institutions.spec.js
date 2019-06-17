@@ -22,7 +22,7 @@ describe('when do a get in /institutions', () => {
     ]
 
     beforeAll(() => {
-      InstitutionRepository.institutions = institutionsValue
+      InstitutionRepository.getAll = () => institutionsValue
     })
 
     it('return all available the institutions', () => request(app)
