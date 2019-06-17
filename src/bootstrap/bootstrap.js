@@ -246,7 +246,7 @@ let prescription1 = new Prescription()
 prescription1.diagnosis = 'Malestar general'
 prescription1.norm = 1
 prescription1.ttl = 30
-prescription1.status = states.CONFIRMED
+prescription1.status = states.CONFIRMED.status
 prescription1.prolongedTreatment = true
 prescription1.setIssuedDate('01/06/2019 09:30')
 
@@ -254,7 +254,7 @@ let prescription2 = new Prescription()
 prescription2.diagnosis = 'Diarrea y vómitos'
 prescription2.norm = 1
 prescription2.ttl = 30
-prescription2.status = states.RECEIVED
+prescription2.status = states.RECEIVED.status
 prescription2.prolongedTreatment = false
 prescription2.setIssuedDate('20/05/2019 11:35')
 
@@ -262,7 +262,7 @@ let prescription3 = new Prescription()
 prescription3.diagnosis = 'Erupcion cutanea'
 prescription3.norm = 1
 prescription3.ttl = 30
-prescription3.status = states.AUDITED
+prescription3.status = states.AUDITED.status
 prescription3.prolongedTreatment = false
 prescription3.setIssuedDate('12/04/2019 15:50')
 
