@@ -10,7 +10,11 @@
     "SharedArrayBuffer": "readonly",
     "describe": true,
     "expect": true,
-    "it": true
+    "it": true,
+    "test": true,
+    "beforeEach": true,
+    "beforeAll": true,
+    "jest": true
   },
   "parserOptions": {
     "ecmaVersion": 2018

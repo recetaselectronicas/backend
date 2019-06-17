@@ -1,4 +1,5 @@
 const express = require('express')
+
 const router = express.Router()
 const { MedicalInsuranceRepository } = require('../repositories/medicalInsuranceRepository')
 const { DoctorRepository } = require('../repositories/doctorRepository')
@@ -15,10 +16,8 @@ router.get('/:id/medical-insurances', async (req, res, next) => {
 
 router.get('/', (req, res, next) => {
   DoctorRepository.getAll()
-  .then(doctors => {
-    return res.json(doctors.map(doctor => doctor.toPlainObject()))
-  })
-  .catch(next)
+    .then(doctors => res.json(doctors.map(doctor => doctor.toPlainObject())))
+    .catch(next)
 })
 
 module.exports = router
