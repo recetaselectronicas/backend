@@ -44,9 +44,7 @@ const secureMiddleware3 = (req, res, next) => {
 router.get('/', secureMiddleware, (req, res, next) => {
   const { logger } = req.app.locals
   const { identifiedUser } = req
-  console.log(req.query.status)
   const prescriptionQuery = identifiedUser.getQuery(req.query)
-  console.log('prescriptionQuery', prescriptionQuery)
   return PrescriptionRepository.getByQuery(prescriptionQuery)
     .then((prescriptions) => {
       const filters = identifiedUser.getFilters()

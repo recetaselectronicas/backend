@@ -1,4 +1,4 @@
-/* const { Affiliate } = require('../domain/affiliate')
+const { Affiliate } = require('../domain/affiliate')
 const { Doctor } = require('../domain/doctor')
 const { Institution } = require('../domain/institution')
 const { Item } = require('../domain/item')
@@ -330,4 +330,3 @@ const generateData = async () => {
 module.exports = {
   generateData,
 }
- */

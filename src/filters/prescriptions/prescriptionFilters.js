@@ -22,6 +22,9 @@ const queryBuilder = (params, caller, availableFilters) => {
     toIssueDate: 'issueDateRange',
   }
 
+  queryObject.filters = {
+    status: availableFilters.filters.status.values.map(status => status.id),
+  }
   if (params && typeof params === 'object' && !(params instanceof Array)) {
     queryObject = Object.keys(params).reduce((queryObject, key) => {
       const newQueryObject = { ...queryObject }
@@ -31,10 +34,7 @@ const queryBuilder = (params, caller, availableFilters) => {
       if (filter) {
         newQueryObject.filters[key] = filter.getMatchingValues(key, params[key])
       } else if (isRangeFilter) {
-        newQueryObject.filters[key] = availableFilters.filters[relationRangedKey[key]].getMatchingValues(
-          key,
-          params[key],
-        )
+        newQueryObject.filters[key] = availableFilters.filters[relationRangedKey[key]].getMatchingValues(key, params[key])
       } else if (isOrderFilter) {
         newQueryObject.orders = availableFilters.orders.getMatchingValues(key, params[key])
       }
