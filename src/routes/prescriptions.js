@@ -59,6 +59,7 @@ router.get('/:id', secureMiddleware, (req, res, next) => {
   const { identifiedUser } = req
   return PrescriptionRepository.getById(req.params.id)
     .then((prescription) => {
+      console.log('prescription', prescription)
       identifiedUser.checkForbiden(prescription)
       const actions = identifiedUser.getActions(prescription)
       return res.json({ result: prescription.toPlainObject(), actions })

@@ -8,7 +8,7 @@ const { MedicineRepository } = require('../repositories/medicineRepository')
 const { DoctorRepository } = require('../repositories/doctorRepository')
 const { PharmacistRepository } = require('../repositories/pharmacistRepository')
 const {
-  ITEM, PRESCRIPTION, INSTITUTION, STATE, MEDICINE,
+  ITEM, PRESCRIPTION, INSTITUTION, STATE, MEDICINE, AFFILIATE, PATIENT, MEDICAL_INSURANCE, DOCTOR,
 } = require('./tablesNames')
 const knex = require('../init/knexConnection')
 
@@ -133,11 +133,58 @@ class PrescriptionRepository {
 
   getById(id) {
     return knex
-      .select()
+      .select(
+        `${PRESCRIPTION}.diagnosis`,
+        `${PRESCRIPTION}.prolonged_treatment`,
+        `${PRESCRIPTION}.id`,
+        `${PRESCRIPTION}.issuedDate`,
+        `${PRESCRIPTION}.soldDate`,
+        `${PRESCRIPTION}.ttl`,
+        `${AFFILIATE}.id as id_affiliate`,
+        `${AFFILIATE}.code as code_affiliate`,
+        `${PATIENT}.name as name_affiliate`,
+        `${PATIENT}.surname as surname_affiliate`,
+        `${INSTITUTION}.description as institution_description`,
+        `${INSTITUTION}.id as institutionId`,
+        `${MEDICAL_INSURANCE}.description as medical_insurance_description`,
+        `${MEDICAL_INSURANCE}.id as medical_insurance_id`,
+        `${STATE}.description as status`,
+        `${DOCTOR}.name as name_doctor`,
+        `${DOCTOR}.last_name as last_name_doctor`,
+      )
       .table(PRESCRIPTION)
-      .where('id', id)
+      .where(`${PRESCRIPTION}.id`, id)
+      .leftJoin(AFFILIATE, `${PRESCRIPTION}.id_affiliate`, `${AFFILIATE}.id`)
+      .leftJoin(PATIENT, `${AFFILIATE}.id_patient`, `${PATIENT}.id`)
+      .innerJoin(INSTITUTION, `${PRESCRIPTION}.id_institution`, `${INSTITUTION}.id`)
+      .innerJoin(MEDICAL_INSURANCE, `${PRESCRIPTION}.id_medical_insurance`, `${MEDICAL_INSURANCE}.id`)
+      .innerJoin(STATE, `${PRESCRIPTION}.id_state`, `${STATE}.id`)
+      .innerJoin(DOCTOR, `${PRESCRIPTION}.id_doctor`, `${DOCTOR}.id`)
       .first()
-      .then(response => Prescription.fromObject(response))
+      .then((response) => {
+        console.log(response)
+        const muttedPrescription = { ...response }
+        muttedPrescription.affiliate = {
+          id: response.idAffiliate,
+          code: response.codeAffiliate,
+          name: response.nameAffiliate,
+          surname: response.surnameAffiliate,
+        }
+        muttedPrescription.institution = {
+          id: response.institutionId,
+          description: response.institutionDescription,
+        }
+
+        muttedPrescription.medicalInsurance = {
+          id: response.medicalInsuranceId,
+          description: response.medicalInsuranceDescription,
+        }
+        muttedPrescription.doctor = {
+          name: response.nameDoctor,
+          lastName: response.lastNameDoctor,
+        }
+        return Prescription.fromObject(muttedPrescription)
+      })
       .catch((error) => {
         console.log('error getting by id prescritption', error)
         throw newNotFoundError(`No prescription was found with id ${id}`)
