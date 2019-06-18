@@ -29,7 +29,7 @@ router.post('/', async (req, res, next) => {
 })
 
 const secureMiddleware = (req, res, next) => {
-  req.identifiedUser = permissions.getIdentifiedAffiliate(1)
+  req.identifiedUser = permissions.getIdentifiedAffiliate(2)
   return next()
 }
 const secureMiddleware2 = (req, res, next) => {

@@ -25,7 +25,9 @@ class AffiliateRepository {
       image_credential: plainAffiliate.imageCredential,
     }
 
-    return knex(AFFILIATE).insert(insertableAffiliate)
+    return knex(AFFILIATE)
+      .insert(insertableAffiliate)
+      .then(([id]) => id)
   }
 
   getAll() {
