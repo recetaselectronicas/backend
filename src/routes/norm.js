@@ -4,6 +4,7 @@ const router = express.Router()
 const { NormRepository } = require('../repositories/normRepository')
 const { validateNorm } = require('../norms/norm')
 const errors = require('../utils/errors')
+const { RULE_METADATA } = require('../norms/metadata/generate/generateMetadata')
 
 // Falta el middleware de seguridad para saber de que obra social
 // es la norma que se quiere ver o crear
@@ -24,6 +25,9 @@ router.post('/', async (req, res, next) => {
   }
 })
 
+router.get('/definition', (req, res, next) => {
+  return res.json(RULE_METADATA)
+})
 
 // Este endpoint seguro va a cambiar. Habría que pensar como es mejor
 // para el metodo rest la consulta de la norma vigente de la obra social
@@ -34,5 +38,6 @@ router.get('/:id', (req, res, next) => NormRepository.getById(req.params.id)
 router.get('/', (req, res, next) => NormRepository.getAll()
   .then(norms => res.json(norms))
   .catch(next))
+
 
 module.exports = router
