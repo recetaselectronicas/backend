@@ -20,6 +20,23 @@ const getFunctions = types => ({
       return this.loadPredicates(json)
     }
     return null
+  },
+  loadAntecedentAndConsequent(json) {
+    const model = {
+      antecedent: null,
+      consequent: null
+    }
+    if (json.antecedent) {
+      model.antecedent = types[json.antecedent.type].loadPredicate(json.antecedent)
+    } else {
+      delete model.antecedent
+    }
+    if (json.consequent) {
+      model.consequent = types[json.consequent.type].loadPredicate(json.consequent)
+    } else {
+      delete model.consequent
+    }
+    return model
   }
 })
 

@@ -3,11 +3,14 @@
 const object = require('lodash/object')
 const { Operator } = require('./operator')
 
-class GreaterOperator extends Operator {
+// Clase que representa una operacion de desigualdad
+// Satisface cuando el valor que se recibió y el esperado son
+// distintos ya sea en tipo o valor
+class DistinctOperator extends Operator {
   doValidate(model) {
     super.doValidate(model)
     if (!object.has(model, 'expectedValue')) {
-      throw new Error('Error while assembling GreaterOperator. No expectedValue given')
+      throw new Error('Error while assembling DistinctOperator. No expectedValue given')
     }
   }
 
@@ -17,11 +20,11 @@ class GreaterOperator extends Operator {
   }
 
   satisfies() {
-    return this.attributeValue > this.expectedValue
+    return this.attributeValue !== this.expectedValue
   }
 
   getName() {
-    return 'GREATER'
+    return 'DISTINCT'
   }
 
   getModelToJson() {
@@ -31,4 +34,4 @@ class GreaterOperator extends Operator {
   }
 }
 
-module.exports = { GreaterOperator }
+module.exports = { DistinctOperator }
