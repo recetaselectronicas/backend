@@ -8,7 +8,7 @@ const { MedicineRepository } = require('../repositories/medicineRepository')
 const { DoctorRepository } = require('../repositories/doctorRepository')
 const { PharmacistRepository } = require('../repositories/pharmacistRepository')
 const {
-  ITEM, PRESCRIPTION, INSTITUTION, STATE, MEDICINE, AFFILIATE, PATIENT, MEDICAL_INSURANCE, DOCTOR,
+  ITEM, PRESCRIPTION, INSTITUTION, STATE, MEDICINE, AFFILIATE, PATIENT, MEDICAL_INSURANCE, DOCTOR
 } = require('./tablesNames')
 const knex = require('../init/knexConnection')
 
@@ -28,7 +28,6 @@ class PrescriptionRepository {
   }
 
   async create(_prescription) {
-    console.log('_prescription', _prescription)
     const prescription = Prescription.fromObject(_prescription).clone()
     if (prescription.id) {
       throw newEntityAlreadyCreated('Prescription allready created')
@@ -46,7 +45,7 @@ class PrescriptionRepository {
     }
     try {
       prescription.setMedicalInsurance(
-        prescription.medicalInsurance.id && (await MedicalInsuranceRepository.getById(prescription.medicalInsurance.id || prescription.medicalInsurance)),
+        prescription.medicalInsurance.id && (await MedicalInsuranceRepository.getById(prescription.medicalInsurance.id || prescription.medicalInsurance))
       )
     } catch (error) {
       errors.push(error)
@@ -82,7 +81,6 @@ class PrescriptionRepository {
       throw errors
     }
     const plainPrescription = prescription.toPlainObject()
-    console.log('plainPrescription', plainPrescription)
     const insertablePrescription = {
       issued_date: plainPrescription.issuedDate,
       sold_date: plainPrescription.soldDate,
@@ -93,9 +91,9 @@ class PrescriptionRepository {
       id_medical_insurance: plainPrescription.medicalInsurance.id,
       id_affiliate: plainPrescription.affiliate.id,
       id_doctor: plainPrescription.doctor.id,
-      id_state: plainPrescription.status.id,
+      id_state: plainPrescription.status,
       id_norm: plainPrescription.norm,
-      id_institution: plainPrescription.institution.id,
+      id_institution: plainPrescription.institution.id
     }
 
     try {
@@ -109,9 +107,8 @@ class PrescriptionRepository {
         id_medicine_audited: audited.medicine.id,
         audited_quantity: audited.quantity,
         id_pharmacist: received.pharmacist.id,
-        sold_date: received.soldDate,
+        sold_date: received.soldDate
       }))
-      console.log(insertableItems)
       await knex(ITEM).insert(insertableItems)
 
       return prescriptionId
@@ -162,7 +159,7 @@ class PrescriptionRepository {
         `${MEDICAL_INSURANCE}.id as medical_insurance_id`,
         `${STATE}.description as status`,
         `${DOCTOR}.name as name_doctor`,
-        `${DOCTOR}.last_name as last_name_doctor`,
+        `${DOCTOR}.last_name as last_name_doctor`
       )
       .table(PRESCRIPTION)
       .leftJoin(AFFILIATE, `${PRESCRIPTION}.id_affiliate`, `${AFFILIATE}.id`)
@@ -190,7 +187,7 @@ class PrescriptionRepository {
           || (searchedPrescription.institution && searchedPrescription.institution.id === aPrescription.institution.id)
           || (searchedPrescription.affiliate && searchedPrescription.affiliate.id === aPrescription.affiliate.id)
           || (searchedPrescription.doctor && searchedPrescription.doctor.id === aPrescription.doctor.id)
-          || (searchedPrescription.medicalInsurance && searchedPrescription.medicalInsurance.id === aPrescription.medicalInsurance.id),
+          || (searchedPrescription.medicalInsurance && searchedPrescription.medicalInsurance.id === aPrescription.medicalInsurance.id)
       )
       return resolve(prescriptions)
     })
@@ -225,7 +222,7 @@ class PrescriptionRepository {
           `${MEDICAL_INSURANCE}.id as medical_insurance_id`,
           `${STATE}.description as status`,
           `${DOCTOR}.name as name_doctor`,
-          `${DOCTOR}.last_name as last_name_doctor`,
+          `${DOCTOR}.last_name as last_name_doctor`
         )
         .table(PRESCRIPTION)
         .innerJoin(STATE, `${PRESCRIPTION}.id_state`, `${STATE}.id`)
@@ -235,38 +232,7 @@ class PrescriptionRepository {
         .innerJoin(MEDICAL_INSURANCE, `${PRESCRIPTION}.id_medical_insurance`, `${MEDICAL_INSURANCE}.id`)
         .innerJoin(DOCTOR, `${PRESCRIPTION}.id_doctor`, `${DOCTOR}.id`)
         .whereIn('id_state', status)
-      return await Promise.all(
-        prescriptions.map(async (prescription) => {
-          const muttatedPrescription = { ...prescription }
-          let items = []
-          try {
-            items = await this.getItems(prescription.id)
-          } catch (e) {
-            console.log('error get items', e)
-            throw e
-          }
-          muttatedPrescription.affiliate = {
-            id: muttatedPrescription.idAffiliate,
-            code: muttatedPrescription.codeAffiliate,
-            name: muttatedPrescription.nameAffiliate,
-            surname: muttatedPrescription.surnameAffiliate,
-          }
-          muttatedPrescription.institution = {
-            id: muttatedPrescription.institutionId,
-            description: muttatedPrescription.institutionDescription,
-          }
-          muttatedPrescription.medicalInsurance = {
-            id: muttatedPrescription.medicalInsuranceId,
-            description: muttatedPrescription.medicalInsuranceDescription,
-          }
-          muttatedPrescription.doctor = {
-            name: muttatedPrescription.nameDoctor,
-            lastName: muttatedPrescription.lastNameDoctor,
-          }
-          muttatedPrescription.items = items
-          return Prescription.fromObject(muttatedPrescription)
-        }),
-      )
+      return await Promise.all(prescriptions.map(this.getDomainPrescription))
     } catch (error) {
       console.log('fatal error', error)
       throw error
@@ -290,7 +256,7 @@ class PrescriptionRepository {
         `${medicineAudited}.description as medicine_audited_description`,
         `${medicineAudited}.id as medicine_audited_id`,
         `${medicineReceived}.description as medicine_received_description`,
-        `${medicineReceived}.id as medicine_received_id`,
+        `${medicineReceived}.id as medicine_received_id`
       )
       .table(ITEM)
       .where('id_prescription', prescriptionId)
@@ -303,8 +269,8 @@ class PrescriptionRepository {
           quantity: item.prescribedQuantity,
           medicine: {
             description: item.medicinePrescribedDescription,
-            id: item.medicinePrescribedId,
-          },
+            id: item.medicinePrescribedId
+          }
         },
         received: {
           quantity: item.receivedQuantity,
@@ -312,16 +278,16 @@ class PrescriptionRepository {
           pharmacist: item.idPharmacist,
           medicine: {
             description: item.medicineReceivedDescription,
-            id: item.medicineReceivedId,
-          },
+            id: item.medicineReceivedId
+          }
         },
         audited: {
           quantity: item.auditedQuantity,
           medicine: {
             description: item.medicineAuditedDescription,
-            id: item.medicineAuditedId,
-          },
-        },
+            id: item.medicineAuditedId
+          }
+        }
       })))
   }
 
@@ -331,43 +297,23 @@ class PrescriptionRepository {
       id: response.idAffiliate,
       code: response.codeAffiliate,
       name: response.nameAffiliate,
-      surname: response.surnameAffiliate,
+      surname: response.surnameAffiliate
     }
     muttedPrescription.institution = {
       id: response.institutionId,
-      description: response.institutionDescription,
+      description: response.institutionDescription
     }
 
     muttedPrescription.medicalInsurance = {
       id: response.medicalInsuranceId,
-      description: response.medicalInsuranceDescription,
+      description: response.medicalInsuranceDescription
     }
     muttedPrescription.doctor = {
       name: response.nameDoctor,
-      lastName: response.lastNameDoctor,
+      lastName: response.lastNameDoctor
     }
     muttedPrescription.items = await this.getItems(muttedPrescription.id)
     return Prescription.fromObject(muttedPrescription)
-  }
-
-  async getPrescribedDataItem(prescriptionId) {
-    return knex
-      .select(
-        `${ITEM}.id`,
-        `${ITEM}.prescribed_quantity`,
-        `${MEDICINE}.description as medicine_prescribed_description`,
-        `${MEDICINE}.id as medicine_prescribed_id`,
-      )
-      .table(ITEM)
-      .where('id_prescription', prescriptionId)
-      .leftJoin(MEDICINE, `${ITEM}.id_medicine_prescribed`, `${MEDICINE}.id`)
-      .then(response => response.map(item => ({
-        quantity: item.prescribedQuantity,
-        medicine: {
-          description: item.medicinePrescribedDescription,
-          id: item.medicinePrescribedId,
-        },
-      })))
   }
 }
 

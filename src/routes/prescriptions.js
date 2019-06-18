@@ -7,6 +7,7 @@ const { newBadRequestError, isBusinessError } = require('../utils/errors')
 const { PrescriptionRepository } = require('../repositories/prescriptions-repository')
 const permissions = require('../permissions/identifiedUser')
 const errors = require('../utils/errors')
+const moment = require('moment')
 
 router.post('/', async (req, res, next) => {
   const { logger } = req.app.locals
@@ -59,7 +60,6 @@ router.get('/:id', secureMiddleware, (req, res, next) => {
   const { identifiedUser } = req
   return PrescriptionRepository.getById(req.params.id)
     .then((prescription) => {
-      console.log('prescription', prescription)
       identifiedUser.checkForbiden(prescription)
       const actions = identifiedUser.getActions(prescription)
       return res.json({ result: prescription.toPlainObject(), actions })
@@ -67,17 +67,19 @@ router.get('/:id', secureMiddleware, (req, res, next) => {
     .catch(next)
 })
 
-router.put('/:id', secureMiddleware3, (req, res, next) => {
+router.put('/:id', secureMiddleware2, (req, res, next) => {
   const { logger } = req.app.locals
   const { identifiedUser } = req
   const { body } = req
   return PrescriptionRepository.getById(req.params.id)
     .then(prescription => toState[body.status].change(prescription, { ...body.data, identifiedUser }))
-    .then(updatePrescription => res.status(201).json(updatePrescription.toPlainObject()))
+    .then(updatePrescription => res.status(200).json(updatePrescription.toPlainObject()))
+
     .catch((err) => {
       if (isBusinessError(err)) {
         return next(newBadRequestError('Invalid prescription payload', err, 400))
       }
+      // TODO:Definir catcheo para no perder errores
       return next(err)
     })
 })
@@ -91,12 +93,7 @@ const toState = {
       }
       // TODO: Agregar en objeto de presciption el atributo statusReason
       return StateMachine.toCancelled(prescription)
-    },
-  },
-  CONFIRMED: {
-    change: (prescription, data) =>
-      // TODO: Agregar en objeto de presciption el atributo statusReason
-      StateMachine.toConfirmed(prescription),
+    }
   },
   RECEIVE: {
     change: (prescription, data) => {
@@ -104,16 +101,16 @@ const toState = {
         throw errors.newForbiddenResourceException('No puede recepcionar la receta')
       }
       data.items.forEach((item) => {
-        const { received } = prescription.items.find(i => (i.id = item.id))
-        received.medicine = item.medicine
-        received.quantity = item.quantity
-        received.pharmacist.id = data.identifiedUser.id
-        received.soldDate = item.soldDate
+        const itemToReceive = prescription.items.find(i => i.id == item.id)
+        if (itemToReceive.received.quantity) {
+          throw errors.newEntityAlreadyCreated('El item ya fué recepcionado')
+        }
+        itemToReceive.receive(item.quantity, moment(), item.medicine, { id: data.identifiedUser.id })
       })
-      // TODO: Agregar en objeto de presciption el atributo statusReason
+
       return StateMachine.toReceive(prescription)
-    },
-  },
+    }
+  }
 }
 
 module.exports = router

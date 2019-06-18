@@ -45,6 +45,22 @@ const codes = {
           id: 'prescribed.medicine.id',
         },
       },
+      received: {
+        quantity: 'received.quantity',
+        medicine: {
+          id: 'received.medicine.id',
+        },
+        soldDate: 'received.soldDate',
+        pharmacist: {
+          id: "received.pharmacist.id"
+        },
+      },
+      audited: {
+        quantity: 'audited.quantity',
+        medicine: {
+          id: 'audited.medicine.id',
+        },
+      },
     },
   },
 }
