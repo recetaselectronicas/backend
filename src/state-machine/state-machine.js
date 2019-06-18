@@ -10,12 +10,10 @@ class StateMachine {
     prescription.ttl = 30 // TODO: reemplazar con el llamado a tiempo de vida posta segun OS
     prescription.norm = 1 // TODO: reemplazar con el llamado a norma vigente segun OS
 
-    return this.validateToIssued(prescription)
-      .then(() => {
-        prescription.status = states.ISSUED
-        return PrescriptionRepository.create(prescription)
-      })
-
+    return this.validateToIssued(prescription).then(() => {
+      prescription.status = states.ISSUED.id
+      return PrescriptionRepository.create(prescription)
+    })
   }
 
   validateToIssued(prescription) {
@@ -27,11 +25,10 @@ class StateMachine {
   }
 
   toCancelled(prescription) {
-    return this.validateToCancelled(prescription)
-      .then(() => {
-        prescription.status = states.CANCELLED
-        return PrescriptionRepository.update(prescription)
-      })
+    return this.validateToCancelled(prescription).then(() => {
+      prescription.status = states.CANCELLED
+      return PrescriptionRepository.update(prescription)
+    })
   }
 
   validateToCancelled(prescription) {
@@ -43,7 +40,6 @@ class StateMachine {
   }
 
   toConfirmed(prescription) {
-
     return this.validateToConfirmed(prescription).then(() => {
       prescription.status = states.CONFIRMED.status
       return PrescriptionRepository.update(prescription)
@@ -71,11 +67,10 @@ class StateMachine {
   }
 
   toReceived(prescription) {
-    return this.validateToReceived(prescription)
-      .then(() => {
-        prescription.status = states.RECEIVED
-        return PrescriptionRepository.update(prescription)
-      })
+    return this.validateToReceived(prescription).then(() => {
+      prescription.status = states.RECEIVED
+      return PrescriptionRepository.update(prescription)
+    })
   }
 
   validateToReceived(prescription) {
@@ -87,11 +82,10 @@ class StateMachine {
   }
 
   toPartiallyReceived(prescription) {
-    return this.validateToPartiallyReceived(prescription)
-      .then(() => {
-        prescription.status = states.PARTIALLY_RECEIVED
-        return PrescriptionRepository.update(prescription)
-      })
+    return this.validateToPartiallyReceived(prescription).then(() => {
+      prescription.status = states.PARTIALLY_RECEIVED
+      return PrescriptionRepository.update(prescription)
+    })
   }
 
   validateToPartiallyReceived(prescription) {
@@ -101,7 +95,6 @@ class StateMachine {
       return resolve()
     })
   }
-
 
   toIncomplete(prescription) {}
 

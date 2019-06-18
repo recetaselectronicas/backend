@@ -22,10 +22,12 @@ class AffiliateRepository {
       from_date: plainAffiliate.fromDate,
       to_date: plainAffiliate.toDate,
       code: plainAffiliate.code,
-      image_credential: plainAffiliate.imageCredential,
+      image_credential: plainAffiliate.imageCredential
     }
 
-    return knex(AFFILIATE).insert(insertableAffiliate)
+    return knex(AFFILIATE)
+      .insert(insertableAffiliate)
+      .then(([id]) => id)
   }
 
   getAll() {
@@ -49,5 +51,5 @@ class AffiliateRepository {
   }
 }
 module.exports = {
-  AffiliateRepository: new AffiliateRepository(),
+  AffiliateRepository: new AffiliateRepository()
 }

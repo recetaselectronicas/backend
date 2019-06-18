@@ -6,7 +6,7 @@ const {
   getValueNotInListError,
   getBeNullError,
   getArrayDoesntMatchError,
-  getObjectDoesntMatchError,
+  getObjectDoesntMatchError
 } = require('../utils/errors')
 const { codes } = require('../codes/entities-codes')
 const array = require('lodash/array')
@@ -44,42 +44,24 @@ const ISSUED = {
       getNotNullError(prescription.doctor, prescriptionEntity, prescriptionFields.doctor),
       getObjectDoesntMatchError(prescription, 'doctor.id', value => typeof value === 'number' && !!value, doctorEntity, doctorFields.id),
       getNotNullError(prescription.medicalInsurance, prescriptionEntity, prescriptionFields.medicalInsurance),
-      getObjectDoesntMatchError(
-        prescription,
-        'medicalInsurance.id',
-        value => typeof value === 'number' && !!value,
-        medicalInsuranceEntity,
-        medicalInsuranceFields.id,
-      ),
+      getObjectDoesntMatchError(prescription, 'medicalInsurance.id', value => typeof value === 'number' && !!value, medicalInsuranceEntity, medicalInsuranceFields.id),
       getNotNullError(prescription.norm, prescriptionEntity, prescriptionFields.norm),
       getArrayNotEmptyError(prescription.items, prescriptionEntity, prescriptionFields.items),
-      ...getArrayDoesntMatchError(
-        prescription.items,
-        'prescribed.quantity',
-        value => typeof value === 'number' && !!value,
-        itemEntity,
-        itemFields.prescribed.quantity,
-      ),
-      ...getArrayDoesntMatchError(
-        prescription.items,
-        'prescribed.medicine.id',
-        value => typeof value === 'number' && !!value,
-        itemEntity,
-        itemFields.prescribed.medicine.id,
-      ),
+      ...getArrayDoesntMatchError(prescription.items, 'prescribed.quantity', value => typeof value === 'number' && !!value, itemEntity, itemFields.prescribed.quantity),
+      ...getArrayDoesntMatchError(prescription.items, 'prescribed.medicine.id', value => typeof value === 'number' && !!value, itemEntity, itemFields.prescribed.medicine.id)
     ]
     return errors
   },
   getSpecificErrors: (prescription) => {
     const errors = [
       getDiferentValueError(prescription.soldDate, null, prescriptionEntity, prescriptionFields.soldDate),
-      getDiferentValueError(prescription.auditedDate, null, prescriptionEntity, prescriptionFields.auditedDate),
-      //TODO: Hacer que de error cuando no es null los atributos en received y audited
+      getDiferentValueError(prescription.auditedDate, null, prescriptionEntity, prescriptionFields.auditedDate)
+      // TODO: Hacer que de error cuando no es null los atributos en received y audited
       // ...getArrayDoesntMatchError(prescription.items, 'received.quantity', value => !value, itemEntity, itemFields.received.quantity),
       // ...getArrayDoesntMatchError(prescription.items, 'received.medicine.id', value => !value, itemEntity, itemFields.received.medicine.id),
     ]
     return errors
-  },
+  }
 }
 const CANCELLED = {
   id: 'CANCELLED',
@@ -93,10 +75,10 @@ const CANCELLED = {
   getSpecificErrors: (prescription) => {
     const errors = [
       getNotNullError(prescription.statusReason, prescriptionEntity, prescriptionFields.statusReason)
-
+      // TODO: SI pasó determinada cantidad de tiempo no puede cancelar
     ]
     return errors
-  },
+  }
 }
 const CONFIRMED = {
   id: 'CONFIRMED',
@@ -110,7 +92,7 @@ const CONFIRMED = {
   getSpecificErrors: (prescription) => {
     const errors = []
     return errors
-  },
+  }
 }
 const EXPIRED = {
   id: 'EXPIRED',
@@ -125,7 +107,7 @@ const EXPIRED = {
   getSpecificErrors: (prescription) => {
     const errors = []
     return errors
-  },
+  }
 }
 const RECEIVED = {
   id: 'RECEIVED',
@@ -148,13 +130,12 @@ const RECEIVED = {
       ...getArrayDoesntMatchError(prescription.items, 'received.quantity', value => typeof value === 'number' && !!value, itemEntity, itemFields.received.quantity),
       ...getArrayDoesntMatchError(prescription.items, 'received.medicine.id', value => typeof value === 'number' && !!value, itemEntity, itemFields.received.medicine.id),
       ...getArrayDoesntMatchError(prescription.items, 'received.pharmacist.id', value => typeof value === 'number' && !!value, itemEntity, itemFields.received.pharmacist.id),
-      //...getArrayDoesntMatchError(prescription.items, 'received.soldDate', value => typeof value === 'moment' && !!value, itemEntity, itemFields.received.soldDate),
+      // ...getArrayDoesntMatchError(prescription.items, 'received.soldDate', value => typeof value === 'moment' && !!value, itemEntity, itemFields.received.soldDate),
       ...getArrayDoesntMatchError(prescription.items, 'audited.quantity', value => !value, itemEntity, itemFields.audited.quantity),
-      ...getArrayDoesntMatchError(prescription.items, 'audited.medicine.id', value => !value, itemEntity, itemFields.audited.medicine.id),
-    
+      ...getArrayDoesntMatchError(prescription.items, 'audited.medicine.id', value => !value, itemEntity, itemFields.audited.medicine.id)
     ]
     return errors
-  },
+  }
 }
 const PARTIALLY_RECEIVED = {
   id: 'PARTIALLY_RECEIVED',
@@ -169,7 +150,7 @@ const PARTIALLY_RECEIVED = {
   getSpecificErrors: (prescription) => {
     const errors = []
     return errors
-  },
+  }
 }
 const INCOMPLETE = {
   id: 'INCOMPLETE',
@@ -184,7 +165,7 @@ const INCOMPLETE = {
   getSpecificErrors: (prescription) => {
     const errors = []
     return errors
-  },
+  }
 }
 const AUDITED = {
   id: 'AUDITED',
@@ -205,7 +186,7 @@ const AUDITED = {
   getSpecificErrors: (prescription) => {
     const errors = []
     return errors
-  },
+  }
 }
 const REJECTED = {
   id: 'REJECTED',
@@ -226,7 +207,7 @@ const REJECTED = {
   getSpecificErrors: (prescription) => {
     const errors = []
     return errors
-  },
+  }
 }
 const PARTIALLY_REJECTED = {
   id: 'PARTIALLY_REJECTED',
@@ -247,7 +228,7 @@ const PARTIALLY_REJECTED = {
   getSpecificErrors: (prescription) => {
     const errors = []
     return errors
-  },
+  }
 }
 const states = {
   ISSUED,
@@ -259,7 +240,7 @@ const states = {
   INCOMPLETE,
   AUDITED,
   REJECTED,
-  PARTIALLY_REJECTED,
+  PARTIALLY_REJECTED
 }
 
 const statesMap = Object.keys(states).reduce((map, state) => {
