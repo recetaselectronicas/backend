@@ -7,9 +7,6 @@ class Quantifier extends Predicate {
     if (!model.predicates || !(model.predicates instanceof Array)) {
       throw new Error('Error while assembling Quantifier. No predicates given or not an Array.')
     }
-    if (!model.predicates.length) {
-      throw new Error('Error while assembling Quantifier. No predicate given on predicates array')
-    }
   }
 
   doInitialize(model) {
