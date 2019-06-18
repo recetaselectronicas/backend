@@ -12,7 +12,7 @@ class StateMachine {
 
     return this.validateToIssued(prescription)
       .then(() => {
-        prescription.status = states.ISSUED
+        prescription.status = states.ISSUED.id
         return PrescriptionRepository.create(prescription)
       })
 
@@ -29,7 +29,7 @@ class StateMachine {
   toCancelled(prescription) {
     return this.validateToCancelled(prescription)
       .then(() => {
-        prescription.status = states.CANCELLED
+        prescription.status = states.CANCELLED.id
         return PrescriptionRepository.update(prescription)
       })
   }
@@ -45,7 +45,7 @@ class StateMachine {
   toConfirmed(prescription) {
 
     return this.validateToConfirmed(prescription).then(() => {
-      prescription.status = states.CONFIRMED.status
+      prescription.status = states.CONFIRMED.id
       return PrescriptionRepository.update(prescription)
     })
   }
@@ -73,7 +73,7 @@ class StateMachine {
   toReceived(prescription) {
     return this.validateToReceived(prescription)
       .then(() => {
-        prescription.status = states.RECEIVED
+        prescription.status = states.RECEIVED.id
         return PrescriptionRepository.update(prescription)
       })
   }
@@ -89,7 +89,7 @@ class StateMachine {
   toPartiallyReceived(prescription) {
     return this.validateToPartiallyReceived(prescription)
       .then(() => {
-        prescription.status = states.PARTIALLY_RECEIVED
+        prescription.status = states.PARTIALLY_RECEIVED.id
         return PrescriptionRepository.update(prescription)
       })
   }
