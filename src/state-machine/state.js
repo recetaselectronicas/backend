@@ -127,12 +127,13 @@ const RECEIVED = {
   },
   getSpecificErrors: (prescription) => {
     const errors = [
+      getNotNullError(prescription.soldDate, prescriptionEntity, prescriptionFields.soldDate),
       ...getArrayDoesntMatchError(prescription.items, 'received.quantity', value => typeof value === 'number' && !!value, itemEntity, itemFields.received.quantity),
       ...getArrayDoesntMatchError(prescription.items, 'received.medicine.id', value => typeof value === 'number' && !!value, itemEntity, itemFields.received.medicine.id),
       ...getArrayDoesntMatchError(prescription.items, 'received.pharmacist.id', value => typeof value === 'number' && !!value, itemEntity, itemFields.received.pharmacist.id),
       // ...getArrayDoesntMatchError(prescription.items, 'received.soldDate', value => typeof value === 'moment' && !!value, itemEntity, itemFields.received.soldDate),
       ...getArrayDoesntMatchError(prescription.items, 'audited.quantity', value => !value, itemEntity, itemFields.audited.quantity),
-      ...getArrayDoesntMatchError(prescription.items, 'audited.medicine.id', value => !value, itemEntity, itemFields.audited.medicine.id)
+      ...getArrayDoesntMatchError(prescription.items, 'audited.medicine.id', value => !value, itemEntity, itemFields.audited.medicine.id),
     ]
     return errors
   }
@@ -148,7 +149,12 @@ const PARTIALLY_RECEIVED = {
     return errors
   },
   getSpecificErrors: (prescription) => {
-    const errors = []
+    const errors = [
+      getNotNullError(prescription.soldDate, prescriptionEntity, prescriptionFields.soldDate),
+      ...getArrayDoesntMatchError(prescription.items, 'audited.quantity', value => !value, itemEntity, itemFields.audited.quantity),
+      ...getArrayDoesntMatchError(prescription.items, 'audited.medicine.id', value => !value, itemEntity, itemFields.audited.medicine.id),
+
+    ]
     return errors
   }
 }
@@ -184,7 +190,15 @@ const AUDITED = {
     return errors
   },
   getSpecificErrors: (prescription) => {
-    const errors = []
+    const errors = [
+      ...getArrayDoesntMatchError(prescription.items, 'received.quantity', value => typeof value === 'number' && !!value, itemEntity, itemFields.received.quantity),
+      ...getArrayDoesntMatchError(prescription.items, 'received.medicine.id', value => typeof value === 'number' && !!value, itemEntity, itemFields.received.medicine.id),
+      ...getArrayDoesntMatchError(prescription.items, 'received.pharmacist.id', value => typeof value === 'number' && !!value, itemEntity, itemFields.received.pharmacist.id),
+      //...getArrayDoesntMatchError(prescription.items, 'received.soldDate', value => typeof value === 'moment' && !!value, itemEntity, itemFields.received.soldDate),
+      ...getArrayDoesntMatchError(prescription.items, 'audited.quantity', value => typeof value === 'number' && !!value, itemEntity, itemFields.audited.quantity),
+      ...getArrayDoesntMatchError(prescription.items, 'audited.medicine.id', value => typeof value === 'number' && !!value, itemEntity, itemFields.audited.medicine.id),
+
+    ]
     return errors
   }
 }
