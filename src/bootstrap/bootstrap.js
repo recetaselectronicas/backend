@@ -17,33 +17,6 @@ const { PharmacistRepository } = require('../repositories/pharmacistRepository')
 const { logger } = require('../utils/utils')
 const { states } = require('../state-machine/state')
 
-let medicalInsurance1Id = new MedicalInsurance()
-medicalInsurance1Id.address = 'Calle falsa 123'
-medicalInsurance1Id.contactNumber = '1520202020'
-medicalInsurance1Id.corporateName = 'OSDE S.R.L.'
-medicalInsurance1Id.description = 'OSDE'
-medicalInsurance1Id.email = 'osde@osde.com'
-medicalInsurance1Id.userName = 'osde_1234'
-medicalInsurance1Id.password = '1234'
-
-let medicalInsurance2Id = new MedicalInsurance()
-medicalInsurance2Id.address = 'Joaquin V Gonzales 1'
-medicalInsurance2Id.contactNumber = '1520202020'
-medicalInsurance2Id.corporateName = 'HospitalItaliano S.A.'
-medicalInsurance2Id.description = 'Hospital Italiano'
-medicalInsurance2Id.email = 'hospitalItaliano@hi.com'
-medicalInsurance2Id.userName = 'Swiss_2312_2'
-medicalInsurance2Id.password = '1234'
-
-let medicalInsurance3Id = new MedicalInsurance()
-medicalInsurance3Id.address = 'Beiro 1232'
-medicalInsurance3Id.contactNumber = '1520202020'
-medicalInsurance3Id.corporateName = 'OSTEL S.A.'
-medicalInsurance3Id.description = 'OSTEL'
-medicalInsurance3Id.email = 'ostel@ostel.com'
-medicalInsurance3Id.userName = 'ostel_med'
-medicalInsurance3Id.password = '1234'
-
 let medicine1 = new Medicine()
 medicine1.description = 'T4 Montpellier 150 Levotiroxina'
 medicine1.laboratoryDescription = 'Montpellier'
@@ -267,9 +240,9 @@ prescription3.setIssuedDate('12/04/2019 15:50')
 
 const generateData = async () => {
   try {
-    medicalInsurance1Id = await MedicalInsuranceRepository.create(medicalInsurance1Id)
-    medicalInsurance2Id = await MedicalInsuranceRepository.create(medicalInsurance2Id)
-    medicalInsurance3Id = await MedicalInsuranceRepository.create(medicalInsurance3Id)
+    medicalInsurance1Id = 1
+    medicalInsurance2Id = 2
+    medicalInsurance3Id = 3
     const medicalInsurance1DB = await MedicalInsuranceRepository.getById(medicalInsurance1Id)
     const medicalInsurance2DB = await MedicalInsuranceRepository.getById(medicalInsurance2Id)
     medicine1 = await MedicineRepository.create(medicine1)

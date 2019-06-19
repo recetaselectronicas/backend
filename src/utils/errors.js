@@ -119,7 +119,7 @@ const getDiferentValueError = (value, otherValue, entity, field, message) => {
   return null
 }
 const getValueNotInListError = (value, otherValues, entity, field, message) => {
-  //TODO: comparo con value.status. Hay que definir como se setea el estado-> state.ISSUED o state.ISSUED.status
+  // TODO: comparo con value.status. Hay que definir como se setea el estado-> state.ISSUED o state.ISSUED.status
   const found = otherValues.find(aValue => aValue === value.status)
   if (!found) {
     return newInvalidValueError(message || `${entity} ${field} must be one of this ${otherValues}`, generateFieldCause(entity, field, value, otherValues))
