@@ -10,12 +10,11 @@ class StateMachine {
     prescription.ttl = 30 // TODO: reemplazar con el llamado a tiempo de vida posta segun OS
     prescription.norm = 1 // TODO: reemplazar con el llamado a norma vigente segun OS
 
-    return this.validateToIssued(prescription)
-      .then(() => {
-        prescription.status = states.ISSUED.id
-        return PrescriptionRepository.create(prescription)
-      })
 
+    return this.validateToIssued(prescription).then(() => {
+      prescription.status = states.ISSUED.id
+      return PrescriptionRepository.create(prescription)
+    })
   }
 
   validateToIssued(prescription) {
@@ -43,7 +42,6 @@ class StateMachine {
   }
 
   toConfirmed(prescription) {
-
     return this.validateToConfirmed(prescription).then(() => {
       prescription.status = states.CONFIRMED.id
       return PrescriptionRepository.update(prescription)
@@ -92,6 +90,7 @@ class StateMachine {
         prescription.status = states.PARTIALLY_RECEIVED.id
         return PrescriptionRepository.update(prescription)
       })
+
   }
 
   validateToPartiallyReceived(prescription) {
@@ -101,7 +100,6 @@ class StateMachine {
       return resolve()
     })
   }
-
 
   toIncomplete(prescription) {}
 

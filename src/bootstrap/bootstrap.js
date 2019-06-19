@@ -245,7 +245,7 @@ let prescription1 = new Prescription()
 prescription1.diagnosis = 'Malestar general'
 prescription1.norm = 1
 prescription1.ttl = 30
-prescription1.status = states.CONFIRMED
+prescription1.status = states.CONFIRMED.id
 prescription1.prolongedTreatment = true
 prescription1.setIssuedDate('01/06/2019 09:30')
 
@@ -253,7 +253,7 @@ let prescription2 = new Prescription()
 prescription2.diagnosis = 'Diarrea y vómitos'
 prescription2.norm = 1
 prescription2.ttl = 30
-prescription2.status = states.RECEIVED
+prescription2.status = states.RECEIVED.id
 prescription2.prolongedTreatment = false
 prescription2.setIssuedDate('20/05/2019 11:35')
 
@@ -261,7 +261,7 @@ let prescription3 = new Prescription()
 prescription3.diagnosis = 'Erupcion cutanea'
 prescription3.norm = 1
 prescription3.ttl = 30
-prescription3.status = states.AUDITED
+prescription3.status = states.AUDITED.id
 prescription3.prolongedTreatment = false
 prescription3.setIssuedDate('12/04/2019 15:50')
 
@@ -270,6 +270,8 @@ const generateData = async () => {
     medicalInsurance1Id = await MedicalInsuranceRepository.create(medicalInsurance1Id)
     medicalInsurance2Id = await MedicalInsuranceRepository.create(medicalInsurance2Id)
     medicalInsurance3Id = await MedicalInsuranceRepository.create(medicalInsurance3Id)
+    const medicalInsurance1DB = await MedicalInsuranceRepository.getById(medicalInsurance1Id)
+    const medicalInsurance2DB = await MedicalInsuranceRepository.getById(medicalInsurance2Id)
     medicine1 = await MedicineRepository.create(medicine1)
     medicine2 = await MedicineRepository.create(medicine2)
     medicine3 = await MedicineRepository.create(medicine3)
@@ -282,34 +284,35 @@ const generateData = async () => {
     affiliate2.plan.idMedicalInsurance = medicalInsurance2Id
     affiliate1 = await AffiliateRepository.create(affiliate1)
     affiliate2 = await AffiliateRepository.create(affiliate2)
+    const affiliate1DB = await AffiliateRepository.getById(affiliate1)
     doctor1 = await DoctorRepository.create(doctor1)
     doctor2 = await DoctorRepository.create(doctor2)
     doctor3 = await DoctorRepository.create(doctor3)
     pharmacist1 = await PharmacistRepository.create(pharmacist1)
     pharmacist2 = await PharmacistRepository.create(pharmacist2)
     pharmacist3 = await PharmacistRepository.create(pharmacist3)
-    prescription1.setMedicalInsurance(medicalInsurance1Id)
-    prescription1.setAffiliate(affiliate1)
-    prescription1.setDoctor(doctor1)
-    prescription1.setInstitution(institution1)
+    prescription1.setMedicalInsurance(medicalInsurance1DB)
+    prescription1.setAffiliate(affiliate1DB)
+    prescription1.setDoctor(await DoctorRepository.getById(doctor1))
+    prescription1.setInstitution(await InstitutionRepository.getById(institution1))
     const item1 = new Item()
-    prescription2.setMedicalInsurance(medicalInsurance2Id)
+    prescription2.setMedicalInsurance(medicalInsurance2DB)
     item1.prescribe(2, await MedicineRepository.getById(medicine1))
     prescription1.addItem(item1)
-    prescription2.setMedicalInsurance(medicalInsurance2Id)
-    prescription2.setAffiliate(affiliate2)
-    prescription2.setDoctor(doctor2)
-    prescription2.setInstitution(institution2)
+    prescription2.setMedicalInsurance(medicalInsurance2DB)
+    prescription2.setAffiliate(await AffiliateRepository.getById(affiliate2))
+    prescription2.setDoctor(await DoctorRepository.getById(doctor2))
+    prescription2.setInstitution(await InstitutionRepository.getById(institution2))
     const item2 = new Item()
     const dbMedicine2 = await MedicineRepository.getById(medicine2)
     item2.prescribe(2, dbMedicine2)
     item2.receive(2, '21/05/2019 13:02', dbMedicine2, pharmacist1)
     prescription2.addItem(item2)
     prescription2.setSoldDate('21/05/2019 13:02')
-    prescription3.setMedicalInsurance(medicalInsurance1Id)
-    prescription3.setAffiliate(affiliate1)
-    prescription3.setDoctor(doctor3)
-    prescription3.setInstitution(institution3)
+    prescription3.setMedicalInsurance(medicalInsurance1DB)
+    prescription3.setAffiliate(affiliate1DB)
+    prescription3.setDoctor(await DoctorRepository.getById(doctor3))
+    prescription3.setInstitution(await InstitutionRepository.getById(institution3))
     const item3 = new Item()
     const dbMedicine3 = await MedicineRepository.getById(medicine3)
     item3.prescribe(1, dbMedicine3)
@@ -329,5 +332,5 @@ const generateData = async () => {
 }
 
 module.exports = {
-  generateData,
+  generateData
 }
