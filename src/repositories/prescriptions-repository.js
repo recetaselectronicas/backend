@@ -132,6 +132,15 @@ class PrescriptionRepository {
     })
   }
 
+  updateTo(_prescription, newStatus) {
+    const prescription = Prescription.fromObject(_prescription)
+    return knex(PRESCRIPTION)
+      .where('id', prescription.id)
+      .update({
+        id_state: newStatus
+      })
+  }
+
   count() {
     return new Promise((resolve, reject) => resolve(this.prescriptions.length))
   }
@@ -158,6 +167,7 @@ class PrescriptionRepository {
         `${MEDICAL_INSURANCE}.description as medical_insurance_description`,
         `${MEDICAL_INSURANCE}.id as medical_insurance_id`,
         `${STATE}.description as status`,
+        `${DOCTOR}.id as id_doctor`,
         `${DOCTOR}.name as name_doctor`,
         `${DOCTOR}.last_name as last_name_doctor`
       )
@@ -309,6 +319,7 @@ class PrescriptionRepository {
       description: response.medicalInsuranceDescription
     }
     muttedPrescription.doctor = {
+      id: response.idDoctor,
       name: response.nameDoctor,
       lastName: response.lastNameDoctor
     }
