@@ -126,13 +126,13 @@ class StateMachine {
   }
 
   toRejected(prescription) {
-    return this.validateToReceived(prescription)
+    return this.validateToRejected(prescription)
       .then(() => {
         prescription.status = states.REJECTED.id
         return PrescriptionRepository.update(prescription)
       })
   }
-
+  
   validateToRejected(prescription) {
     return new Promise((resolve, reject) => {
       states.REJECTED.validate(prescription)
@@ -142,17 +142,17 @@ class StateMachine {
   }
   
   toPartiallyRejected(prescription) {
-    return this.validateToReceived(prescription)
+    return this.validateToPartiallyRejected(prescription)
     .then(() => {
       prescription.status = states.PARTIALLY_REJECTED.id
       return PrescriptionRepository.update(prescription)
-      })
-    }
-    
-    validateToPartiallyRejected(prescription) {
-      return new Promise((resolve, reject) => {
-        states.PARTIALLY_REJECTED.validate(prescription)
-        // TODO: Llamar al validador de reglas de negocio
+    })
+  }
+  
+  validateToPartiallyRejected(prescription) {
+    return new Promise((resolve, reject) => {
+      states.PARTIALLY_REJECTED.validate(prescription)
+      // TODO: Llamar al validador de reglas de negocio
         return resolve()
       })
       

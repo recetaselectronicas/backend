@@ -190,6 +190,7 @@ class PrescriptionRepository {
         `${PRESCRIPTION}.id`,
         `${PRESCRIPTION}.issuedDate`,
         `${PRESCRIPTION}.soldDate`,
+        `${PRESCRIPTION}.auditedDate`,
         `${PRESCRIPTION}.ttl`,
         `${AFFILIATE}.id as id_affiliate`,
         `${AFFILIATE}.code as code_affiliate`,
