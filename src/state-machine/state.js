@@ -114,13 +114,13 @@ const RECEIVED = {
   id: 'RECEIVED',
   status: 'RECEPCIONADA',
   validate: validator,
-  getStatusError: prescription => getValueNotInListError(prescription.status, [CONFIRMED.status, PARTIALLY_RECEIVED.status], prescriptionEntity, prescriptionFields.status),
+  getStatusError: prescription => getValueNotInListError(prescription.status, [CONFIRMED.id, PARTIALLY_RECEIVED.id], prescriptionEntity, prescriptionFields.status),
   getErrors: (prescription) => {
     let errors = []
-    if (prescription.status === CONFIRMED.status) {
+    if (prescription.status === CONFIRMED.id) {
       errors = CONFIRMED.getErrors(prescription)
     }
-    if (prescription.status === PARTIALLY_RECEIVED.status) {
+    if (prescription.status === PARTIALLY_RECEIVED.id) {
       errors = PARTIALLY_RECEIVED.getErrors(prescription)
     }
     // TODO: Agregar validaciones para pasar a RECEPCIONADA
@@ -134,7 +134,7 @@ const RECEIVED = {
       ...getArrayDoesntMatchError(prescription.items, 'received.pharmacist.id', value => typeof value === 'number' && !!value, itemEntity, itemFields.received.pharmacist.id),
       // ...getArrayDoesntMatchError(prescription.items, 'received.soldDate', value => typeof value === 'moment' && !!value, itemEntity, itemFields.received.soldDate),
       ...getArrayDoesntMatchError(prescription.items, 'audited.quantity', value => !value, itemEntity, itemFields.audited.quantity),
-      ...getArrayDoesntMatchError(prescription.items, 'audited.medicine.id', value => !value, itemEntity, itemFields.audited.medicine.id),
+      ...getArrayDoesntMatchError(prescription.items, 'audited.medicine.id', value => !value, itemEntity, itemFields.audited.medicine.id)
     ]
     return errors
   }
@@ -143,7 +143,7 @@ const PARTIALLY_RECEIVED = {
   id: 'PARTIALLY_RECEIVED',
   status: 'PARCIALMENTE_RECEPCIONADA',
   validate: validator,
-  getStatusError: prescription => getValueNotInListError(prescription.status, [CONFIRMED.status, PARTIALLY_RECEIVED.status], prescriptionEntity, prescriptionFields.status),
+  getStatusError: prescription => getValueNotInListError(prescription.status, [CONFIRMED.id, PARTIALLY_RECEIVED.id], prescriptionEntity, prescriptionFields.status),
   getErrors: (prescription) => {
     const errors = CONFIRMED.getErrors(prescription)
     // TODO: Agregar validaciones para pasar a PARCIALMENTE_RECEPCIONADAS
@@ -153,8 +153,7 @@ const PARTIALLY_RECEIVED = {
     const errors = [
       getNotNullError(prescription.soldDate, prescriptionEntity, prescriptionFields.soldDate),
       ...getArrayDoesntMatchError(prescription.items, 'audited.quantity', value => !value, itemEntity, itemFields.audited.quantity),
-      ...getArrayDoesntMatchError(prescription.items, 'audited.medicine.id', value => !value, itemEntity, itemFields.audited.medicine.id),
-
+      ...getArrayDoesntMatchError(prescription.items, 'audited.medicine.id', value => !value, itemEntity, itemFields.audited.medicine.id)
     ]
     return errors
   }
@@ -195,10 +194,9 @@ const AUDITED = {
       ...getArrayDoesntMatchError(prescription.items, 'received.quantity', value => typeof value === 'number' && !!value, itemEntity, itemFields.received.quantity),
       ...getArrayDoesntMatchError(prescription.items, 'received.medicine.id', value => typeof value === 'number' && !!value, itemEntity, itemFields.received.medicine.id),
       ...getArrayDoesntMatchError(prescription.items, 'received.pharmacist.id', value => typeof value === 'number' && !!value, itemEntity, itemFields.received.pharmacist.id),
-      //...getArrayDoesntMatchError(prescription.items, 'received.soldDate', value => typeof value === 'moment' && !!value, itemEntity, itemFields.received.soldDate),
+      // ...getArrayDoesntMatchError(prescription.items, 'received.soldDate', value => typeof value === 'moment' && !!value, itemEntity, itemFields.received.soldDate),
       ...getArrayDoesntMatchError(prescription.items, 'audited.quantity', value => typeof value === 'number' && !!value, itemEntity, itemFields.audited.quantity),
-      ...getArrayDoesntMatchError(prescription.items, 'audited.medicine.id', value => typeof value === 'number' && !!value, itemEntity, itemFields.audited.medicine.id),
-
+      ...getArrayDoesntMatchError(prescription.items, 'audited.medicine.id', value => typeof value === 'number' && !!value, itemEntity, itemFields.audited.medicine.id)
     ]
     return errors
   }

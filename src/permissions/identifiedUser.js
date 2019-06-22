@@ -38,8 +38,8 @@ const identifiedAffiliate = {
       throw newForbiddenResourceException("Can't access this prescription")
     }
   },
-  getActions: prescription => [{ id: availableActions.CANCEL }],
-  canReceive: () => false,
+  getActions: prescription => [{ id: availableActions.CANCEL }, { id: availableActions.AUDIT }, { id: availableActions.RECEIVE }],
+  canReceive: () => true,
   canCancel: () => true
 }
 
