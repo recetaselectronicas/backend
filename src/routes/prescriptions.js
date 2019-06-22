@@ -30,7 +30,8 @@ router.post('/', async (req, res, next) => {
 })
 
 const secureMiddleware = (req, res, next) => {
-  req.identifiedUser = permissions.getIdentifiedAffiliate(1)
+  // req.identifiedUser = permissions.getIdentifiedAffiliate(1)
+  req.identifiedUser = permissions.getIdentifiedMedicalInsurance(28)
   return next()
 }
 const secureMiddleware2 = (req, res, next) => {
@@ -111,7 +112,24 @@ const toState = {
 
       return StateMachine.toReceive(prescription)
     }
-  }
+  },
+  AUDIT: {
+    change: (prescription, data) => {
+      if (!data.identifiedUser.canAudit()) {
+        throw errors.newForbiddenResourceException('No puede auditar la receta')
+      }
+      data.items.forEach((item) => {
+        const itemToAudit = prescription.items.find(i => i.id == item.id)
+        if (itemToAudit.audited.quantity) {
+          throw errors.newEntityAlreadyCreated('El item ya fué auditado')
+        }
+        itemToReceive.audit(item.quantity,item.medicine)
+      })
+
+      return StateMachine.toAudit(prescription)
+    }
+  },
+
 }
 
 module.exports = router
