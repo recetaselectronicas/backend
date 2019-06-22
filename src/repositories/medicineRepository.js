@@ -36,6 +36,19 @@ class MedicineRepository {
       .then(response => response.map(medicine => Medicine.fromObject(medicine)))
   }
 
+  getByTroquel(troquel) {
+    return knex(MEDICINE)
+      .select()
+      .where('troquel', troquel)
+      .first()
+      .then((response) => {
+        if (response) {
+          return Medicine.fromObject(response)
+        }
+        throw newNotFoundError(`No se encontro la medicina con el troquel ${troquel}`)
+      })
+  }
+
   getById(id) {
     return knex(MEDICINE)
       .where('id', id)
