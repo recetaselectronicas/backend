@@ -7,6 +7,7 @@ exports.up = knex => knex.schema.withSchema('recetas').createTable(AFFILIATE, (t
   table.integer('id_plan').unsigned()
   table.string('from_date', 255).notNullable()
   table.string('to_date', 255)
+  table.string('category', 50)
   table.string('code', 255).notNullable()
   table.string('image_credential', 255)
 
