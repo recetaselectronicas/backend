@@ -3,42 +3,49 @@ const moment = require('moment')
 const { formats } = require('../../utils/utils')
 
 const getMatchingValues = function (key, values) {
-  return array.intersection(this.values.map(({ id }) => id), values)
+  const valuesId = this.values.map(({ id }) => id)
+  if (Array.isArray(values)) {
+    return array.intersection(valuesId, values)
+  }
+  if (valuesId.includes(values)) {
+    return [values]
+  }
 }
 module.exports = {
   id: {
     key: 'id',
+    getMatchingValues: (key, id) => id
   },
   status: {
     key: 'status',
     values: [],
-    getMatchingValues,
+    getMatchingValues
   },
   institution: {
     key: 'institution',
     values: [],
-    getMatchingValues,
+    getMatchingValues: (key, institution) => (Array.isArray(institution) ? institution : [institution])
   },
   medicalInsurance: {
     key: 'medicalInsurance',
     values: [],
-    getMatchingValues,
+    getMatchingValues
   },
   affiliate: {
     key: 'affiliate',
-    getMatchingValues: (key, id) => id,
+    getMatchingValues: (key, id) => id
   },
   doctor: {
     key: 'doctor',
-    getMatchingValues: (key, id) => id,
+    getMatchingValues: (key, id) => id
   },
   pharmacist: {
     key: 'pharmacist',
-    getMatchingValues: (key, id) => id,
+    getMatchingValues: (key, id) => id
   },
   medicine: {
     key: 'medicine',
-    getMatchingValues: (key, id) => id,
+    getMatchingValues: (key, id) => id
   },
   issueDateRange: {
     keyFrom: 'fromIssueDate',
@@ -47,17 +54,17 @@ module.exports = {
       const formatedDate = moment(value, this.format)
       return formatedDate.isValid() && value
     },
-    format: formats.dateTimeFormat,
+    format: formats.dateTimeFormat
   },
   soldDateRange: {
     keyFrom: 'fromSoldDate',
     keyTo: 'toSoldDate',
-    format: formats.dateTimeFormat,
+    format: formats.dateTimeFormat
   },
   auditedDateRange: {
     keyFrom: 'fromAuditedDate',
     keyTo: 'toAuditedDate',
-    format: formats.dateTimeFormat,
+    format: formats.dateTimeFormat
   },
 
   orders: {
@@ -84,30 +91,30 @@ module.exports = {
       id: {
         key: 'id',
         sorting: {
-          asc: 'asc',
-        },
+          asc: 'asc'
+        }
       },
       issuedDate: {
         key: 'issuedDate',
         sorting: {
           asc: 'asc',
-          dsc: 'desc',
-        },
+          dsc: 'desc'
+        }
       },
       soldDate: {
         key: 'soldDate',
         sorting: {
           asc: 'asc',
-          dsc: 'desc',
-        },
+          dsc: 'desc'
+        }
       },
       auditedDate: {
         key: 'audtitedDate',
         sorting: {
           asc: 'asc',
-          dsc: 'desc',
-        },
-      },
-    },
-  },
+          dsc: 'desc'
+        }
+      }
+    }
+  }
 }

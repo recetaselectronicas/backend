@@ -245,9 +245,9 @@ class PrescriptionRepository {
 
   async getByQuery(query) {
     const { filters } = query
-    const { status } = filters
+    const { status, id, institution } = filters
     try {
-      const prescriptions = await knex
+      const knexQuery = knex
         .select(
           `${PRESCRIPTION}.diagnosis`,
           `${PRESCRIPTION}.prolonged_treatment`,
@@ -260,7 +260,7 @@ class PrescriptionRepository {
           `${PATIENT}.name as name_affiliate`,
           `${PATIENT}.surname as surname_affiliate`,
           `${INSTITUTION}.description as institution_description`,
-          `${INSTITUTION}.id as institutionId`,
+          `${INSTITUTION}.id as institution_id`,
           `${MEDICAL_INSURANCE}.description as medical_insurance_description`,
           `${MEDICAL_INSURANCE}.id as medical_insurance_id`,
           `${STATE}.description as status`,
@@ -275,6 +275,15 @@ class PrescriptionRepository {
         .leftJoin(MEDICAL_INSURANCE, `${PRESCRIPTION}.id_medical_insurance`, `${MEDICAL_INSURANCE}.id`)
         .leftJoin(DOCTOR, `${PRESCRIPTION}.id_doctor`, `${DOCTOR}.id`)
         .whereIn('id_state', status)
+
+      if (id) {
+        knexQuery.andWhere(`${PRESCRIPTION}.id`, id)
+      }
+      if (institution) {
+        knexQuery.whereIn(`${PRESCRIPTION}.id_institution`, institution)
+      }
+
+      const prescriptions = await knexQuery
       return await Promise.all(prescriptions.map(this.getDomainPrescription))
     } catch (error) {
       console.log('fatal error', error)
