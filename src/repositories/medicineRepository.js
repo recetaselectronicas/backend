@@ -29,7 +29,24 @@ class MedicineRepository {
   }
 
   getByQuery(query) {
-    return new Promise((resolve, reject) => resolve(this.medicines.filter(medicine => medicine.description.includes(query.description || ''))))
+    const { description } = query
+    return knex(MEDICINE)
+      .select()
+      .where('description', 'like', `%${description}%`)
+      .then(response => response.map(medicine => Medicine.fromObject(medicine)))
+  }
+
+  getByTroquel(troquel) {
+    return knex(MEDICINE)
+      .select()
+      .where('troquel', troquel)
+      .first()
+      .then((response) => {
+        if (response) {
+          return Medicine.fromObject(response)
+        }
+        throw newNotFoundError(`No se encontro la medicina con el troquel ${troquel}`)
+      })
   }
 
   getById(id) {
@@ -43,5 +60,5 @@ class MedicineRepository {
 }
 
 module.exports = {
-  MedicineRepository: new MedicineRepository(),
+  MedicineRepository: new MedicineRepository()
 }

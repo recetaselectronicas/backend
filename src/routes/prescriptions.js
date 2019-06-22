@@ -34,7 +34,7 @@ const secureMiddleware = (req, res, next) => {
   return next()
 }
 const secureMiddleware2 = (req, res, next) => {
-  req.identifiedUser = permissions.getIdentifiedPharmacist(1)
+  req.identifiedUser = permissions.getIdentifiedPharmacist(2)
   return next()
 }
 const secureMiddleware3 = (req, res, next) => {
@@ -60,29 +60,27 @@ router.get('/:id', secureMiddleware, (req, res, next) => {
   const { identifiedUser } = req
   return PrescriptionRepository.getById(req.params.id)
     .then((prescription) => {
-      identifiedUser.checkForbiden(prescription)
+      // identifiedUser.checkForbiden(prescription)
       const actions = identifiedUser.getActions(prescription)
       return res.json({ result: prescription.toPlainObject(), actions })
     })
     .catch(next)
 })
 
-router.put('/:id', secureMiddleware2, (req, res, next) => {
+router.put('/:id', secureMiddleware, (req, res, next) => {
   const { logger } = req.app.locals
   const { identifiedUser } = req
   const { body } = req
-  return PrescriptionRepository.getById(req.params.id)
-    .then((prescription) => {
-      return toState[body.status].change(prescription, { ...body.data, identifiedUser })
-
-    })
+  const { id } = req.params
+  return PrescriptionRepository.getById(id)
+    .then(prescription => toState[body.status].change(prescription, { ...body.data, identifiedUser }))
+    .then(() => PrescriptionRepository.getById(id))
     .then(updatePrescription => res.status(200).json(updatePrescription.toPlainObject()))
-
     .catch((err) => {
       if (isBusinessError(err)) {
         return next(newBadRequestError('Invalid prescription payload', err, 400))
       }
-      //TODO:Definir catcheo para no perder errores
+      // TODO:Definir catcheo para no perder errores
       return next(err)
     })
 })
@@ -96,24 +94,24 @@ const toState = {
       }
       // TODO: Agregar en objeto de presciption el atributo statusReason
       return StateMachine.toCancelled(prescription)
-    },
+    }
   },
   RECEIVE: {
     change: (prescription, data) => {
       if (!data.identifiedUser.canReceive()) {
         throw errors.newForbiddenResourceException('No puede recepcionar la receta')
       }
-      data.items.forEach(item => {
-        let itemToReceive = prescription.items.find(i => i.id == item.id)
+      data.items.forEach((item) => {
+        const itemToReceive = prescription.items.find(i => i.id == item.id)
         if (itemToReceive.received.quantity) {
-          throw errors.newEntityAlreadyCreated("El item ya fué recepcionado")
+          throw errors.newEntityAlreadyCreated('El item ya fué recepcionado')
         }
-        itemToReceive.receive(item.quantity, moment(), item.medicine,{ id: data.identifiedUser.id })
+        itemToReceive.receive(item.quantity, moment(), item.medicine, { id: data.identifiedUser.id })
       })
 
       return StateMachine.toReceive(prescription)
-    },
-  },
+    }
+  }
 }
 
 module.exports = router

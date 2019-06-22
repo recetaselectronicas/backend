@@ -6,13 +6,13 @@ const userTypes = {
   AFFILIATE: 'affiliate',
   DOCTOR: 'doctor',
   PHARMACIST: 'pharmacist',
-  MEDICAL_INSURANCE: 'medicalInsurance',
+  MEDICAL_INSURANCE: 'medicalInsurance'
 }
 
 const availableActions = {
   CANCEL: 'CANCEL',
   RECEIVE: 'RECEIVE',
-  AUDIT: 'AUDIT',
+  AUDIT: 'AUDIT'
 }
 
 const identifiedUser = {
@@ -23,7 +23,7 @@ const identifiedUser = {
   checkForbiden: null,
   getActions: null,
   canReceive: null,
-  canCancel: null,
+  canCancel: null
 }
 
 const identifiedAffiliate = {
@@ -38,9 +38,9 @@ const identifiedAffiliate = {
       throw newForbiddenResourceException("Can't access this prescription")
     }
   },
-  getActions: prescription => [],
-  canReceive: () => false,
-  canCancel: () => false,
+  getActions: prescription => [{ id: availableActions.CANCEL }, { id: availableActions.AUDIT }, { id: availableActions.RECEIVE }],
+  canReceive: () => true,
+  canCancel: () => true
 }
 
 const identifiedDoctor = {
@@ -55,11 +55,9 @@ const identifiedDoctor = {
       throw newForbiddenResourceException("Can't access this prescription")
     }
   },
-  getActions: prescription => [
-    availableActions.CANCEL,
-  ],
+  getActions: prescription => [availableActions.CANCEL],
   canReceive: () => false,
-  canCancel: () => true,
+  canCancel: () => true
 }
 
 const identifiedPharmacist = {
@@ -74,11 +72,9 @@ const identifiedPharmacist = {
       throw newForbiddenResourceException("Can't access this prescription")
     }
   },
-  getActions: prescription => [
-    availableActions.RECEIVE,
-  ],
+  getActions: prescription => [availableActions.RECEIVE],
   canReceive: () => true,
-  canCancel: () => false,
+  canCancel: () => false
 }
 
 const identifiedMedicalInsurance = {
@@ -93,11 +89,9 @@ const identifiedMedicalInsurance = {
       throw newForbiddenResourceException("Can't access this prescription")
     }
   },
-  getActions: prescription => [
-    availableActions.AUDIT,
-  ],
+  getActions: prescription => [availableActions.AUDIT],
   canReceive: () => false,
-  canCancel: () => false,
+  canCancel: () => false
 }
 
 const getIdentifiedAffiliate = (id) => {
@@ -128,5 +122,5 @@ module.exports = {
   getIdentifiedAffiliate,
   getIdentifiedDoctor,
   getIdentifiedPharmacist,
-  getIdentifiedMedicalInsurance,
+  getIdentifiedMedicalInsurance
 }

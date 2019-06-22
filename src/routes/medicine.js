@@ -12,4 +12,15 @@ router.get('/', async (req, res, next) => {
     return next(error)
   }
 })
+
+router.get('/troquel/:troquel', async (req, res, next) => {
+  const { troquel } = req.params
+  try {
+    const medicine = await MedicineRepository.getByTroquel(troquel)
+    return res.status(200).send(medicine.toPlainObject())
+  } catch (error) {
+    return next(error)
+  }
+})
+
 module.exports = router

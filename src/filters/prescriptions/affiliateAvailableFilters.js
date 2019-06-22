@@ -12,6 +12,7 @@ affiliateAvailableFilters.filters.status.values = [
   availableStates.EXPIRED,
   availableStates.RECEIVED,
   availableStates.PARTIALLY_RECEIVED,
+  availableStates.CANCELLED
 ]
 affiliateAvailableFilters.filters.issueDateRange = lang.cloneDeep(prescriptionFilters.issueDateRange)
 affiliateAvailableFilters.filters.soldDateRange = lang.cloneDeep(prescriptionFilters.soldDateRange)

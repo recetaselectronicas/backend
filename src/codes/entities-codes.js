@@ -52,7 +52,7 @@ const codes = {
         },
         soldDate: 'received.soldDate',
         pharmacist: {
-          id: "received.pharmacist.id"
+          id: 'received.pharmacist.id'
         },
       },
       audited: {

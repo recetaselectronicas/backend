@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 const { Affiliate } = require('../domain/affiliate')
 const { newNotFoundError, newEntityAlreadyCreated } = require('../utils/errors')
-const { AFFILIATE } = require('./tablesNames')
+const { AFFILIATE, PATIENT, PLAN } = require('./tablesNames')
 const knex = require('../init/knexConnection')
 
 class AffiliateRepository {
@@ -22,10 +22,13 @@ class AffiliateRepository {
       from_date: plainAffiliate.fromDate,
       to_date: plainAffiliate.toDate,
       code: plainAffiliate.code,
-      image_credential: plainAffiliate.imageCredential,
+      category: plainAffiliate.category,
+      image_credential: plainAffiliate.imageCredential
     }
 
-    return knex(AFFILIATE).insert(insertableAffiliate)
+    return knex(AFFILIATE)
+      .insert(insertableAffiliate)
+      .then(([id]) => id)
   }
 
   getAll() {
@@ -33,7 +36,15 @@ class AffiliateRepository {
   }
 
   getByQuery(query) {
-    return new Promise((resolve, reject) => resolve(this.affiliates.filter(affiliate => affiliate.code.includes(query.credential || ''))))
+    const { medicalInsurance, code } = query
+    return knex
+      .select(`${AFFILIATE}.id`, `${AFFILIATE}.code`, `${AFFILIATE}.category `, `${PATIENT}.name`, `${PATIENT}.nic_number`, `${PATIENT}.surname`, `${PLAN}.id_medical_insurance`)
+      .table(AFFILIATE)
+      .where('code', 'like', `%${code}%`)
+      .leftJoin(PATIENT, `${AFFILIATE}.id_patient`, `${PATIENT}.id`)
+      .leftJoin(PLAN, `${AFFILIATE}.id_plan`, `${PLAN}.id`)
+      .where(`${PLAN}.id_medical_insurance`, medicalInsurance)
+      .then(response => response.map(affiliate => Affiliate.fromObject(affiliate)))
   }
 
   getById(id) {
@@ -49,5 +60,5 @@ class AffiliateRepository {
   }
 }
 module.exports = {
-  AffiliateRepository: new AffiliateRepository(),
+  AffiliateRepository: new AffiliateRepository()
 }

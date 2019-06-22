@@ -5,16 +5,19 @@ const error = {
   code: '', // codigo de error
   message: '', // mensaje descriptivo del error
   status: undefined, // statusCode, para web
-  cause: null, // causa del error (se va a crear un handler para esto para transformar la causa a algo estándar)
+  cause: null // causa del error (se va a crear un handler para esto para transformar la causa a algo estándar)
 }
 
 const causes = {
-  FIELD_CAUSE: 'FIELD_CAUSE',
+  FIELD_CAUSE: 'FIELD_CAUSE'
 }
 
 const errors = {
   UNEXPECTED_ERROR: {
-    ...error, code: '0-000', message: 'Unexpected error ocurred', status: 500,
+    ...error,
+    code: '0-000',
+    message: 'Unexpected error ocurred',
+    status: 500
   },
   GENERIC_ERROR: { ...error, code: '0-001', message: 'Ups something went wrong' },
   DUPLICATED_VALUE_ERROR: { ...error, code: '1-000', message: 'Duplicated field values' },
@@ -22,20 +25,35 @@ const errors = {
   INVALID_VALUE_ERROR: { ...error, code: '1-002', message: 'Invalid field value' },
   ENTITY_ALREADY_CREATED: { ...error, code: '1-003', message: 'Entity already created' },
   NOT_FOUND_ERROR: {
-    ...error, code: '1-100', message: 'Not found', status: 404,
+    ...error,
+    code: '1-100',
+    message: 'Not found',
+    status: 404
   },
   BAD_REQUEST: {
-    ...error, code: '1-101', message: 'Please verify the payload and try again', status: 400,
+    ...error,
+    code: '1-101',
+    message: 'Please verify the payload and try again',
+    status: 400
   },
   INVALID_USERNAME_OR_PASSWORD_ERROR: {
-    ...error, code: '2-000', message: 'Invalid username or password', status: 401,
+    ...error,
+    code: '2-000',
+    message: 'Invalid username or password',
+    status: 401
   },
   SESSION_EXPIRED_ERROR: {
-    ...error, code: '2-001', message: 'Your session has expired', status: 403,
+    ...error,
+    code: '2-001',
+    message: 'Your session has expired',
+    status: 403
   },
   FORBIDDEN_RESOURCE_EXCEPTION: {
-    ...error, code: '2-002', message: 'You can´t perform that action', status: 403,
-  },
+    ...error,
+    code: '2-002',
+    message: 'You can´t perform that action',
+    status: 403
+  }
 }
 
 const newError = (type, message, cause, status) => {
@@ -64,7 +82,7 @@ const generateFieldCause = (entity, field, actualValue, expectedValue) => {
   const cause = {
     type: causes.FIELD_CAUSE,
     entity,
-    field,
+    field
   }
   if (actualValue !== undefined) {
     cause.actualValue = actualValue
@@ -119,8 +137,8 @@ const getDiferentValueError = (value, otherValue, entity, field, message) => {
   return null
 }
 const getValueNotInListError = (value, otherValues, entity, field, message) => {
-  //TODO: comparo con value.status. Hay que definir como se setea el estado-> state.ISSUED o state.ISSUED.status
-  const found = otherValues.find(aValue => aValue === value.status)
+  // TODO: comparo con value.status. Hay que definir como se setea el estado-> state.ISSUED o state.ISSUED.status
+  const found = otherValues.find(aValue => aValue === value)
   if (!found) {
     return newInvalidValueError(message || `${entity} ${field} must be one of this ${otherValues}`, generateFieldCause(entity, field, value, otherValues))
   }
@@ -139,15 +157,17 @@ const getObjectDoesntMatchError = (object, path, isValidValue, entity, field, nu
 }
 
 const getArrayDoesntMatchError = (array, path, isValidValue, entity, field, nullMessage, invalidValueMessage) => {
-  const errors = _array.compact(array.map((element, index) => {
-    if (!_object.has(element, path)) {
-      return newNullOrEmptyError(nullMessage || `${entity} must have a value at ${field}`, generateIndexFieldCause(entity, field, index))
-    }
-    const actualValue = _object.get(element, path)
-    if (!isValidValue(actualValue)) {
-      return newInvalidValueError(invalidValueMessage || `${entity} ${field} has an invalid value`, generateIndexFieldCause(entity, field, index, actualValue))
-    }
-  }))
+  const errors = _array.compact(
+    array.map((element, index) => {
+      if (!_object.has(element, path)) {
+        return newNullOrEmptyError(nullMessage || `${entity} must have a value at ${field}`, generateIndexFieldCause(entity, field, index))
+      }
+      const actualValue = _object.get(element, path)
+      if (!isValidValue(actualValue)) {
+        return newInvalidValueError(invalidValueMessage || `${entity} ${field} has an invalid value`, generateIndexFieldCause(entity, field, index, actualValue))
+      }
+    })
+  )
   return errors
 }
 
@@ -175,5 +195,5 @@ module.exports = {
   getBeNullError,
   getObjectDoesntMatchError,
   getArrayDoesntMatchError,
-  isBusinessError,
+  isBusinessError
 }

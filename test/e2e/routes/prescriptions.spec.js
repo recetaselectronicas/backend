@@ -7,54 +7,58 @@ app.locals.logger = { info: () => {}, error: () => {} }
 describe('when do a get in /prescriptions', () => {
   const filtersValue = {
     id: {
-      key: 'id',
+      key: 'id'
     },
     status: {
       key: 'status',
       values: [
         {
           id: 'CONFIRMED',
-          value: 'CONFIRMADA',
+          value: 'CONFIRMADA'
         },
         {
           id: 'ISSUED',
-          value: 'EMITIDA',
+          value: 'EMITIDA'
         },
         {
           id: 'EXPIRED',
-          value: 'VENCIDA',
+          value: 'VENCIDA'
         },
         {
           id: 'RECEIVED',
-          value: 'RECEPCIONADA',
+          value: 'RECEPCIONADA'
         },
         {
           id: 'PARTIALLY_RECEIVED',
-          value: 'PARCIALMENTE_RECEPCIONADA',
+          value: 'PARCIALMENTE_RECEPCIONADA'
         },
-      ],
+        {
+          id: 'CANCELLED',
+          value: 'CANCELADA'
+        }
+      ]
     },
     issueDateRange: {
       keyFrom: 'fromIssueDate',
       keyTo: 'toIssueDate',
-      format: 'DD/MM/YYYY HH:mm',
+      format: 'DD/MM/YYYY HH:mm'
     },
     soldDateRange: {
       keyFrom: 'fromSoldDate',
       keyTo: 'toSoldDate',
-      format: 'DD/MM/YYYY HH:mm',
+      format: 'DD/MM/YYYY HH:mm'
     },
     institution: {
       key: 'institution',
-      values: [],
+      values: []
     },
     medicalInsurance: {
       key: 'medicalInsurance',
-      values: [],
+      values: []
     },
     medicine: {
-      key: 'medicine',
-    },
+      key: 'medicine'
+    }
   }
   const ordersValue = {
     key: 'orderBy',
@@ -62,24 +66,24 @@ describe('when do a get in /prescriptions', () => {
       id: {
         key: 'id',
         sorting: {
-          asc: 'asc',
-        },
+          asc: 'asc'
+        }
       },
       issuedDate: {
         key: 'issuedDate',
         sorting: {
           asc: 'asc',
-          dsc: 'desc',
-        },
+          dsc: 'desc'
+        }
       },
       soldDate: {
         key: 'soldDate',
         sorting: {
           asc: 'asc',
-          dsc: 'desc',
-        },
-      },
-    },
+          dsc: 'desc'
+        }
+      }
+    }
   }
   it('respond with correct filters', () => request(app)
     .get('/prescriptions')
