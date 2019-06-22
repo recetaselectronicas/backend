@@ -6,31 +6,31 @@ class Item {
     this.prescribed = {
       quantity: null,
       medicine: {
-        id: null,
-      },
+        id: null
+      }
     }
     this.received = {
       quantity: null,
       soldDate: null,
       medicine: {
-        id: null,
+        id: null
       },
       pharmacist: {
-        id: null,
-      },
+        id: null
+      }
     }
     this.audited = {
       quantity: null,
       medicine: {
-        id: null,
-      },
+        id: null
+      }
     }
   }
 
   prescribe(quantity, medicine) {
     this.prescribed = {
       quantity,
-      medicine,
+      medicine
     }
   }
 
@@ -39,14 +39,14 @@ class Item {
       quantity,
       soldDate: dateTimeFormat.toDate(soldDate),
       medicine,
-      pharmacist,
+      pharmacist
     }
   }
 
   audit(quantity, medicine) {
     this.audited = {
       quantity,
-      medicine,
+      medicine
     }
   }
 
@@ -59,18 +59,18 @@ class Item {
       id: this.id,
       prescribed: {
         quantity: this.prescribed.quantity,
-        medicine: this.prescribed.medicine,
+        medicine: this.prescribed.medicine
       },
       received: {
         quantity: this.received.quantity,
         soldDate: this.getSoldDate(),
         medicine: this.received.medicine,
-        pharmacist: this.received.pharmacist,
+        pharmacist: this.received.pharmacist
       },
       audited: {
         quantity: this.audited.quantity,
-        medicine: this.audited.medicine,
-      },
+        medicine: this.audited.medicine
+      }
     })
   }
 
@@ -92,7 +92,7 @@ class Item {
       (object.received && received.quantity) || item.received.quantity,
       dateTimeFormat.toDate(soldDate),
       (received && received.medicine) || item.received.medicine,
-      (received && received.pharmacist) || item.received.pharmacist,
+      (received && received.pharmacist) || item.received.pharmacist
     )
     item.audit((audited && audited.quantity) || item.audited.quantity, (audited && audited.medicine) || item.audited.medicine)
     return item

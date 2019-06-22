@@ -30,8 +30,7 @@ router.post('/', async (req, res, next) => {
 })
 
 const secureMiddleware = (req, res, next) => {
-  // req.identifiedUser = permissions.getIdentifiedAffiliate(1)
-  req.identifiedUser = permissions.getIdentifiedMedicalInsurance(28)
+  req.identifiedUser = permissions.getIdentifiedAffiliate(1)
   return next()
 }
 const secureMiddleware2 = (req, res, next) => {
@@ -61,7 +60,7 @@ router.get('/:id', secureMiddleware, (req, res, next) => {
   const { identifiedUser } = req
   return PrescriptionRepository.getById(req.params.id)
     .then((prescription) => {
-      identifiedUser.checkForbiden(prescription)
+      // identifiedUser.checkForbiden(prescription)
       const actions = identifiedUser.getActions(prescription)
       return res.json({ result: prescription.toPlainObject(), actions })
     })

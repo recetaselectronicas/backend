@@ -11,6 +11,7 @@ const {
   ITEM, PRESCRIPTION, INSTITUTION, STATE, MEDICINE, AFFILIATE, PATIENT, MEDICAL_INSURANCE, DOCTOR
 } = require('./tablesNames')
 const knex = require('../init/knexConnection')
+const Promise = require('bluebird')
 
 class PrescriptionRepository {
   constructor() {
@@ -119,17 +120,49 @@ class PrescriptionRepository {
     }
   }
 
-  update(_prescription) {
-    return new Promise((resolve, reject) => {
-      const prescription = Prescription.fromObject(_prescription)
-      if (!prescription.id || !this.prescriptions.some(pres => prescription.id === pres.id)) {
-        return reject(newNotFoundError('Prescription not found'))
-      }
-      this.prescriptions = this.prescriptions.filter(pres => pres.id !== prescription.id)
-      const newPrescription = Prescription.fromJson(prescription.toJson())
-      this.prescriptions.push(newPrescription)
-      return resolve(newPrescription)
-    })
+  async update(_prescription) {
+    const prescription = Prescription.fromObject(_prescription).clone()
+
+    const plainPrescription = prescription.toPlainObject()
+    const updatetablePrescription = {
+      issued_date: plainPrescription.issuedDate,
+      sold_date: plainPrescription.soldDate,
+      audited_date: plainPrescription.auditedDate,
+      id_state: plainPrescription.status,
+      reason: plainPrescription.reason
+    }
+    const prescriptionId = plainPrescription.id
+    try {
+      await knex.transaction(async (trx) => {
+        await trx(PRESCRIPTION)
+          .where('id', prescriptionId)
+          .update(updatetablePrescription)
+
+        await Promise.all(
+          plainPrescription.items.map(({
+            id, prescribed, received, audited
+          }) => {
+            const updatableItem = {
+              id_medicine_prescribed: prescribed.medicine.id,
+              prescribed_quantity: prescribed.quantity,
+              id_medicine_received: received.medicine.id,
+              received_quantity: received.quantity,
+              id_medicine_audited: audited.medicine.id,
+              audited_quantity: audited.quantity,
+              id_pharmacist: received.pharmacist.id,
+              sold_date: received.soldDate
+            }
+            return trx(ITEM)
+              .where('id_prescription', prescriptionId)
+              .andWhere('id', id)
+              .update(updatableItem)
+          })
+        )
+      })
+    } catch (e) {
+      console.log('error', e)
+      throw e
+    }
   }
 
   updateTo(_prescription, newStatus) {
@@ -166,7 +199,7 @@ class PrescriptionRepository {
         `${INSTITUTION}.id as institutionId`,
         `${MEDICAL_INSURANCE}.description as medical_insurance_description`,
         `${MEDICAL_INSURANCE}.id as medical_insurance_id`,
-        `${STATE}.description as status`,
+        `${STATE}.id as status`,
         `${DOCTOR}.id as id_doctor`,
         `${DOCTOR}.name as name_doctor`,
         `${DOCTOR}.last_name as last_name_doctor`
@@ -174,10 +207,10 @@ class PrescriptionRepository {
       .table(PRESCRIPTION)
       .leftJoin(AFFILIATE, `${PRESCRIPTION}.id_affiliate`, `${AFFILIATE}.id`)
       .leftJoin(PATIENT, `${AFFILIATE}.id_patient`, `${PATIENT}.id`)
-      .innerJoin(INSTITUTION, `${PRESCRIPTION}.id_institution`, `${INSTITUTION}.id`)
-      .innerJoin(MEDICAL_INSURANCE, `${PRESCRIPTION}.id_medical_insurance`, `${MEDICAL_INSURANCE}.id`)
-      .innerJoin(STATE, `${PRESCRIPTION}.id_state`, `${STATE}.id`)
-      .innerJoin(DOCTOR, `${PRESCRIPTION}.id_doctor`, `${DOCTOR}.id`)
+      .leftJoin(INSTITUTION, `${PRESCRIPTION}.id_institution`, `${INSTITUTION}.id`)
+      .leftJoin(MEDICAL_INSURANCE, `${PRESCRIPTION}.id_medical_insurance`, `${MEDICAL_INSURANCE}.id`)
+      .leftJoin(STATE, `${PRESCRIPTION}.id_state`, `${STATE}.id`)
+      .leftJoin(DOCTOR, `${PRESCRIPTION}.id_doctor`, `${DOCTOR}.id`)
       .where(`${PRESCRIPTION}.id`, id)
       .first()
       .then(this.getDomainPrescription)
@@ -235,12 +268,12 @@ class PrescriptionRepository {
           `${DOCTOR}.last_name as last_name_doctor`
         )
         .table(PRESCRIPTION)
-        .innerJoin(STATE, `${PRESCRIPTION}.id_state`, `${STATE}.id`)
+        .leftJoin(STATE, `${PRESCRIPTION}.id_state`, `${STATE}.id`)
         .leftJoin(AFFILIATE, `${PRESCRIPTION}.id_affiliate`, `${AFFILIATE}.id`)
         .leftJoin(PATIENT, `${AFFILIATE}.id_patient`, `${PATIENT}.id`)
-        .innerJoin(INSTITUTION, `${PRESCRIPTION}.id_institution`, `${INSTITUTION}.id`)
-        .innerJoin(MEDICAL_INSURANCE, `${PRESCRIPTION}.id_medical_insurance`, `${MEDICAL_INSURANCE}.id`)
-        .innerJoin(DOCTOR, `${PRESCRIPTION}.id_doctor`, `${DOCTOR}.id`)
+        .leftJoin(INSTITUTION, `${PRESCRIPTION}.id_institution`, `${INSTITUTION}.id`)
+        .leftJoin(MEDICAL_INSURANCE, `${PRESCRIPTION}.id_medical_insurance`, `${MEDICAL_INSURANCE}.id`)
+        .leftJoin(DOCTOR, `${PRESCRIPTION}.id_doctor`, `${DOCTOR}.id`)
         .whereIn('id_state', status)
       return await Promise.all(prescriptions.map(this.getDomainPrescription))
     } catch (error) {
@@ -285,7 +318,7 @@ class PrescriptionRepository {
         received: {
           quantity: item.receivedQuantity,
           soldDate: item.soldDate,
-          pharmacist: item.idPharmacist,
+          pharmacist: { id: item.idPharmacist },
           medicine: {
             description: item.medicineReceivedDescription,
             id: item.medicineReceivedId
