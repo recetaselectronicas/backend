@@ -34,7 +34,7 @@ const secureMiddleware = (req, res, next) => {
   return next()
 }
 const secureMiddleware2 = (req, res, next) => {
-  req.identifiedUser = permissions.getIdentifiedPharmacist(1)
+  req.identifiedUser = permissions.getIdentifiedPharmacist(2)
   return next()
 }
 const secureMiddleware3 = (req, res, next) => {
@@ -67,14 +67,15 @@ router.get('/:id', secureMiddleware, (req, res, next) => {
     .catch(next)
 })
 
-router.put('/:id', secureMiddleware2, (req, res, next) => {
+router.put('/:id', secureMiddleware, (req, res, next) => {
   const { logger } = req.app.locals
   const { identifiedUser } = req
   const { body } = req
-  return PrescriptionRepository.getById(req.params.id)
+  const { id } = req.params
+  return PrescriptionRepository.getById(id)
     .then(prescription => toState[body.status].change(prescription, { ...body.data, identifiedUser }))
+    .then(() => PrescriptionRepository.getById(id))
     .then(updatePrescription => res.status(200).json(updatePrescription.toPlainObject()))
-
     .catch((err) => {
       if (isBusinessError(err)) {
         return next(newBadRequestError('Invalid prescription payload', err, 400))

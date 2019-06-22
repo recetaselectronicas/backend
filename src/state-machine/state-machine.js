@@ -26,11 +26,7 @@ class StateMachine {
   }
 
   toCancelled(prescription) {
-    return this.validateToCancelled(prescription)
-      .then(() => {
-        prescription.status = states.CANCELLED.id
-        return PrescriptionRepository.update(prescription)
-      })
+    return this.validateToCancelled(prescription).then(() => PrescriptionRepository.updateTo(prescription, states.CANCELLED.id))
   }
 
   validateToCancelled(prescription) {

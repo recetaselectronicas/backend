@@ -45,7 +45,8 @@ const ISSUED = {
       getObjectDoesntMatchError(prescription, 'doctor.id', value => typeof value === 'number' && !!value, doctorEntity, doctorFields.id),
       getNotNullError(prescription.medicalInsurance, prescriptionEntity, prescriptionFields.medicalInsurance),
       getObjectDoesntMatchError(prescription, 'medicalInsurance.id', value => typeof value === 'number' && !!value, medicalInsuranceEntity, medicalInsuranceFields.id),
-      getNotNullError(prescription.norm, prescriptionEntity, prescriptionFields.norm),
+      // TODO : descomentar esto
+      // getNotNullError(prescription.norm, prescriptionEntity, prescriptionFields.norm),
       getArrayNotEmptyError(prescription.items, prescriptionEntity, prescriptionFields.items),
       ...getArrayDoesntMatchError(prescription.items, 'prescribed.quantity', value => typeof value === 'number' && !!value, itemEntity, itemFields.prescribed.quantity),
       ...getArrayDoesntMatchError(prescription.items, 'prescribed.medicine.id', value => typeof value === 'number' && !!value, itemEntity, itemFields.prescribed.medicine.id)
