@@ -1,12 +1,11 @@
 const { NORM, MEDICAL_INSURANCE } = require('../src/repositories/tablesNames')
 
 exports.up = knex => knex.schema.withSchema('recetas').createTable(NORM, (table) => {
-  table.increments('id')
-  table.string('description', 255).notNullable()
-  table.string('entry_date', 255).notNullable()
-  table.string('leaving_date', 255).notNullable()
+  table.string('id_norm').notNullable()
   table.integer('id_medical_insurance').unsigned()
   table.foreign('id_medical_insurance').references(`${MEDICAL_INSURANCE}.id`)
+  table.primary(['id_medical_insurance'])
+  table.unique(['id_norm'])
 })
 
 exports.down = knex => knex.schema.withSchema('recetas').dropTable(NORM)
