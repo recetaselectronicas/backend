@@ -111,7 +111,24 @@ const toState = {
 
       return StateMachine.toReceive(prescription)
     }
-  }
+  },
+  AUDIT: {
+    change: (prescription, data) => {
+      if (!data.identifiedUser.canAudit()) {
+        throw errors.newForbiddenResourceException('No puede auditar la receta')
+      }
+      data.items.forEach((item) => {
+        const itemToAudit = prescription.items.find(i => i.id == item.id)
+        if (itemToAudit.audited.quantity) {
+          throw errors.newEntityAlreadyCreated('El item ya fué auditado')
+        }
+        itemToAudit.audit(item.quantity,item.medicine)
+      })
+
+      return StateMachine.toAudit(prescription)
+    }
+  },
+
 }
 
 module.exports = router

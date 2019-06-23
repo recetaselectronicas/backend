@@ -3,7 +3,7 @@ const { PrescriptionRepository } = require('../repositories/prescriptions-reposi
 const moment = require('moment')
 
 class StateMachine {
-  constructor() {}
+  constructor() { }
 
   toIssued(prescription) {
     prescription.setIssuedDate(moment())
@@ -51,9 +51,9 @@ class StateMachine {
     })
   }
 
-  toExpired(prescription) {}
+  toExpired(prescription) { }
 
-  validateToExpired(prescription) {}
+  validateToExpired(prescription) { }
 
   toReceive(prescription) {
     prescription.setSoldDate(moment())
@@ -93,21 +93,71 @@ class StateMachine {
     })
   }
 
-  toIncomplete(prescription) {}
+  toAudit(prescription) {
+    prescription.setAuditedDate(moment())
+    const itemsReceived = prescription.items.filter(item => !!item.received.quantity)
+    if (itemsReceived.every(item => item.audited.quantity === item.received.quantity && item.audited.medicine.id === item.received.medicine.id)) {
+      return this.toAudited(prescription)
+    }
+    if (itemsReceived.every(item => item.received.quantity !== item.audited.quantity || item.received.medicine.id !== item.audited.medicine.id)) {
+      return this.toRejected(prescription)
+    }
+    return this.toPartiallyRejected(prescription)
+  }
 
-  validateToIncomplete(prescription) {}
+  toIncomplete(prescription) { }
 
-  toAudited(prescription) {}
+  validateToIncomplete(prescription) { }
 
-  validateToAudited(prescription) {}
+  toAudited(prescription) {
+    return this.validateToAudited(prescription)
+      .then(() => {
+        prescription.status = states.AUDITED.id
+        return PrescriptionRepository.update(prescription)
+      })
+  }
 
-  toRejected(prescription) {}
+  validateToAudited(prescription) {
+    return new Promise((resolve, reject) => {
+      states.AUDITED.validate(prescription)
+      // TODO: Llamar al validador de reglas de negocio
+      return resolve()
+    })
+  }
 
-  validateToRejected(prescription) {}
-
-  toPartiallyRejected(prescription) {}
-
-  validateToPartiallyRejected(prescription) {}
-}
-
-module.exports = { StateMachine: new StateMachine() }
+  toRejected(prescription) {
+    return this.validateToRejected(prescription)
+      .then(() => {
+        prescription.status = states.REJECTED.id
+        return PrescriptionRepository.update(prescription)
+      })
+  }
+  
+  validateToRejected(prescription) {
+    return new Promise((resolve, reject) => {
+      states.REJECTED.validate(prescription)
+      // TODO: Llamar al validador de reglas de negocio
+      return resolve()
+    })
+  }
+  
+  toPartiallyRejected(prescription) {
+    return this.validateToPartiallyRejected(prescription)
+    .then(() => {
+      prescription.status = states.PARTIALLY_REJECTED.id
+      return PrescriptionRepository.update(prescription)
+    })
+  }
+  
+  validateToPartiallyRejected(prescription) {
+    return new Promise((resolve, reject) => {
+      states.PARTIALLY_REJECTED.validate(prescription)
+      // TODO: Llamar al validador de reglas de negocio
+        return resolve()
+      })
+      
+    }
+  }
+  
+  module.exports = { StateMachine: new StateMachine() }
+  

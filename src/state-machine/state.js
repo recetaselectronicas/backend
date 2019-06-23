@@ -162,7 +162,7 @@ const INCOMPLETE = {
   id: 'INCOMPLETE',
   status: 'INCOMPLETA',
   validate: validator,
-  getStatusError: prescription => getDiferentValueError(prescription.status, PARTIALLY_RECEIVED.status, prescriptionEntity, prescriptionFields.status),
+  getStatusError: prescription => getDiferentValueError(prescription.id, PARTIALLY_RECEIVED.id, prescriptionEntity, prescriptionFields.status),
   getErrors: (prescription) => {
     const errors = PARTIALLY_RECEIVED.getErrors(prescription)
     // TODO: Agregar validaciones para pasar a INCOMPLETA
@@ -177,13 +177,13 @@ const AUDITED = {
   id: 'AUDITED',
   status: 'AUDITADA',
   validate: validator,
-  getStatusError: prescription => getValueNotInListError(prescription.status, [INCOMPLETE.status, RECEIVED.status], prescriptionEntity, prescriptionFields.status),
+  getStatusError: prescription => getValueNotInListError(prescription.status, [INCOMPLETE.id, RECEIVED.id], prescriptionEntity, prescriptionFields.status),
   getErrors: (prescription) => {
     let errors = []
-    if (prescription.status === INCOMPLETE.status) {
+    if (prescription.status === INCOMPLETE.id) {
       errors = INCOMPLETE.getErrors(prescription)
     }
-    if (prescription.status === RECEIVED.status) {
+    if (prescription.status === RECEIVED.id) {
       errors = RECEIVED.getErrors(prescription)
     }
     // TODO: Agregar validaciones para pasar a INCOMPLETA
@@ -191,12 +191,12 @@ const AUDITED = {
   },
   getSpecificErrors: (prescription) => {
     const errors = [
-      ...getArrayDoesntMatchError(prescription.items, 'received.quantity', value => typeof value === 'number' && !!value, itemEntity, itemFields.received.quantity),
-      ...getArrayDoesntMatchError(prescription.items, 'received.medicine.id', value => typeof value === 'number' && !!value, itemEntity, itemFields.received.medicine.id),
-      ...getArrayDoesntMatchError(prescription.items, 'received.pharmacist.id', value => typeof value === 'number' && !!value, itemEntity, itemFields.received.pharmacist.id),
-      // ...getArrayDoesntMatchError(prescription.items, 'received.soldDate', value => typeof value === 'moment' && !!value, itemEntity, itemFields.received.soldDate),
-      ...getArrayDoesntMatchError(prescription.items, 'audited.quantity', value => typeof value === 'number' && !!value, itemEntity, itemFields.audited.quantity),
-      ...getArrayDoesntMatchError(prescription.items, 'audited.medicine.id', value => typeof value === 'number' && !!value, itemEntity, itemFields.audited.medicine.id)
+      // ...getArrayDoesntMatchError(prescription.items, 'received.quantity', value => typeof value === 'number' && !!value, itemEntity, itemFields.received.quantity),
+      // ...getArrayDoesntMatchError(prescription.items, 'received.medicine.id', value => typeof value === 'number' && !!value, itemEntity, itemFields.received.medicine.id),
+      // ...getArrayDoesntMatchError(prescription.items, 'received.pharmacist.id', value => typeof value === 'number' && !!value, itemEntity, itemFields.received.pharmacist.id),
+      // // ...getArrayDoesntMatchError(prescription.items, 'received.soldDate', value => typeof value === 'moment' && !!value, itemEntity, itemFields.received.soldDate),
+      // ...getArrayDoesntMatchError(prescription.items, 'audited.quantity', value => typeof value === 'number' && !!value, itemEntity, itemFields.audited.quantity),
+      // ...getArrayDoesntMatchError(prescription.items, 'audited.medicine.id', value => typeof value === 'number' && !!value, itemEntity, itemFields.audited.medicine.id)
     ]
     return errors
   }
@@ -205,13 +205,13 @@ const REJECTED = {
   id: 'REJECTED',
   status: 'RECHAZADA',
   validate: validator,
-  getStatusError: prescription => getValueNotInListError(prescription.status, [INCOMPLETE.status, RECEIVED.status], prescriptionEntity, prescriptionFields.status),
+  getStatusError: prescription => getValueNotInListError(prescription.status, [INCOMPLETE.id, RECEIVED.id], prescriptionEntity, prescriptionFields.status),
   getErrors: (prescription) => {
     let errors = []
-    if (prescription.status === INCOMPLETE.status) {
+    if (prescription.status === INCOMPLETE.id) {
       errors = INCOMPLETE.getErrors(prescription)
     }
-    if (prescription.status === RECEIVED.status) {
+    if (prescription.status === RECEIVED.id) {
       errors = RECEIVED.getErrors(prescription)
     }
     // TODO: Agregar validaciones para pasar a RECHAZADA
@@ -226,13 +226,13 @@ const PARTIALLY_REJECTED = {
   id: 'PARTIALLY_REJECTED',
   status: 'PARCIALMENTE RECHAZADA',
   validate: validator,
-  getStatusError: prescription => getValueNotInListError(prescription.status, [INCOMPLETE.status, RECEIVED.status], prescriptionEntity, prescriptionFields.status),
+  getStatusError: prescription => getValueNotInListError(prescription.status, [INCOMPLETE.id, RECEIVED.id], prescriptionEntity, prescriptionFields.status),
   getErrors: (prescription) => {
     let errors = []
-    if (prescription.status === INCOMPLETE.status) {
+    if (prescription.status === INCOMPLETE.id) {
       errors = INCOMPLETE.getErrors(prescription)
     }
-    if (prescription.status === RECEIVED.status) {
+    if (prescription.status === RECEIVED.id) {
       errors = RECEIVED.getErrors(prescription)
     }
     // TODO: Agregar validaciones para pasar a PARCIALMENTE_RECHAZADA
