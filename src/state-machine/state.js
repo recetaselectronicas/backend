@@ -68,7 +68,7 @@ const CANCELLED = {
   id: 'CANCELLED',
   status: 'CANCELADA',
   validate: validator,
-  getStatusError: prescription => getDiferentValueError(prescription.status, ISSUED.status, prescriptionEntity, prescriptionFields.status),
+  getStatusError: prescription => getDiferentValueError(prescription.status, ISSUED.id, prescriptionEntity, prescriptionFields.status),
   getErrors: (prescription) => {
     const errors = ISSUED.getErrors(prescription)
     return errors

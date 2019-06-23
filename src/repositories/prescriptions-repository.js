@@ -224,11 +224,12 @@ class PrescriptionRepository {
   }
   getIssuedToConfirmed() {
       return knex
-      .select(`${PRESCRIPTION}.issued_date`)
+      .select(`${PRESCRIPTION}.id`)
       .table(PRESCRIPTION)
       .where(`${PRESCRIPTION}.id_state`, 'ISSUED' )
       .andWhereRaw(`${PRESCRIPTION}.issued_date < SUBTIME(SYSDATE(), "00:02:00")`)
     }
+
   getByExample(_prescription) {
     return new Promise((resolve, reject) => {
       const searchedPrescription = Prescription.fromObject(_prescription)
@@ -359,8 +360,6 @@ class PrescriptionRepository {
 
   async getDomainPrescription(response) {
     const muttedPrescription = { ...response }
-    console.log("REEEESSSSSPPPOOOONNNNSEEEEE",response.issueDate)
-    muttedPrescription.issueDate= response.issueDate
     muttedPrescription.affiliate = {
       id: response.idAffiliate,
       code: response.codeAffiliate,
