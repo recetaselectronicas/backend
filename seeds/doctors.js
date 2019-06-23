@@ -4,15 +4,37 @@ exports.seed = knex => knex(DOCTOR)
   .del()
   .then(() => knex(DOCTOR).insert([
     {
-      name: '',
-      last_name: '',
-      contact_number: '',
-      nationality: '',
-      address: '',
-      email: '',
-      national_matriculation: '',
-      provincial_matriculation: '',
-      specialty: ''
+      name: 'Jose',
+      last_name: 'Pintimalli',
+      contact_number: '1520202020',
+      nationality: 'ARGENTINO',
+      address: 'Lo loca 412',
+      email: 'pepe@medic.com',
+      national_matriculation: '12837123',
+      provincial_matriculation: '992831',
+      specialty: 1
+    },
+    {
+      name: 'Enrrique',
+      last_name: 'Rompebol',
+      contact_number: '1520202020',
+      nationality: 'ARGENTINO',
+      address: 'Calle falsa 123',
+      email: 'enrrique@medic.com',
+      national_matriculation: '12837213',
+      provincial_matriculation: '992123',
+      specialty: 2
+    },
+    {
+      name: 'Rosco',
+      last_name: 'Negrini',
+      contact_number: '1520202020',
+      nationality: 'ARGENTINO',
+      address: 'Menro 932',
+      email: 'rosco@medic.com',
+      national_matriculation: '1283712345',
+      provincial_matriculation: '99283153',
+      specialty: 3
     }
   ]))
 /*
