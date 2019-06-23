@@ -10,10 +10,12 @@ class StateMachine {
     validateRulesOnPrescription(prescription, status, await NormRepository.getCurrentNormByMedicalInsuranceId(prescription.medicalInsurance.id))
   }
 
-  toIssued(prescription) {
+  async toIssued(prescription) {
     prescription.setIssuedDate(moment())
-    prescription.ttl = NormRepository.getCurrentTTL(prescription.medicalInsurance.id)
-    prescription.norm = NormRepository.getCurrentNormId(prescription.medicalInsurance.id)
+    prescription.ttl = await NormRepository.getCurrentTTL(prescription.medicalInsurance.id)
+    prescription.norm = await NormRepository.getCurrentNormId(prescription.medicalInsurance.id)
+
+    console.log(prescription)
 
     return this.validateToIssued(prescription).then(() => {
       prescription.status = states.ISSUED.id
