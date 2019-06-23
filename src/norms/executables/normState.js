@@ -1,15 +1,15 @@
 const array = require('lodash/array')
 const { Executable } = require('./executable')
 const { Rule } = require('./rule')
-const { statesMap } = require('../../state-machine/state')
+const { states } = require('../../state-machine/state')
 
 // Clase que representa una norma particular para un estado
 // Necesita de un estado al que aplica valido, una descripcion
 // y todas las reglas que aplican a dicha norma
 class NormState extends Executable {
   doValidate(model) {
-    if (!model.status || !statesMap[model.status]) {
-      throw new Error('Error while assembling NormState. No status given or status not valid.')
+    if (!model.state || !states[model.state]) {
+      throw new Error('Error while assembling NormState. No state given or state not valid.')
     }
     if (!model.description) {
       throw new Error('Error while assembling NormState. No description given.')
@@ -23,7 +23,7 @@ class NormState extends Executable {
   }
 
   doInitialize(model) {
-    this.status = model.status
+    this.state = model.state
     this.description = model.description
     this.rules = model.rules
   }
@@ -35,7 +35,8 @@ class NormState extends Executable {
   toJson() {
     return {
       ...super.toJson(),
-      status: this.status,
+      state: this.state,
+      value: states[this.state].status,
       description: this.description,
       rules: this.rules.map(rule => rule.toJson())
     }
@@ -53,8 +54,8 @@ class NormState extends Executable {
     return 'NORM_STATE'
   }
 
-  isState(status) {
-    return this.status === status
+  isState(state) {
+    return this.state === state
   }
 }
 

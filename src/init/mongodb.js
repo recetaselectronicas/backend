@@ -1,9 +1,10 @@
 /* eslint-disable no-unused-vars */
 const { MongoClient, ObjectID } = require('mongodb')
 const { logger } = require('../utils/utils')
+const { config } = require('../config/config')
 
-const host = 'localhost'
-const port = 27017
+const { host } = config.conections.mongo
+const { port } = config.conections.mongo
 const url = `mongodb://${host}:${port}`
 const prescriptionDBName = 'prescriptions'
 
@@ -25,11 +26,16 @@ const initMongoDB = () => new Promise((resolve, reject) => {
     mongoClient.prescriptionDB = cli.db(prescriptionDBName)
     mongoClient.normsCollection = mongoClient.prescriptionDB.collection('norms')
     mongoClient.client = cli
-    mongoClient.normsCollection.deleteMany({})
-      .then(() => {
-        logger.info('MongoDB initialized OK')
-        return resolve()
-      })
+    if (config.executeBootstrap.mongo) {
+      mongoClient.normsCollection.deleteMany({})
+        .then(() => {
+          logger.info('MongoDB initialized OK')
+          return resolve()
+        })
+    } else {
+      logger.info('MongoDB initialized OK')
+      return resolve()
+    }
   })
 })
 
