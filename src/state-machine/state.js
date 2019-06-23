@@ -141,7 +141,7 @@ const RECEIVED = {
 }
 const PARTIALLY_RECEIVED = {
   id: 'PARTIALLY_RECEIVED',
-  status: 'PARCIALMENTE_RECEPCIONADA',
+  status: 'PARCIALMENTE RECEPCIONADA',
   validate: validator,
   getStatusError: prescription => getValueNotInListError(prescription.status, [CONFIRMED.id, PARTIALLY_RECEIVED.id], prescriptionEntity, prescriptionFields.status),
   getErrors: (prescription) => {
@@ -224,7 +224,7 @@ const REJECTED = {
 }
 const PARTIALLY_REJECTED = {
   id: 'PARTIALLY_REJECTED',
-  status: 'PARCIALMENTE_RECHAZADA',
+  status: 'PARCIALMENTE RECHAZADA',
   validate: validator,
   getStatusError: prescription => getValueNotInListError(prescription.status, [INCOMPLETE.id, RECEIVED.id], prescriptionEntity, prescriptionFields.status),
   getErrors: (prescription) => {

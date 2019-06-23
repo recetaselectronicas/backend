@@ -14,7 +14,10 @@ const item3 = { prescribed: { quantity: 3, medicine: { id: 1 } } }
 const dummyPrescription = Prescription.fromObject({ items: [item1, item2, item3] })
 
 const validateNorm = (norm) => {
-  console.log(JSON.stringify(generateJsonFromNorm(generateNormFromJson(dummyPrescription, states.ISSUED.status, generateJsonFromNorm(generateNormFromJson(dummyPrescription, states.ISSUED.status, norm))))))
+  console.log(JSON.stringify(generateJsonFromNorm(generateNormFromJson(dummyPrescription, states.ISSUED.id, generateJsonFromNorm(generateNormFromJson(dummyPrescription, states.ISSUED.id, norm))))))
+}
+const normalizeNorm = (norm) => {
+  return generateJsonFromNorm(generateNormFromJson(dummyPrescription, states.ISSUED.id, norm))
 }
 
 module.exports = {
@@ -22,5 +25,6 @@ module.exports = {
   generateRuleFromJson,
   generateJsonFromNorm,
   generateNormFromJson,
-  validateNorm
+  validateNorm,
+  normalizeNorm
 }

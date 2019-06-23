@@ -8,9 +8,9 @@ exports.seed = knex => knex(STATE)
     { id: 'CONFIRMED', description: 'CONFIRMADA' },
     { id: 'EXPIRED', description: 'VENCIDA' },
     { id: 'RECEIVED', description: 'RECEPCIONADA' },
-    { id: 'PARTIALLY_RECEIVED', description: 'PARCIALMENTE_RECEPCIONADA' },
+    { id: 'PARTIALLY_RECEIVED', description: 'PARCIALMENTE RECEPCIONADA' },
     { id: 'INCOMPLETE', description: 'INCOMPLETA' },
     { id: 'AUDITED', description: 'AUDITADA' },
     { id: 'REJECTED', description: 'RECHAZADA' },
-    { id: 'PARTIALLY_REJECTED', description: 'PARCIALMENTE_RECHAZADA' },
+    { id: 'PARTIALLY_REJECTED', description: 'PARCIALMENTE RECHAZADA' },
   ]))

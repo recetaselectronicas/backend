@@ -16,6 +16,12 @@ const session = require('./session')
 const loggerMiddleware = require('../middlewares/logger')
 const errorHandler = require('../middlewares/error-handler')
 
+// CORS Support
+appRouter.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
+  next()
+})
 appRouter.use('/ping', pingRouter)
 appRouter.use(bodyParser.json())
 appRouter.use(loggerMiddleware)

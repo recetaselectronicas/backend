@@ -1,6 +1,7 @@
 const lang = require('lodash/lang')
 const filters = require('../filters/prescriptions/prescriptionFilters')
 const { newForbiddenResourceException } = require('../utils/errors')
+const { InstitutionRepository } = require('../repositories/institutionRepository')
 
 const userTypes = {
   AFFILIATE: 'affiliate',
@@ -31,6 +32,12 @@ const identifiedAffiliate = {
   ...identifiedUser,
   type: userTypes.AFFILIATE,
   getFilters: filters.getAffiliateAvailableFilters,
+  populateFilters: async (userFilter) => {
+    const muttedFilters = { ...userFilter }
+    muttedFilters.filters.institution.values = await InstitutionRepository.getAll().map(({ id, description }) => ({ id, value: description }))
+
+    return muttedFilters
+  },
   getQuery(params) {
     return filters.getAffiliateQueryByParams(params, this.id)
   },

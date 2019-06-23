@@ -42,17 +42,17 @@ const secureMiddleware3 = (req, res, next) => {
   return next()
 }
 
-router.get('/', secureMiddleware, (req, res, next) => {
-  const { logger } = req.app.locals
+router.get('/', secureMiddleware, async (req, res, next) => {
   const { identifiedUser } = req
   const prescriptionQuery = identifiedUser.getQuery(req.query)
-  return PrescriptionRepository.getByQuery(prescriptionQuery)
-    .then((prescriptions) => {
-      const filters = identifiedUser.getFilters()
-      const response = { result: prescriptions.map(pres => pres.toPlainObject()), ...filters }
-      return res.json(response)
-    })
-    .catch(next)
+  try {
+    const prescriptions = await PrescriptionRepository.getByQuery(prescriptionQuery)
+    const filters = await identifiedUser.populateFilters(identifiedUser.getFilters())
+    const response = { result: prescriptions.map(pres => pres.toPlainObject()), ...filters }
+    return res.json(response)
+  } catch (error) {
+    return next(error)
+  }
 })
 
 router.get('/:id', secureMiddleware, (req, res, next) => {

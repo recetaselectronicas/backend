@@ -1,6 +1,6 @@
 const { Executable } = require('./executable')
 const { NormState } = require('./normState')
-const { statesMap, states } = require('../../state-machine/state')
+const { states } = require('../../state-machine/state')
 
 // Clase que representa a toda la norma entera
 // Necesita de una descripcion, los estados para los cuales
@@ -17,8 +17,8 @@ class Norm extends Executable {
     if (!model.states.every(state => state instanceof NormState)) {
       throw new Error('Error while assembling Norm. Not all states given ar NormState.')
     }
-    if (!model.executionStatus || !statesMap[model.executionStatus]) {
-      throw new Error('Error while assembling Norm. No executionStatus given or not a valid status.')
+    if (!model.executionStatus || !states[model.executionStatus]) {
+      throw new Error('Error while assembling Norm. No executionStatus given or not a valid state.')
     }
   }
 
@@ -27,7 +27,7 @@ class Norm extends Executable {
     this.states = model.states
     this.executionStatus = model.executionStatus
     this.actualStatus = this.states.find(state => state.isState(this.executionStatus))
-      || new NormState().initialize({ status: states.ISSUED.status, description: 'DUMMY', rules: [] })
+      || new NormState().initialize({ state: states.ISSUED.id, description: 'DUMMY', rules: [] })
   }
 
   satisfies() {

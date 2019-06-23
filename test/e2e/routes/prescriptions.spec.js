@@ -1,5 +1,6 @@
 const request = require('supertest')
 const { init } = require('../../../src/init/initServer')
+const { InstitutionRepository } = require('../../../src/repositories/institutionRepository')
 
 const app = init()
 app.locals.logger = { info: () => {}, error: () => {} }
@@ -30,7 +31,7 @@ describe('when do a get in /prescriptions', () => {
         },
         {
           id: 'PARTIALLY_RECEIVED',
-          value: 'PARCIALMENTE_RECEPCIONADA'
+          value: 'PARCIALMENTE RECEPCIONADA'
         },
         {
           id: 'CANCELLED',
@@ -50,7 +51,12 @@ describe('when do a get in /prescriptions', () => {
     },
     institution: {
       key: 'institution',
-      values: []
+      values: [
+        {
+          id: 0,
+          value: 'Instucion de mentira'
+        }
+      ]
     },
     medicalInsurance: {
       key: 'medicalInsurance',
@@ -66,7 +72,8 @@ describe('when do a get in /prescriptions', () => {
       id: {
         key: 'id',
         sorting: {
-          asc: 'asc'
+          asc: 'asc',
+          dsc: 'desc'
         }
       },
       issuedDate: {
@@ -85,6 +92,14 @@ describe('when do a get in /prescriptions', () => {
       }
     }
   }
+  beforeAll(() => {
+    InstitutionRepository.getAll = () => [
+      {
+        id: 0,
+        description: 'Instucion de mentira'
+      }
+    ]
+  })
   it('respond with correct filters', () => request(app)
     .get('/prescriptions')
     .expect(200)
