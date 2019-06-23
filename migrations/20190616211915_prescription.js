@@ -1,5 +1,5 @@
 const {
-  PRESCRIPTION, MEDICAL_INSURANCE, AFFILIATE, DOCTOR, STATE, NORM, INSTITUTION,
+  PRESCRIPTION, MEDICAL_INSURANCE, AFFILIATE, DOCTOR, STATE, NORM, INSTITUTION
 } = require('../src/repositories/tablesNames')
 
 exports.up = knex => knex.schema.withSchema('recetas').createTable(PRESCRIPTION, (table) => {
@@ -14,14 +14,13 @@ exports.up = knex => knex.schema.withSchema('recetas').createTable(PRESCRIPTION,
   table.integer('id_affiliate').unsigned()
   table.integer('id_doctor').unsigned()
   table.string('id_state').notNullable()
-  table.string('id_norm', 255)
+  table.string('id_norm', 255).notNullable()
   table.integer('id_institution').unsigned()
 
   table.foreign('id_medical_insurance').references(`${MEDICAL_INSURANCE}.id`)
   table.foreign('id_affiliate').references(`${AFFILIATE}.id`)
   table.foreign('id_doctor').references(`${DOCTOR}.id`)
   table.foreign('id_state').references(`${STATE}.id`)
-  table.foreign('id_norm').references(`${NORM}.id_norm`)
   table.foreign('id_institution').references(`${INSTITUTION}.id`)
 })
 
