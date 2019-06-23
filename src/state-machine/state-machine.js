@@ -1,15 +1,21 @@
+/* eslint-disable no-param-reassign */
+const moment = require('moment')
 const { states } = require('./state')
 const { PrescriptionRepository } = require('../repositories/prescriptions-repository')
 const { NormRepository } = require('../repositories/normRepository')
-const moment = require('moment')
+const { validateRulesOnPrescription } = require('../norms/norm')
 
 class StateMachine {
-  constructor() { }
+  async validateNorm(prescription, status) {
+    validateRulesOnPrescription(prescription, status, await NormRepository.getCurrentNormByMedicalInsuranceId(prescription.medicalInsurance.id))
+  }
 
-  toIssued(prescription) {
+  async toIssued(prescription) {
     prescription.setIssuedDate(moment())
-    prescription.ttl = NormRepository.getCurrentTTL(prescription.medicalInsurance.id)
-    prescription.norm = NormRepository.getCurrentNormId(prescription.medicalInsurance.id)
+    prescription.ttl = await NormRepository.getCurrentTTL(prescription.medicalInsurance.id)
+    prescription.norm = await NormRepository.getCurrentNormId(prescription.medicalInsurance.id)
+
+    console.log(prescription)
 
     return this.validateToIssued(prescription).then(() => {
       prescription.status = states.ISSUED.id
@@ -17,24 +23,18 @@ class StateMachine {
     })
   }
 
-  validateToIssued(prescription) {
-    return new Promise((resolve, reject) => {
-      states.ISSUED.validate(prescription)
-      // TODO: Llamar al validador de reglas de negocio
-      return resolve()
-    })
+  async validateToIssued(prescription) {
+    states.ISSUED.validate(prescription)
+    await this.validateNorm(prescription, states.ISSUED.id)
   }
 
   toCancelled(prescription) {
     return this.validateToCancelled(prescription).then(() => PrescriptionRepository.updateTo(prescription, states.CANCELLED.id))
   }
 
-  validateToCancelled(prescription) {
-    return new Promise((resolve, reject) => {
-      states.CANCELLED.validate(prescription)
-      // TODO: Llamar al validador de reglas de negocio
-      return resolve()
-    })
+  async validateToCancelled(prescription) {
+    states.CANCELLED.validate(prescription)
+    await this.validateNorm(prescription, states.CANCELLED.id)
   }
 
   toConfirmed(prescription) {
