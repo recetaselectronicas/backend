@@ -85,7 +85,7 @@ const CONFIRMED = {
   id: 'CONFIRMED',
   status: 'CONFIRMADA',
   validate: validator,
-  getStatusError: prescription => getDiferentValueError(prescription.status, ISSUED.status, prescriptionEntity, prescriptionFields.status),
+  getStatusError: prescription => getDiferentValueError(prescription.status, ISSUED.id, prescriptionEntity, prescriptionFields.status),
   getErrors: (prescription) => {
     const errors = ISSUED.getErrors(prescription)
     return errors
@@ -99,7 +99,7 @@ const EXPIRED = {
   id: 'EXPIRED',
   status: 'VENCIDA',
   validate: validator,
-  getStatusError: prescription => getDiferentValueError(prescription.status, CONFIRMED.status, prescriptionEntity, prescriptionFields.status),
+  getStatusError: prescription => getDiferentValueError(prescription.status, CONFIRMED.id, prescriptionEntity, prescriptionFields.status),
   getErrors: (prescription) => {
     const errors = CONFIRMED.getErrors(prescription)
     // TODO: Agregar validaciones para pasar a VENCIDA

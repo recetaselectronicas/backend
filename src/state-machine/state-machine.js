@@ -42,9 +42,10 @@ class StateMachine {
       return PrescriptionRepository.update(prescription)
     })
   }
-
+  
   validateToConfirmed(prescription) {
     return new Promise((resolve, reject) => {
+      // console.log("Hasta aca llegooooooo", prescription)
       states.CONFIRMED.validate(prescription)
       // TODO: Llamar al validador de reglas de negocio
       return resolve()

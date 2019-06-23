@@ -126,7 +126,8 @@ class PrescriptionRepository {
 
     const plainPrescription = prescription.toPlainObject()
     const updatetablePrescription = {
-      issued_date: plainPrescription.issuedDate,
+      issued_date: dateTimeFormat.toDate(plainPrescription.issuedDate).toDate(),
+      // plainPrescription.issuedDate,
       sold_date: plainPrescription.soldDate,
       audited_date: plainPrescription.auditedDate,
       id_state: plainPrescription.status,
@@ -223,11 +224,10 @@ class PrescriptionRepository {
   }
   getIssuedToConfirmed() {
       return knex
-      .select(`${PRESCRIPTION}.id`)
+      .select(`${PRESCRIPTION}.issued_date`)
       .table(PRESCRIPTION)
       .where(`${PRESCRIPTION}.id_state`, 'ISSUED' )
-      .andWhere(`${PRESCRIPTION}.issuedDate`,'<' ,Date.now())
-      // .
+      .andWhereRaw(`${PRESCRIPTION}.issued_date < SUBTIME(SYSDATE(), "00:02:00")`)
     }
   getByExample(_prescription) {
     return new Promise((resolve, reject) => {
@@ -359,6 +359,8 @@ class PrescriptionRepository {
 
   async getDomainPrescription(response) {
     const muttedPrescription = { ...response }
+    console.log("REEEESSSSSPPPOOOONNNNSEEEEE",response.issueDate)
+    muttedPrescription.issueDate= response.issueDate
     muttedPrescription.affiliate = {
       id: response.idAffiliate,
       code: response.codeAffiliate,

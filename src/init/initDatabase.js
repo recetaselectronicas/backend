@@ -4,7 +4,7 @@ const { generateNormsData } = require('../bootstrap/normBootstrap')
 
 const init = async () => {
   await initMongoDB()
-  await generateData()
+  // await generateData()
 }
 
 module.exports = { init }
