@@ -43,7 +43,7 @@ class StateMachine {
       return PrescriptionRepository.update(prescription)
     })
   }
-  
+
   validateToConfirmed(prescription) {
     return new Promise((resolve, reject) => {
       // console.log("Hasta aca llegooooooo", prescription)
@@ -53,9 +53,46 @@ class StateMachine {
     })
   }
 
-  toExpired(prescription) { }
 
-  validateToExpired(prescription) { }
+  toExpire(prescription) {
+    if (prescription.status === states.PARTIALLY_RECEIVED.id) {
+      return this.toIncomplete(prescription)
+    }
+    return this.toExpired(prescription)
+
+  }
+  toExpired(prescription) {
+    return this.validateToExpired(prescription).then(() => {
+      prescription.status = states.EXPIRED.id
+      return PrescriptionRepository.update(prescription)
+    })
+  }
+
+  validateToExpired(prescription) {
+    return new Promise((resolve, reject) => {
+      states.EXPIRED.validate(prescription)
+      // TODO: Llamar al validador de reglas de negocio
+      return resolve()
+    })
+  }
+
+  toIncomplete(prescription) {
+    return this.validateToIncomplete(prescription).then(() => {
+      prescription.status = states.INCOMPLETE.id
+      return PrescriptionRepository.update(prescription)
+    })
+    .catch((err)=>{
+      console.error(err)
+    })
+  }
+
+  validateToIncomplete(prescription) {
+    return new Promise((resolve, reject) => {
+      states.INCOMPLETE.validate(prescription)
+      // TODO: Llamar al validador de reglas de negocio
+      return resolve()
+    })
+  }
 
   toReceive(prescription) {
     prescription.setSoldDate(moment())
@@ -106,10 +143,6 @@ class StateMachine {
     }
     return this.toPartiallyRejected(prescription)
   }
-
-  toIncomplete(prescription) { }
-
-  validateToIncomplete(prescription) { }
 
   toAudited(prescription) {
     return this.validateToAudited(prescription)

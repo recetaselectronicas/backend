@@ -7,6 +7,7 @@ const { StateMachine } = require('../state-machine/state-machine')
 const init = () => {
   logger.info(`Daemon its running `)
   setInterval(function () { checkIssued() }, 30000);
+  setInterval(function () { checkExpired() }, 30000);
 }
 
 const checkIssued = () => {
@@ -26,8 +27,29 @@ const checkIssued = () => {
     })
     .catch((err) => {
       console.log(err)
+    })
 
+
+}
+const checkExpired = () => {
+  logger.info(`Se chequearon las recetas vencidas`)
+  return PrescriptionRepository.getPrescriptionsToExpirate()
+    .then((ids) => {
+      if (ids) {
+        ids.forEach(value => {
+          return PrescriptionRepository.getById(value.id)
+            .then((prescription) => {
+              return StateMachine.toExpire(prescription)
+            }
+            )
+        }
+        )
+      }
+    })
+    .catch((err) => {
+      console.error(err)
     })
 }
 
-module.exports = { init }
+
+  module.exports = { init }

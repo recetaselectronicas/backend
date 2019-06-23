@@ -162,7 +162,7 @@ const INCOMPLETE = {
   id: 'INCOMPLETE',
   status: 'INCOMPLETA',
   validate: validator,
-  getStatusError: prescription => getDiferentValueError(prescription.id, PARTIALLY_RECEIVED.id, prescriptionEntity, prescriptionFields.status),
+  getStatusError: prescription => getDiferentValueError(prescription.status, PARTIALLY_RECEIVED.id, prescriptionEntity, prescriptionFields.status),
   getErrors: (prescription) => {
     const errors = PARTIALLY_RECEIVED.getErrors(prescription)
     // TODO: Agregar validaciones para pasar a INCOMPLETA
