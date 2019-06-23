@@ -15,8 +15,6 @@ class StateMachine {
     prescription.ttl = await NormRepository.getCurrentTTL(prescription.medicalInsurance.id)
     prescription.norm = await NormRepository.getCurrentNormId(prescription.medicalInsurance.id)
 
-    console.log(prescription)
-
     return this.validateToIssued(prescription).then(() => {
       prescription.status = states.ISSUED.id
       return PrescriptionRepository.create(prescription)
