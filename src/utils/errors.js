@@ -24,6 +24,7 @@ const errors = {
   NULL_OR_EMPTY_VALUE_ERROR: { ...error, code: '1-001', message: 'Null or empty field value' },
   INVALID_VALUE_ERROR: { ...error, code: '1-002', message: 'Invalid field value' },
   ENTITY_ALREADY_CREATED: { ...error, code: '1-003', message: 'Entity already created' },
+  NORM_RULE_FAILED: { ...error, code: '1-004', message: 'Rule failed' },
   NOT_FOUND_ERROR: {
     ...error,
     code: '1-100',
@@ -53,7 +54,7 @@ const errors = {
     code: '2-002',
     message: 'You can´t perform that action',
     status: 403
-  }
+  },
 }
 
 const newError = (type, message, cause, status) => {
@@ -72,6 +73,7 @@ const newDuplicatedValueError = (message, cause, status) => newError('DUPLICATED
 const newNullOrEmptyError = (message, cause, status) => newError('NULL_OR_EMPTY_VALUE_ERROR', message, cause, status)
 const newInvalidValueError = (message, cause, status) => newError('INVALID_VALUE_ERROR', message, cause, status)
 const newEntityAlreadyCreated = (message, cause, status) => newError('ENTITY_ALREADY_CREATED', message, cause, status)
+const newNormRuleFailed = (message, cause, status) => newError('NORM_RULE_FAILED', message, cause, status)
 const newNotFoundError = (message, cause, status) => newError('NOT_FOUND_ERROR', message, cause, status)
 const newBadRequestError = (message, cause, status) => newError('BAD_REQUEST', message, cause, status)
 const newInvalidUsernameOrPasswordError = (message, cause, status) => newError('INVALID_USERNAME_OR_PASSWORD_ERROR', message, cause, status)
@@ -179,6 +181,7 @@ module.exports = {
   newNullOrEmptyError,
   newInvalidValueError,
   newEntityAlreadyCreated,
+  newNormRuleFailed,
   newNotFoundError,
   newBadRequestError,
   newInvalidUsernameOrPasswordError,

@@ -1,4 +1,5 @@
 /* eslint-disable no-mixed-operators */
+const errors = require('../utils/errors')
 const {
   generateJsonFromRule,
   generateRuleFromJson,
@@ -20,11 +21,20 @@ const normalizeNorm = (norm) => {
   return generateJsonFromNorm(generateNormFromJson(dummyPrescription, states.ISSUED.id, norm))
 }
 
+const validateRulesOnPrescription = (prescription, status, norm) => {
+  const generatedNorm = generateNormFromJson(prescription, status, norm)
+  const error = generatedNorm.executeAndGetError()
+  if (error) {
+    throw errors.newNormRuleFailed(error)
+  }
+}
+
 module.exports = {
   generateJsonFromRule,
   generateRuleFromJson,
   generateJsonFromNorm,
   generateNormFromJson,
   validateNorm,
-  normalizeNorm
+  normalizeNorm,
+  validateRulesOnPrescription
 }

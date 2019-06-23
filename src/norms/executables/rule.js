@@ -1,5 +1,6 @@
 const { Predicate } = require('../predicates/predicate')
 const { Executable } = require('../executables/executable')
+const { logger } = require('../../utils/utils')
 
 
 // Clase que representa una regla propiamente dicha
@@ -26,7 +27,12 @@ class Rule extends Executable {
   }
 
   satisfies() {
-    return this.predicate.satisfies()
+    try {
+      return this.predicate.satisfies()
+    } catch (e) {
+      logger.error('Error while executing rule', e)
+      return this.errorMessage
+    }
   }
 
   getError() {
