@@ -29,6 +29,7 @@ router.post('/', secureMiddleware, async (req, res, next) => {
     return res.json(createdNorm)
   } catch (e) {
     if (!errors.isBusinessError(e) || !e.status) {
+      console.log(e)
       return next(errors.newBadRequestError('Error while saving norm.', { error: e.toString() }))
     }
     return next(e)
