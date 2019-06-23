@@ -72,7 +72,8 @@ describe('when do a get in /prescriptions', () => {
       id: {
         key: 'id',
         sorting: {
-          asc: 'asc'
+          asc: 'asc',
+          dsc: 'desc'
         }
       },
       issuedDate: {

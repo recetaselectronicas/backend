@@ -244,8 +244,10 @@ class PrescriptionRepository {
   }
 
   async getByQuery(query) {
-    const { filters } = query
+    const { filters, orders } = query
     const { status, id, institution } = filters
+    const { orderKey, sortKey } = orders
+    console.log('query', query)
     try {
       const knexQuery = knex
         .select(
@@ -276,11 +278,14 @@ class PrescriptionRepository {
         .leftJoin(DOCTOR, `${PRESCRIPTION}.id_doctor`, `${DOCTOR}.id`)
         .whereIn('id_state', status)
 
-      if (id) {
-        knexQuery.andWhere(`${PRESCRIPTION}.id`, id)
+      if (id && id.length > 0) {
+        knexQuery.whereIn(`${PRESCRIPTION}.id`, id)
       }
-      if (institution) {
+      if (institution && institution.length > 0) {
         knexQuery.whereIn(`${PRESCRIPTION}.id_institution`, institution)
+      }
+      if (orderKey && sortKey) {
+        knexQuery.orderBy(orderKey, sortKey)
       }
 
       const prescriptions = await knexQuery

@@ -11,10 +11,11 @@ const getMatchingValues = function (key, values) {
     return [values]
   }
 }
+const getArrayOf = value => (Array.isArray(value) ? value : [value])
 module.exports = {
   id: {
     key: 'id',
-    getMatchingValues: (key, id) => id
+    getMatchingValues: (key, id) => getArrayOf(id)
   },
   status: {
     key: 'status',
@@ -24,7 +25,7 @@ module.exports = {
   institution: {
     key: 'institution',
     values: [],
-    getMatchingValues: (key, institution) => (Array.isArray(institution) ? institution : [institution])
+    getMatchingValues: (key, institution) => getArrayOf(institution)
   },
   medicalInsurance: {
     key: 'medicalInsurance',
@@ -80,7 +81,7 @@ module.exports = {
         if (currentValue.key === orderKey) {
           const sortingCurrentValue = currentValue.sorting
           if (sortingCurrentValue.asc === sortKey || sortingCurrentValue.dsc === sortKey) {
-            returnedValue = { orderKey: sortKey }
+            returnedValue = { orderKey, sortKey }
           }
         }
         return returnedValue
@@ -91,7 +92,8 @@ module.exports = {
       id: {
         key: 'id',
         sorting: {
-          asc: 'asc'
+          asc: 'asc',
+          dsc: 'desc'
         }
       },
       issuedDate: {
