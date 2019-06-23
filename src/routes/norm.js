@@ -6,7 +6,6 @@ const { validateNorm, normalizeNorm } = require('../norms/norm')
 const errors = require('../utils/errors')
 const { RULE_METADATA } = require('../norms/metadata/generate/generateMetadata')
 const permissions = require('../permissions/identifiedUser')
-const { MedicalInsuranceRepository } = require('../repositories/medicalInsuranceRepository')
 
 // Falta el middleware de seguridad para saber de que obra social
 // es la norma que se quiere ver o crear
@@ -46,9 +45,7 @@ router.get('/actual', secureMiddleware, async (req, res, next) => {
   }
 })
 
-router.get('/definition', (req, res, next) => {
-  return res.json(RULE_METADATA)
-})
+router.get('/definition', (req, res, next) => res.json(RULE_METADATA))
 
 // Este endpoint seguro va a cambiar. Habría que pensar como es mejor
 // para el metodo rest la consulta de la norma vigente de la obra social

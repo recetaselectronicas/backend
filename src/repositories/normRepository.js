@@ -9,6 +9,7 @@ class NormRepository {
     const { ops } = await mongoClient.normsCollection.insertOne(norm)
     const createdNorm = ops[0]
     await this.updateCurrentNormId(createdNorm.medicalInsurance, createdNorm._id)
+    await this.updateCurrentTTL(createdNorm.medicalInsurance, createdNorm.ttl)
     return createdNorm
   }
 
@@ -25,15 +26,18 @@ class NormRepository {
   }
 
   async getCurrentNormByMedicalInsuranceId(medicalInsuranceId) {
+    return this.getById(await this.getCurrentNormId(medicalInsuranceId))
+  }
+
+  async getCurrentNormId(medicalInsuranceId) {
     const [norm] = await knex
       .select()
       .table(NORM)
       .where(`${NORM}.id_medical_insurance`, Number.parseInt(medicalInsuranceId, 10))
-    if (norm) {
-      const { idNorm: normId } = norm
-      return this.getById(normId)
+    if (!norm) {
+      throw errors.newNotFoundError('No norm found for this medical ensurance')
     }
-    throw errors.newNotFoundError('No norm found for this medical ensurance')
+    return norm.idNorm
   }
 
   async updateCurrentNormId(medicalInsuranceId, normId) {
@@ -48,6 +52,28 @@ class NormRepository {
           id_norm: normId.toString(),
           id_medical_insurance: Number.parseInt(medicalInsuranceId, 10)
         })
+    }
+  }
+
+  async getCurrentTTL(medicalInsuranceId) {
+    const norm = await knex()
+      .select()
+      .table(NORM)
+      .where(`${NORM}.id_medical_insurance`, Number.parseInt(medicalInsuranceId, 10))
+    if (!norm) {
+      throw errors.newNotFoundError('No norm found for this medical ensurance')
+    }
+    return norm.ttl
+  }
+
+  async updateCurrentTTL(medicalInsuranceId, ttl) {
+    const quantity = await knex(NORM)
+      .where('id_medical_insurance', Number.parseInt(medicalInsuranceId, 10))
+      .update({
+        ttl: Number.parseInt(ttl, 10)
+      })
+    if (!quantity) {
+      throw errors.newNotFoundError('No norm found for this medical ensurance')
     }
   }
 }

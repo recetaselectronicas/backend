@@ -1,5 +1,6 @@
 const { states } = require('./state')
 const { PrescriptionRepository } = require('../repositories/prescriptions-repository')
+const { NormRepository } = require('../repositories/normRepository')
 const moment = require('moment')
 
 class StateMachine {
@@ -7,8 +8,8 @@ class StateMachine {
 
   toIssued(prescription) {
     prescription.setIssuedDate(moment())
-    prescription.ttl = 30 // TODO: reemplazar con el llamado a tiempo de vida posta segun OS
-    prescription.norm = 1 // TODO: reemplazar con el llamado a norma vigente segun OS
+    prescription.ttl = NormRepository.getCurrentTTL(prescription.medicalInsurance.id)
+    prescription.norm = NormRepository.getCurrentNormId(prescription.medicalInsurance.id)
 
     return this.validateToIssued(prescription).then(() => {
       prescription.status = states.ISSUED.id
@@ -133,7 +134,7 @@ class StateMachine {
         return PrescriptionRepository.update(prescription)
       })
   }
-  
+
   validateToRejected(prescription) {
     return new Promise((resolve, reject) => {
       states.REJECTED.validate(prescription)
@@ -141,24 +142,22 @@ class StateMachine {
       return resolve()
     })
   }
-  
+
   toPartiallyRejected(prescription) {
     return this.validateToPartiallyRejected(prescription)
-    .then(() => {
-      prescription.status = states.PARTIALLY_REJECTED.id
-      return PrescriptionRepository.update(prescription)
-    })
+      .then(() => {
+        prescription.status = states.PARTIALLY_REJECTED.id
+        return PrescriptionRepository.update(prescription)
+      })
   }
-  
+
   validateToPartiallyRejected(prescription) {
     return new Promise((resolve, reject) => {
       states.PARTIALLY_REJECTED.validate(prescription)
       // TODO: Llamar al validador de reglas de negocio
-        return resolve()
-      })
-      
-    }
+      return resolve()
+    })
   }
-  
-  module.exports = { StateMachine: new StateMachine() }
-  
+}
+
+module.exports = { StateMachine: new StateMachine() }
