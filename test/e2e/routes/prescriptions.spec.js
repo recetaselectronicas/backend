@@ -30,7 +30,7 @@ describe('when do a get in /prescriptions', () => {
         },
         {
           id: 'PARTIALLY_RECEIVED',
-          value: 'PARCIALMENTE_RECEPCIONADA'
+          value: 'PARCIALMENTE RECEPCIONADA'
         },
         {
           id: 'CANCELLED',
