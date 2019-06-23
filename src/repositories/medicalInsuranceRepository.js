@@ -2,7 +2,7 @@
 const { MedicalInsurance } = require('../domain/medicalInsurance')
 const { newNotFoundError, newEntityAlreadyCreated } = require('../utils/errors')
 const knex = require('../init/knexConnection')
-const { MEDICAL_INSURANCE, MEDICAL_PRIMER } = require('./tablesNames')
+const { MEDICAL_INSURANCE, MEDICAL_BOOKLET } = require('./tablesNames')
 
 class MedicalInsuranceRepository {
   constructor() {
@@ -29,9 +29,9 @@ class MedicalInsuranceRepository {
   getMedicalInsuranceByMedic(doctorId) {
     return knex
       .select()
-      .table(MEDICAL_PRIMER)
-      .where(`${MEDICAL_PRIMER}.id_doctor`, Number.parseInt(doctorId, 10))
-      .leftJoin(MEDICAL_INSURANCE, `${MEDICAL_PRIMER}.id_medical_insurance`, `${MEDICAL_INSURANCE}.id`)
+      .table(MEDICAL_BOOKLET)
+      .where(`${MEDICAL_BOOKLET}.id_doctor`, Number.parseInt(doctorId, 10))
+      .leftJoin(MEDICAL_INSURANCE, `${MEDICAL_BOOKLET}.id_medical_insurance`, `${MEDICAL_INSURANCE}.id`)
       .then(response => response.map(medicalInsurance => MedicalInsurance.fromObject(medicalInsurance)))
   }
 
@@ -49,5 +49,5 @@ class MedicalInsuranceRepository {
 }
 
 module.exports = {
-  MedicalInsuranceRepository: new MedicalInsuranceRepository(),
+  MedicalInsuranceRepository: new MedicalInsuranceRepository()
 }

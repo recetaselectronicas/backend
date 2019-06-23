@@ -1,5 +1,5 @@
 module.exports = {
-  MEDICAL_PRIMER: 'medical_primer',
+  MEDICAL_BOOKLET: 'medical_booklet',
   MEDICAL_INSURANCE: 'medical_insurance',
   MEDICINE: 'medicine',
   ITEM: 'item',

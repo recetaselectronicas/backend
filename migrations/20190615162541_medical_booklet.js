@@ -1,4 +1,4 @@
-const { MEDICAL_PRIMER, MEDICAL_INSURANCE, DOCTOR } = require('../src/repositories/tablesNames')
+const { MEDICAL_BOOKLET, MEDICAL_INSURANCE, DOCTOR } = require('../src/repositories/tablesNames')
 
 exports.up = knex => knex.schema
   .withSchema('recetas')
@@ -24,7 +24,7 @@ exports.up = knex => knex.schema
     table.string('address', 255).notNullable()
     table.string('email', 255).notNullable()
   })
-  .createTable('medical_primer', (table) => {
+  .createTable(MEDICAL_BOOKLET, (table) => {
     table.integer('id_doctor').unsigned()
     table.foreign('id_doctor').references(`${DOCTOR}.id`)
     table.integer('id_medical_insurance').unsigned()
@@ -38,6 +38,6 @@ exports.up = knex => knex.schema
 
 exports.down = knex => knex.schema
   .withSchema('recetas')
-  .dropTable(MEDICAL_PRIMER)
+  .dropTable(MEDICAL_BOOKLET)
   .dropTable(DOCTOR)
   .dropTable(MEDICAL_INSURANCE)
