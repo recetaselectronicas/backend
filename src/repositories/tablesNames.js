@@ -16,5 +16,11 @@ module.exports = {
   INSTITUTION: 'institution',
   SPECIALITY: 'speciality',
   ATTENTION: 'attention',
-  PHARMACIST: 'pharmacist'
+  PHARMACIST: 'pharmacist',
+  BRAND: 'brand',
+  SIZE: 'size',
+  SHAPE: 'shape',
+  DRUG: 'drug',
+  LABORATORY: 'laboratory',
+  POTENCY: 'potency'
 }

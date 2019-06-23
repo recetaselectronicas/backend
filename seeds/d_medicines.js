@@ -10,12 +10,12 @@ exports.seed = knex => knex(MEDICINE)
       entry_date: '',
       leaving_date: '',
       bar_code: '7791231827381',
-      id_brand: null,
-      id_size: null,
-      id_shape: null,
-      id_drug: null,
-      id_laboratory: null,
-      id_potency: null
+      id_brand: 1,
+      id_size: 2,
+      id_shape: 3,
+      id_drug: 4,
+      id_laboratory: 2,
+      id_potency: 3
     },
     {
       description: 'T4 Montpellier 137 Levotiroxina',
@@ -24,12 +24,12 @@ exports.seed = knex => knex(MEDICINE)
       entry_date: '',
       leaving_date: '',
       bar_code: '7791231827382',
-      id_brand: null,
-      id_size: null,
-      id_shape: null,
-      id_drug: null,
-      id_laboratory: null,
-      id_potency: null
+      id_brand: 1,
+      id_size: 2,
+      id_shape: 3,
+      id_drug: 2,
+      id_laboratory: 1,
+      id_potency: 2
     },
     {
       description: 'Betacort Cassará',
@@ -38,12 +38,12 @@ exports.seed = knex => knex(MEDICINE)
       entry_date: '',
       leaving_date: '',
       bar_code: '77955730132475',
-      id_brand: null,
-      id_size: null,
-      id_shape: null,
-      id_drug: null,
-      id_laboratory: null,
-      id_potency: null
+      id_brand: 2,
+      id_size: 3,
+      id_shape: 2,
+      id_drug: 1,
+      id_laboratory: 2,
+      id_potency: 3
     }
   ]))
 
