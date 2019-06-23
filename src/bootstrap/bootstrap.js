@@ -17,65 +17,6 @@ const { PharmacistRepository } = require('../repositories/pharmacistRepository')
 const { logger } = require('../utils/utils')
 const { states } = require('../state-machine/state')
 
-let medicine1 = new Medicine()
-medicine1.description = 'T4 Montpellier 150 Levotiroxina'
-medicine1.laboratoryDescription = 'Montpellier'
-medicine1.potencyDescription = '150 mcg'
-medicine1.presentationDescription = 'comprimidos'
-medicine1.sizeDescription = '45 u'
-medicine1.brandDescription = 'T4 Montpellier'
-medicine1.drugDescription = 'Levotiroxina'
-medicine1.pharmaceuticalAction = 'tiroide'
-medicine1.barCode = '7791231827381'
-medicine1.troquel = '187482-2'
-medicine1.setEntryDate('12/12/12')
-
-let medicine2 = new Medicine()
-medicine2.description = 'T4 Montpellier 137 Levotiroxina'
-medicine2.laboratoryDescription = 'Montpellier'
-medicine2.potencyDescription = '137 mcg'
-medicine2.presentationDescription = 'comprimidos'
-medicine2.sizeDescription = '45 u'
-medicine2.brandDescription = 'T4 Montpellier'
-medicine2.drugDescription = 'Levotiroxina'
-medicine2.pharmaceuticalAction = 'tiroide'
-medicine2.barCode = '7791231827382'
-medicine2.troquel = '187481-1'
-medicine2.setEntryDate('12/12/12')
-
-let medicine3 = new Medicine()
-medicine3.description = 'Betacort Cassará'
-medicine3.laboratoryDescription = 'Medisol'
-medicine3.potencyDescription = '0,05%'
-medicine3.presentationDescription = 'crema'
-medicine3.sizeDescription = '15 gr'
-medicine3.brandDescription = 'Betacort'
-medicine3.drugDescription = 'Betametasona'
-medicine3.pharmaceuticalAction = 'Corticoide potente grupo 3'
-medicine3.barCode = '77955730132475'
-medicine3.troquel = '476657-1'
-medicine3.setEntryDate('12/12/12')
-
-let institution1 = new Institution()
-institution1.description = 'Centro de Salud y Accion Comunitario'
-institution1.address = 'Gral Jose Gervasio Artigas 2262'
-
-let institution2 = new Institution()
-institution2.description = 'Centro Femme'
-institution2.address = 'Mariscal Francisco Solano Lopez 3114'
-
-let institution3 = new Institution()
-institution3.description = 'CeSAC'
-institution3.address = 'Mercedes 1371'
-
-let institution4 = new Institution()
-institution4.description = 'Bliss Beauty Center'
-institution4.address = 'Cuenca 2925'
-
-let institution5 = new Institution()
-institution5.description = 'Vacunar'
-institution5.address = 'Blanco Encalada 4881'
-
 let affiliate1 = new Affiliate()
 affiliate1.idPatient = 1
 affiliate1.name = 'Gonzalo'
