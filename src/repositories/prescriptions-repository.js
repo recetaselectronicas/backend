@@ -12,6 +12,7 @@ const {
 } = require('./tablesNames')
 const knex = require('../init/knexConnection')
 const Promise = require('bluebird')
+const { dateTimeFormat } = require('../utils/utils')
 
 class PrescriptionRepository {
   constructor() {
@@ -83,7 +84,7 @@ class PrescriptionRepository {
     }
     const plainPrescription = prescription.toPlainObject()
     const insertablePrescription = {
-      issued_date: plainPrescription.issuedDate,
+      issued_date: dateTimeFormat.toDate(plainPrescription.issuedDate).toDate(),
       sold_date: plainPrescription.soldDate,
       audited_date: plainPrescription.auditedDate,
       prolonged_treatment: plainPrescription.prolongedTreatment,
@@ -220,7 +221,14 @@ class PrescriptionRepository {
         throw newNotFoundError(`No prescription was found with id ${id}`)
       })
   }
-
+  getIssuedToConfirmed() {
+      return knex
+      .select(`${PRESCRIPTION}.id`)
+      .table(PRESCRIPTION)
+      .where(`${PRESCRIPTION}.id_state`, 'ISSUED' )
+      .andWhere(`${PRESCRIPTION}.issuedDate`,'<' ,Date.now())
+      // .
+    }
   getByExample(_prescription) {
     return new Promise((resolve, reject) => {
       const searchedPrescription = Prescription.fromObject(_prescription)

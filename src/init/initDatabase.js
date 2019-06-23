@@ -3,7 +3,7 @@ const { generateData } = require('../bootstrap/bootstrap')
 
 const init = async () => {
   await initMongoDB()
-  // await generateData()
+  await generateData()
 }
 
 module.exports = { init }
