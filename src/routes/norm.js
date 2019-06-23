@@ -6,7 +6,6 @@ const { validateNorm, normalizeNorm } = require('../norms/norm')
 const errors = require('../utils/errors')
 const { RULE_METADATA } = require('../norms/metadata/generate/generateMetadata')
 const permissions = require('../permissions/identifiedUser')
-const { MedicalInsuranceRepository } = require('../repositories/medicalInsuranceRepository')
 
 // Falta el middleware de seguridad para saber de que obra social
 // es la norma que se quiere ver o crear

@@ -20,6 +20,12 @@ class Norm extends Executable {
     if (!model.executionStatus || !states[model.executionStatus]) {
       throw new Error('Error while assembling Norm. No executionStatus given or not a valid state.')
     }
+    if (!model.ttl || model.ttl < 0) {
+      throw new Error('Error while assembling Norm. No ttl given or not valid value.')
+    }
+    if (!model.medicalInsurance) {
+      throw new Error('Error while assembling Norm. No medicalInsurance given or not valid value.')
+    }
   }
 
   doInitialize(model) {
@@ -28,6 +34,8 @@ class Norm extends Executable {
     this.executionStatus = model.executionStatus
     this.actualStatus = this.states.find(state => state.isState(this.executionStatus))
       || new NormState().initialize({ state: states.ISSUED.id, description: 'DUMMY', rules: [] })
+    this.ttl = model.ttl
+    this.medicalInsurance = model.medicalInsurance
   }
 
   satisfies() {
@@ -38,6 +46,8 @@ class Norm extends Executable {
     return {
       ...super.toJson(),
       description: this.description,
+      ttl: this.ttl,
+      medicalInsurance: this.medicalInsurance,
       states: this.states.map(state => state.toJson())
     }
   }

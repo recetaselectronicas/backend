@@ -1,5 +1,6 @@
 const { states } = require('./state')
 const { PrescriptionRepository } = require('../repositories/prescriptions-repository')
+const { NormRepository } = require('../repositories/normRepository')
 const moment = require('moment')
 
 class StateMachine {
@@ -7,8 +8,8 @@ class StateMachine {
 
   toIssued(prescription) {
     prescription.setIssuedDate(moment())
-    prescription.ttl = 30 // TODO: reemplazar con el llamado a tiempo de vida posta segun OS
-    prescription.norm = 1 // TODO: reemplazar con el llamado a norma vigente segun OS
+    prescription.ttl = NormRepository.getCurrentTTL(prescription.medicalInsurance.id)
+    prescription.norm = NormRepository.getCurrentNormId(prescription.medicalInsurance.id)
 
     return this.validateToIssued(prescription).then(() => {
       prescription.status = states.ISSUED.id
