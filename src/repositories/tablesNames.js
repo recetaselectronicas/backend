@@ -15,5 +15,6 @@ module.exports = {
   NORM: 'norm',
   INSTITUTION: 'institution',
   SPECIALITY: 'speciality',
-  ATTENTION: 'attention'
+  ATTENTION: 'attention',
+  PHARMACIST: 'pharmacist'
 }
