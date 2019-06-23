@@ -14,4 +14,7 @@ module.exports = {
   PRESCRIPTION: 'prescription',
   NORM: 'norm',
   INSTITUTION: 'institution',
+  SPECIALITY: 'speciality',
+  ATTENTION: 'attention',
+  PHARMACIST: 'pharmacist'
 }

@@ -45,9 +45,7 @@ router.get('/actual', secureMiddleware, async (req, res, next) => {
   }
 })
 
-router.get('/definition', (req, res, next) => {
-  return res.json(RULE_METADATA)
-})
+router.get('/definition', (req, res, next) => res.json(RULE_METADATA))
 
 // Este endpoint seguro va a cambiar. Habría que pensar como es mejor
 // para el metodo rest la consulta de la norma vigente de la obra social
