@@ -22,5 +22,6 @@ module.exports = {
   SHAPE: 'shape',
   DRUG: 'drug',
   LABORATORY: 'laboratory',
-  POTENCY: 'potency'
+  POTENCY: 'potency',
+  RECEPTION: 'reception'
 }
