@@ -122,7 +122,7 @@ const toState = {
         if (itemToAudit.audited.quantity) {
           throw errors.newEntityAlreadyCreated('El item ya fué auditado')
         }
-        itemToAudit.audit(item.quantity,item.medicine)
+        itemToAudit.audit(item.quantity, item.medicine)
       })
 
       return StateMachine.toAudit(prescription)
