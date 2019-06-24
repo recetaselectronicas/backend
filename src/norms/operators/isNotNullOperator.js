@@ -5,7 +5,7 @@ const { Operator } = require('./operator')
 
 class IsNotNullOperator extends Operator {
   satisfies() {
-    return this.attributeValue === null || this.attributeValue === undefined
+    return this.attributeValue !== null && this.attributeValue !== undefined
   }
 
   getName() {

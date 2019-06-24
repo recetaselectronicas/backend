@@ -50,6 +50,7 @@ const dateFormat = {
   toDate: date => formatter.toDate(date, formats.dateFormat),
 }
 
+
 const generateNewSequencer = () => ({
   actualCount: 0,
   nextValue() {

@@ -12,6 +12,8 @@ const {
 } = require('./tablesNames')
 const knex = require('../init/knexConnection')
 const Promise = require('bluebird')
+const { dateTimeFormat } = require('../utils/utils')
+const { states } = require('./../state-machine/state')
 
 class PrescriptionRepository {
   constructor() {
@@ -83,7 +85,7 @@ class PrescriptionRepository {
     }
     const plainPrescription = prescription.toPlainObject()
     const insertablePrescription = {
-      issued_date: plainPrescription.issuedDate,
+      issued_date: dateTimeFormat.toDate(plainPrescription.issuedDate).toDate(),
       sold_date: plainPrescription.soldDate,
       audited_date: plainPrescription.auditedDate,
       prolonged_treatment: plainPrescription.prolongedTreatment,
@@ -125,7 +127,8 @@ class PrescriptionRepository {
 
     const plainPrescription = prescription.toPlainObject()
     const updatetablePrescription = {
-      issued_date: plainPrescription.issuedDate,
+      issued_date: dateTimeFormat.toDate(plainPrescription.issuedDate).toDate(),
+      // plainPrescription.issuedDate,
       sold_date: plainPrescription.soldDate,
       audited_date: plainPrescription.auditedDate,
       id_state: plainPrescription.status,
@@ -197,6 +200,7 @@ class PrescriptionRepository {
         `${PATIENT}.name as name_affiliate`,
         `${PATIENT}.surname as surname_affiliate`,
         `${INSTITUTION}.description as institution_description`,
+        `${INSTITUTION}.address as institution_address`,
         `${INSTITUTION}.id as institutionId`,
         `${MEDICAL_INSURANCE}.description as medical_insurance_description`,
         `${MEDICAL_INSURANCE}.id as medical_insurance_id`,
@@ -220,6 +224,22 @@ class PrescriptionRepository {
         throw newNotFoundError(`No prescription was found with id ${id}`)
       })
   }
+  getIssuedToConfirmed() {
+      return knex
+      .select(`${PRESCRIPTION}.id`)
+      .table(PRESCRIPTION)
+      .where(`${PRESCRIPTION}.id_state`, states.ISSUED.id )
+      .andWhereRaw(`${PRESCRIPTION}.issued_date < SUBTIME(SYSDATE(), "00:02:00")`)
+    }
+
+  getPrescriptionsToExpirate() {
+      return knex
+      .select(`${PRESCRIPTION}.id`)
+      .table(PRESCRIPTION)
+      .where(`${PRESCRIPTION}.id_state`, states.CONFIRMED.id  )
+      .orWhere(`${PRESCRIPTION}.id_state`, states.PARTIALLY_RECEIVED.id )
+      .andWhereRaw(`SYSDATE() > ADDDATE(${PRESCRIPTION}.issued_date, INTERVAL ( ${PRESCRIPTION}.ttl - 20) MINUTE)`)
+    }
 
   getByExample(_prescription) {
     return new Promise((resolve, reject) => {
@@ -248,7 +268,6 @@ class PrescriptionRepository {
     const { filters, orders } = query
     const { status, id, institution } = filters
     const { orderKey, sortKey } = orders
-    console.log('query', query)
     try {
       const knexQuery = knex
         .select(
@@ -359,9 +378,9 @@ class PrescriptionRepository {
     }
     muttedPrescription.institution = {
       id: response.institutionId,
-      description: response.institutionDescription
+      description: response.institutionDescription,
+      address: response.institutionAddress
     }
-
     muttedPrescription.medicalInsurance = {
       id: response.medicalInsuranceId,
       description: response.medicalInsuranceDescription
@@ -373,6 +392,58 @@ class PrescriptionRepository {
     }
     muttedPrescription.items = await this.getItems(muttedPrescription.id)
     return Prescription.fromObject(muttedPrescription)
+  }
+
+  async fillPrescriptionData(prescription, checkErrors) {
+    const errors = []
+    try {
+      prescription.setAffiliate((prescription.affiliate.id && (await AffiliateRepository.getById(prescription.affiliate.id))) || prescription.affiliate)
+    } catch (error) {
+      errors.push(error)
+    }
+    try {
+      prescription.setInstitution(prescription.institution.id && (await InstitutionRepository.getById(prescription.institution.id || prescription.institution)))
+    } catch (error) {
+      errors.push(error)
+    }
+    try {
+      prescription.setMedicalInsurance(
+        prescription.medicalInsurance.id && (await MedicalInsuranceRepository.getById(prescription.medicalInsurance.id || prescription.medicalInsurance))
+      )
+    } catch (error) {
+      errors.push(error)
+    }
+    try {
+      prescription.setDoctor(prescription.doctor.id && (await DoctorRepository.getById(prescription.doctor.id || prescription.doctor)))
+    } catch (error) {
+      errors.push(error)
+    }
+    // eslint-disable-next-line no-restricted-syntax
+    for (const item of prescription.items) {
+      try {
+        item.prescribed.medicine = (item.prescribed.medicine.id && (await MedicineRepository.getById(item.prescribed.medicine.id))) || item.prescribed.medicine
+      } catch (error) {
+        errors.push(error)
+      }
+      try {
+        item.received.medicine = (item.received.medicine.id && (await MedicineRepository.getById(item.received.medicine.id))) || item.received.medicine
+      } catch (error) {
+        errors.push(error)
+      }
+      try {
+        item.received.pharmacist = (item.received.pharmacist.id && (await PharmacistRepository.getById(item.received.pharmacist.id))) || item.received.pharmacist
+      } catch (error) {
+        errors.push(error)
+      }
+      try {
+        item.audited.medicine = (item.audited.medicine.id && (await MedicineRepository.getById(item.audited.medicine.id))) || item.audited.medicine
+      } catch (error) {
+        errors.push(error)
+      }
+    }
+    if (checkErrors && errors.length) {
+      throw errors
+    }
   }
 }
 

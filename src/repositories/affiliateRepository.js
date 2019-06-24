@@ -1,8 +1,10 @@
 /* eslint-disable class-methods-use-this */
 const { Affiliate } = require('../domain/affiliate')
+const { Plan } = require('../domain/plan')
 const { newNotFoundError, newEntityAlreadyCreated } = require('../utils/errors')
 const { AFFILIATE, PATIENT, PLAN } = require('./tablesNames')
 const knex = require('../init/knexConnection')
+const { logger } = require('../utils/utils')
 
 class AffiliateRepository {
   constructor() {
@@ -48,13 +50,28 @@ class AffiliateRepository {
   }
 
   getById(id) {
-    return knex
-      .select()
-      .table(AFFILIATE)
-      .where('id', id)
+    return knex.select()
+      .from(AFFILIATE)
+      .innerJoin(PATIENT, `${AFFILIATE}.id_patient`, `${PATIENT}.id`)
+      .innerJoin(PLAN, `${AFFILIATE}.id_plan`, `${PLAN}.id`)
+      .where({
+        [`${AFFILIATE}.id`]: id,
+      })
       .first()
+      .then((res) => {
+        if (!res) {
+          throw newNotFoundError(`No affiliate was found with id ${id}`)
+        }
+        const plan = { ...res }
+        plan.id = res.idPlan
+        plan.entryDate = res.entryDate
+        plan.leavingDate = res.leavingDate
+        const affiliate = Affiliate.fromObject(res)
+        affiliate.plan = Plan.fromObject(res)
+        return affiliate
+      })
       .catch((error) => {
-        console.log('error getting by id affiliate', error)
+        logger.error('error getting by id affiliate', error)
         throw newNotFoundError(`No affiliate was found with id ${id}`)
       })
   }

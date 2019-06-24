@@ -32,30 +32,12 @@ const {
     table.string('entry_date', 255).notNullable()
     table.string('leaving_date', 255)
     table.string('bar_code', 255).notNullable()
-    table
-      .integer('id_brand')
-      .unsigned()
-      .notNullable()
-    table
-      .integer('id_size')
-      .unsigned()
-      .notNullable()
-    table
-      .integer('id_shape')
-      .unsigned()
-      .notNullable()
-    table
-      .integer('id_drug')
-      .unsigned()
-      .notNullable()
-    table
-      .integer('id_laboratory')
-      .unsigned()
-      .notNullable()
-    table
-      .integer('id_potency')
-      .unsigned()
-      .notNullable()
+    table.integer('id_brand').unsigned().notNullable()
+    table.integer('id_size').unsigned().notNullable()
+    table.integer('id_shape').unsigned().notNullable()
+    table.integer('id_drug').unsigned().notNullable()
+    table.integer('id_laboratory').unsigned().notNullable()
+    table.integer('id_potency').unsigned().notNullable()
 
     table.foreign('id_brand').references(`${BRAND}.id`)
     table.foreign('id_size').references(`${SIZE}.id`)

@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 const { Medicine } = require('../domain/medicine')
 const { newNotFoundError, newEntityAlreadyCreated } = require('../utils/errors')
-const { MEDICINE } = require('./tablesNames')
+const { MEDICINE, BRAND, SHAPE, SIZE, LABORATORY, POTENCY, DRUG } = require('./tablesNames')
 const knex = require('../init/knexConnection')
 
 class MedicineRepository {
@@ -49,13 +49,26 @@ class MedicineRepository {
       })
   }
 
-  getById(id) {
-    return knex(MEDICINE)
-      .where('id', id)
-      .first()
-      .catch((error) => {
-        throw newNotFoundError(`No medicine was found with id ${id}`)
+  async getById(id) {
+    const res = await knex
+      .select().from(MEDICINE).debug(true)
+      .join(BRAND, `${BRAND}.id`, `${MEDICINE}.id_brand`)
+      .join(SHAPE, `${SHAPE}.id`, `${MEDICINE}.id_shape`)
+      .join(SIZE, `${SIZE}.id`, `${MEDICINE}.id_size`)
+      .join(LABORATORY, `${LABORATORY}.id`, `${MEDICINE}.id_laboratory`)
+      .join(POTENCY, `${POTENCY}.id`, `${MEDICINE}.id_potency`)
+      .join(DRUG, `${DRUG}.id`, `${MEDICINE}.id_drug`)
+      .where({
+        [`${MEDICINE}.id`]: id
       })
+      .first()
+      .debug(true)
+    if (!res) {
+      throw newNotFoundError(`No medicine was found with id ${id}`)
+    }
+    console.log(res)
+    const medicine = Medicine.fromObject(res)
+    return medicine
   }
 }
 

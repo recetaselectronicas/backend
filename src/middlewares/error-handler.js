@@ -6,7 +6,7 @@ const errorHandler = (err, req, res, next) => {
     return next(err)
   }
   if (isBusinessError(err)) {
-    return res.status(err.status).json(err)
+    return res.status(err.status || 400).json(err)
   }
   logger.error(err.stack)
   return res.status(500).json(err)

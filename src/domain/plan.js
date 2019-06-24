@@ -44,13 +44,20 @@ class Plan {
   static fromJson(json = '{}') {
     const object = typeof json === 'object' ? json : JSON.parse(json)
     const plan = new Plan()
-    plan.id = object.id || plan.id
+    plan.id = object.id || plan.id
     plan.description = object.description || plan.description
     plan.setEntryDate(object.entryDate)
     plan.setLeavingDate(object.leavingDate)
     plan.percentage = object.percentage || plan.percentage
     plan.idMedicalInsurance = object.idMedicalInsurance || plan.idMedicalInsurance
     return plan
+  }
+
+  static fromObject(object) {
+    if (!(object instanceof Plan)) {
+      return Plan.fromJson(object)
+    }
+    return object
   }
 }
 module.exports = { Plan }

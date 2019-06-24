@@ -22,6 +22,8 @@ router.post('/', secureMiddleware, async (req, res, next) => {
 
   const prescription = Prescription.fromObject(req.body)
   prescription.doctor.id = identifiedUser.id
+  // TODO : dejar de mutar
+  await PrescriptionRepository.fillPrescriptionData(prescription, false)
   let idCreatedPrescription
   try {
     idCreatedPrescription = await StateMachine.toIssued(prescription)

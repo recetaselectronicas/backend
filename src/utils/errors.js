@@ -65,7 +65,7 @@ const newError = (type, message, cause, status) => {
   return anError
 }
 
-const isBusinessError = error => error && (error.code || error.length)
+const isBusinessError = error => error && ((error.code && error.message) || error.length)
 
 const newUnexpectedError = (message, cause, status) => newError('UNEXPECTED_ERROR', message, cause, status)
 const newGenericError = (message, cause, status) => newError('GENERIC_ERROR', message, cause, status)

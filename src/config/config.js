@@ -1,6 +1,6 @@
 const config = {
   executeBootstrap: {
-    mongo: true,
+    mongo: false,
     relational: false
   },
   conections: {
