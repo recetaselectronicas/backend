@@ -8,5 +8,7 @@ exports.seed = knex => knex(POTENCY)
     { description: '400 mg' },
     { description: '25 mg' },
     { description: '600 mg' },
-    { description: '137 msg' }
+    { description: '137 mcg' },
+    { description: '150 mcg' },
+    { description: '3 %' }
   ]))
