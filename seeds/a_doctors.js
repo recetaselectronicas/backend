@@ -39,7 +39,7 @@ exports.seed = knex => knex(DOCTOR)
       birth_date: '01/01/1940',
       entry_date: '01/01/2000',
       contact_number: '1520202020',
-      nationality: 'ARGENTINO',
+      nationality: 'VENEZOLANO',
       address: 'Menro 932',
       email: 'rosco@medic.com',
       national_matriculation: '1283712345',

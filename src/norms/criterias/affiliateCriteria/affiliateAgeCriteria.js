@@ -4,7 +4,7 @@ const { AffiliateCriteria } = require('./affiliateCriteria')
 
 class AffiliateAgeCriteria extends AffiliateCriteria {
   getAttributeValue() {
-    return this.prescription.affiliate.birthDate && +this.prescription.affiliate.birthDate.diff(moment(), 'years') || NaN
+    return this.prescription.affiliate.birthDate && +moment().diff(this.prescription.affiliate.birthDate, 'years') || NaN
   }
 
   getAttribute() {

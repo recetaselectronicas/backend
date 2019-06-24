@@ -6,13 +6,6 @@ class DoctorCriteria extends Criteria {
   getEntity() {
     return 'DOCTOR'
   }
-
-  satisfies() {
-    if (this.prescription.doctor.id) {
-      return super.satisfies()
-    }
-    return false
-  }
 }
 
 module.exports = { DoctorCriteria }

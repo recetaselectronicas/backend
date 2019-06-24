@@ -13,7 +13,7 @@ exports.seed = knex => knex(PATIENT)
       gender: 'H',
       email: 'gonzalo-kapo@gmail.com',
       address: 'colombia 5454',
-      nationality: 'Argetino',
+      nationality: 'ARGENTINO',
       nic_number: '40390213'
     },
     {
@@ -26,7 +26,7 @@ exports.seed = knex => knex(PATIENT)
       gender: 'H',
       email: 'leandro-kapo@gmail.com',
       address: 'colombia 5454',
-      nationality: 'Argetino',
+      nationality: 'ARGENTINO',
       nic_number: '40590213'
     },
     {
@@ -39,7 +39,7 @@ exports.seed = knex => knex(PATIENT)
       gender: 'H',
       email: 'leo-kapo@gmail.com',
       address: 'brasil 3333',
-      nationality: 'Venezolano',
+      nationality: 'VENEZOLANO',
       nic_number: '40590213'
     }
   ]))
