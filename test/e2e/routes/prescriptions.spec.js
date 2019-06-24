@@ -102,6 +102,7 @@ describe('when do a get in /prescriptions', () => {
   })
   it('respond with correct filters', () => request(app)
     .get('/prescriptions')
+    .set('Authorization', 'Bearer {"type":"affiliate", "id": "1"}')
     .expect(200)
     .then((res) => {
       expect(res.body.filters).toEqual(filtersValue)
