@@ -1,7 +1,6 @@
 const moment = require('moment')
 const initKnex = require('knex')
 const { snakeCase } = require('lodash')
-const  moment  = require('moment')
 
 const toCamel = s => s.replace(/([-_][a-z])/gi, $1 => $1
   .toUpperCase()
