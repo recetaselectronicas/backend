@@ -38,7 +38,6 @@ class PharmacistRepository {
       throw newNotFoundError(`No affiliate was found with id ${id}`)
     }
     const pharmacist = Pharmacist.fromObject(res)
-    console.log(pharmacist)
     return pharmacist
   }
 }
