@@ -20,10 +20,10 @@ router.post('/', secureMiddleware, async (req, res, next) => {
   const { logger } = req.app.locals
   const { identifiedUser } = req
 
-  const prescription = Prescription.fromObject(req.body)
+  let prescription = Prescription.fromObject(req.body)
   prescription.doctor.id = identifiedUser.id
   // TODO : dejar de mutar
-  await PrescriptionRepository.fillPrescriptionData(prescription, false)
+  prescription = await PrescriptionRepository.fillPrescriptionData(prescription, false)
   let idCreatedPrescription
   try {
     idCreatedPrescription = await StateMachine.toIssued(prescription)
