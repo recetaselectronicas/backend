@@ -12,4 +12,14 @@ router.get('/', async (req, res, next) => {
   }
 })
 
+router.get('/:id', async (req, res, next) => {
+  const { id } = req.params
+  try {
+    const medicalInsurances = await MedicalInsuranceRepository.getById(id)
+    return res.json(medicalInsurances.toPlainObject())
+  } catch (e) {
+    return next(e)
+  }
+})
+
 module.exports = router

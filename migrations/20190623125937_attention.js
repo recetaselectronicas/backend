@@ -3,12 +3,12 @@ const { ATTENTION, SPECIALITY, DOCTOR } = require('../src/repositories/tablesNam
 exports.up = knex => knex.schema.withSchema('recetas').createTable(ATTENTION, (table) => {
   table.string('entry_date', 255).notNullable()
   table.string('leaving_date', 255)
-  table.integer('id_speciality').unsigned()
+  table.integer('id_specialty').unsigned()
   table.integer('id_doctor').unsigned()
 
-  table.foreign('id_speciality').references(`${SPECIALITY}.id`)
+  table.foreign('id_specialty').references(`${SPECIALITY}.id`)
   table.foreign('id_doctor').references(`${DOCTOR}.id`)
-  table.primary(['id_speciality', 'id_doctor', 'entry_date'])
+  table.primary(['id_specialty', 'id_doctor', 'entry_date'])
 })
 
 exports.down = knex => knex.schema.withSchema('recetas').dropTable(ATTENTION)

@@ -200,6 +200,7 @@ class PrescriptionRepository {
         `${PATIENT}.name as name_affiliate`,
         `${PATIENT}.surname as surname_affiliate`,
         `${INSTITUTION}.description as institution_description`,
+        `${INSTITUTION}.address as institution_address`,
         `${INSTITUTION}.id as institutionId`,
         `${MEDICAL_INSURANCE}.description as medical_insurance_description`,
         `${MEDICAL_INSURANCE}.id as medical_insurance_id`,
@@ -271,7 +272,6 @@ class PrescriptionRepository {
     const { filters, orders } = query
     const { status, id, institution } = filters
     const { orderKey, sortKey } = orders
-    console.log('query', query)
     try {
       const knexQuery = knex
         .select(
@@ -382,9 +382,9 @@ class PrescriptionRepository {
     }
     muttedPrescription.institution = {
       id: response.institutionId,
-      description: response.institutionDescription
+      description: response.institutionDescription,
+      address: response.institutionAddress
     }
-
     muttedPrescription.medicalInsurance = {
       id: response.medicalInsuranceId,
       description: response.medicalInsuranceDescription
@@ -396,6 +396,58 @@ class PrescriptionRepository {
     }
     muttedPrescription.items = await this.getItems(muttedPrescription.id)
     return Prescription.fromObject(muttedPrescription)
+  }
+
+  async fillPrescriptionData(prescription, checkErrors) {
+    const errors = []
+    try {
+      prescription.setAffiliate((prescription.affiliate.id && (await AffiliateRepository.getById(prescription.affiliate.id))) || prescription.affiliate)
+    } catch (error) {
+      errors.push(error)
+    }
+    try {
+      prescription.setInstitution(prescription.institution.id && (await InstitutionRepository.getById(prescription.institution.id || prescription.institution)))
+    } catch (error) {
+      errors.push(error)
+    }
+    try {
+      prescription.setMedicalInsurance(
+        prescription.medicalInsurance.id && (await MedicalInsuranceRepository.getById(prescription.medicalInsurance.id || prescription.medicalInsurance))
+      )
+    } catch (error) {
+      errors.push(error)
+    }
+    try {
+      prescription.setDoctor(prescription.doctor.id && (await DoctorRepository.getById(prescription.doctor.id || prescription.doctor)))
+    } catch (error) {
+      errors.push(error)
+    }
+    // eslint-disable-next-line no-restricted-syntax
+    for (const item of prescription.items) {
+      try {
+        item.prescribed.medicine = (item.prescribed.medicine.id && (await MedicineRepository.getById(item.prescribed.medicine.id))) || item.prescribed.medicine
+      } catch (error) {
+        errors.push(error)
+      }
+      try {
+        item.received.medicine = (item.received.medicine.id && (await MedicineRepository.getById(item.received.medicine.id))) || item.received.medicine
+      } catch (error) {
+        errors.push(error)
+      }
+      try {
+        item.received.pharmacist = (item.received.pharmacist.id && (await PharmacistRepository.getById(item.received.pharmacist.id))) || item.received.pharmacist
+      } catch (error) {
+        errors.push(error)
+      }
+      try {
+        item.audited.medicine = (item.audited.medicine.id && (await MedicineRepository.getById(item.audited.medicine.id))) || item.audited.medicine
+      } catch (error) {
+        errors.push(error)
+      }
+    }
+    if (checkErrors && errors.length) {
+      throw errors
+    }
   }
 }
 

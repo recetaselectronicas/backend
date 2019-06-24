@@ -41,6 +41,7 @@ class MedicalInsuranceRepository {
       .table(MEDICAL_INSURANCE)
       .where('id', id)
       .first()
+      .then(res => MedicalInsurance.fromObject(res))
       .catch((error) => {
         console.log('error getting by id medical insurance', error)
         throw newNotFoundError(`No medicalInsurance was found with id ${id}`)

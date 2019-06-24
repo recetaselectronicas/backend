@@ -13,4 +13,14 @@ router.get('/', async (req, res, next) => {
   }
 })
 
+router.get('/:id', async (req, res, next) => {
+  const { id } = req.params
+  try {
+    const affiliate = await AffiliateRepository.getById(id)
+    return res.json(affiliate.toPlainObject())
+  } catch (e) {
+    return next(e)
+  }
+})
+
 module.exports = router

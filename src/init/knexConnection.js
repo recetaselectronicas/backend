@@ -1,6 +1,6 @@
+const moment = require('moment')
 const initKnex = require('knex')
 const { snakeCase } = require('lodash')
-const  moment  = require('moment')
 
 const toCamel = s => s.replace(/([-_][a-z])/gi, $1 => $1
   .toUpperCase()
@@ -39,11 +39,14 @@ module.exports = initKnex({
     user: 'root',
     password: '1234',
     database: 'recetas',
-    typeCast: function (field, next) {
-      if (field.type == 'DATETIME') {
-        return moment(field.string()).format('DD/MM/YYYY HH:mm');
+    typeCast(field, next) {
+      if (field.type === 'TINY' && field.length === 1) {
+        return (field.string() === '1')
       }
-      return next();
+      if (field.type === 'DATETIME') {
+        return moment(field.string()).format('DD/MM/YYYY HH:mm')
+      }
+      return next()
     }
   },
   postProcessResponse: (result) => {

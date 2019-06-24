@@ -6,13 +6,6 @@ class InstitutionCriteria extends Criteria {
   getEntity() {
     return 'INSTITUTION'
   }
-
-  // satisfies() {
-  //   if (this.prescription.institution.id) {
-  //     return super.satisfies()
-  //   }
-  //   return false
-  // }
 }
 
 module.exports = { InstitutionCriteria }

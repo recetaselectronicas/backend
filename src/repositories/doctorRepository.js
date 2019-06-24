@@ -1,9 +1,10 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable class-methods-use-this */
 const { Doctor } = require('../domain/doctor')
 const { newNotFoundError, newEntityAlreadyCreated } = require('../utils/errors')
 
 const knex = require('../init/knexConnection')
-const { DOCTOR } = require('./tablesNames')
+const { DOCTOR, SPECIALITY, ATTENTION } = require('./tablesNames')
 
 class DoctorRepository {
   constructor() {
@@ -25,7 +26,6 @@ class DoctorRepository {
       email: plainDoctor.email,
       national_matriculation: plainDoctor.nationalMatriculation,
       provincial_matriculation: plainDoctor.provincialMatriculation,
-      specialty: plainDoctor.specialty.id,
     }
     return knex(DOCTOR)
       .insert(insertableDoctor)
@@ -36,16 +36,26 @@ class DoctorRepository {
     return new Promise((resolve, reject) => resolve([...this.doctors]))
   }
 
-  getById(id) {
-    return knex
-      .select()
-      .table(DOCTOR)
-      .where('id', id)
-      .first()
-      .catch((error) => {
-        console.log('error getting by id doctor', error)
-        throw newNotFoundError(`No doctor was found with id ${id}`)
+  async getById(id) {
+    const res = await knex.select().table(DOCTOR).where('id', id).first()
+    if (!res) {
+      throw newNotFoundError(`No doctor was found with id ${id}`)
+    }
+    const doctor = Doctor.fromObject(res)
+    await this.fillDoctor(doctor)
+    return doctor
+  }
+
+  async fillDoctor(doctor) {
+    const specialty = await knex.select().table(SPECIALITY)
+      .innerJoin(ATTENTION, `${ATTENTION}.id_specialty`, `${SPECIALITY}.id`)
+      .where({
+        [`${ATTENTION}.id_doctor`]: doctor.id
       })
+      .first()
+    if (specialty) {
+      doctor.specialty = specialty
+    }
   }
 }
 module.exports = {
