@@ -268,7 +268,6 @@ class PrescriptionRepository {
     const { filters, orders } = query
     const { status, id, institution } = filters
     const { orderKey, sortKey } = orders
-    console.log('query', query)
     try {
       const knexQuery = knex
         .select(
