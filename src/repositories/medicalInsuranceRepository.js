@@ -1,6 +1,6 @@
 /* eslint-disable class-methods-use-this */
 const { MedicalInsurance } = require('../domain/medicalInsurance')
-const { newNotFoundError, newEntityAlreadyCreated } = require('../utils/errors')
+const { newNotFoundError, newEntityAlreadyCreated, newInvalidUsernameOrPasswordError } = require('../utils/errors')
 const knex = require('../init/knexConnection')
 const { MEDICAL_INSURANCE, MEDICAL_BOOKLET } = require('./tablesNames')
 
@@ -45,6 +45,21 @@ class MedicalInsuranceRepository {
       .catch((error) => {
         console.log('error getting by id medical insurance', error)
         throw newNotFoundError(`No medicalInsurance was found with id ${id}`)
+      })
+  }
+
+  login(username, password) {
+    return knex
+      .select()
+      .from(MEDICAL_INSURANCE)
+      .where(`${MEDICAL_INSURANCE}.user_name`, username)
+      .andWhere(`${MEDICAL_INSURANCE}.password`, password)
+      .first()
+      .then((response) => {
+        if (!response) {
+          throw newInvalidUsernameOrPasswordError('Usuario y/o contraseña invalido')
+        }
+        return response
       })
   }
 }

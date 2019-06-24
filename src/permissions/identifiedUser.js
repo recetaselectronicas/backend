@@ -100,7 +100,7 @@ const identifiedMedicalInsurance = {
     }
   },
   getActions: ({ status }) => {
-    const canAudit = status === states.RECEIVED.id || status === states.PARTIALLY_RECEIVED.id
+    const canAudit = status === states.RECEIVED.id || status === states.INCOMPLETE.id
     return [
       {
         id: availableActions.AUDIT,
@@ -156,5 +156,6 @@ module.exports = {
   getIdentifiedDoctor,
   getIdentifiedPharmacist,
   getIdentifiedMedicalInsurance,
-  getIdentifiedUserBy
+  getIdentifiedUserBy,
+  userPermissions
 }
