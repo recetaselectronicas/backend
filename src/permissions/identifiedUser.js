@@ -46,6 +46,7 @@ const identifiedAffiliate = {
     }
   },
   getActions: prescription => [],
+  getMenu: () => [{ label: 'Ver recetas', url: '/recetas' }],
   canReceive: () => false,
   canCancel: () => false,
   canAudit: () => false
@@ -63,6 +64,7 @@ const identifiedDoctor = {
       throw newForbiddenResourceException("Can't access this prescription")
     }
   },
+  getMenu: () => [{ label: 'Emitir', url: '/emitir' }, { label: 'Ver recetas', url: '/recetas' }],
   getActions: prescription => [{ id: availableActions.CANCEL, disabled: prescription.status !== states.ISSUED.id }],
   canReceive: () => false,
   canCancel: () => true,
@@ -81,6 +83,7 @@ const identifiedPharmacist = {
       throw newForbiddenResourceException("Can't access this prescription")
     }
   },
+  getMenu: () => [{ label: 'Ver recetas', url: '/recetas' }],
   getActions: prescription => [{ id: availableActions.RECEIVE, disabled: prescription.status !== states.CONFIRMED.id }],
   canReceive: () => true,
   canCancel: () => false,
@@ -108,6 +111,8 @@ const identifiedMedicalInsurance = {
       }
     ]
   },
+  getMenu: () => [{ label: 'Normas', url: '/normas' }, { label: 'Ver recetas', url: '/recetas' }],
+
   canReceive: () => false,
   canCancel: () => false,
   canAudit: () => true

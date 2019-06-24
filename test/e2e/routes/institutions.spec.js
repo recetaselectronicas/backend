@@ -12,13 +12,13 @@ describe('when do a get in /institutions', () => {
       Institution.fromObject({
         id: 0,
         description: 'Hospital Italiano',
-        address: 'La crujia',
+        address: 'La crujia'
       }),
       Institution.fromObject({
         id: 1,
         description: 'Corporacion medica',
-        address: 'Olazabal 210',
-      }),
+        address: 'Olazabal 210'
+      })
     ]
 
     beforeAll(() => {
@@ -27,6 +27,7 @@ describe('when do a get in /institutions', () => {
 
     it('return all available the institutions', () => request(app)
       .get('/institutions')
+      .set('Authorization', 'Bearer {"type":"affiliate", "id": "1"}')
       .expect(200)
       .then((res) => {
         const firstInstitution = res.body[0]
@@ -46,6 +47,7 @@ describe('when do a get in /institutions', () => {
 
     it('respond with 500 ', () => request(app)
       .get('/institutions')
+      .set('Authorization', 'Bearer {"type":"affiliate", "id": "1"}')
       .expect(500))
   })
 })

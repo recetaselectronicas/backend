@@ -11,12 +11,12 @@ describe('when do a get in /medical-insurances', () => {
     const medicalInsurancesValue = [
       MedicalInsurance.fromObject({
         id: 0,
-        description: 'OSDE',
+        description: 'OSDE'
       }),
       MedicalInsurance.fromObject({
         id: 1,
-        description: 'SWISS MEDICAL',
-      }),
+        description: 'SWISS MEDICAL'
+      })
     ]
 
     beforeAll(() => {
@@ -25,6 +25,7 @@ describe('when do a get in /medical-insurances', () => {
 
     it('return all avaiables the medicalInsurances', () => request(app)
       .get('/medical-insurances')
+      .set('Authorization', 'Bearer {"type":"affiliate", "id": "1"}')
       .expect(200)
       .then((res) => {
         const firstMedicalInsurance = res.body[0]
@@ -43,6 +44,7 @@ describe('when do a get in /medical-insurances', () => {
 
     it('respond with 500 ', () => request(app)
       .get('/medical-insurances')
+      .set('Authorization', 'Bearer {"type":"affiliate", "id": "1"}')
       .expect(500))
   })
 })
@@ -62,12 +64,12 @@ describe('when do a get in /doctors/{id}/medical-insurances', () => {
     const medicalInsurancesValue = [
       MedicalInsurance.fromObject({
         id: 0,
-        description: 'OSDE',
+        description: 'OSDE'
       }),
       MedicalInsurance.fromObject({
         id: 1,
-        description: 'SWISS MEDICAL',
-      }),
+        description: 'SWISS MEDICAL'
+      })
     ]
 
     beforeAll(() => {
@@ -76,6 +78,7 @@ describe('when do a get in /doctors/{id}/medical-insurances', () => {
 
     it('return all avaiables the medicalInsurances for this medic', () => request(app)
       .get(`/doctors/${doctorId}/medical-insurances`)
+      .set('Authorization', 'Bearer {"type":"affiliate", "id": "1"}')
       .expect(200)
       .then((res) => {
         const firstMedicalInsurance = res.body[0]

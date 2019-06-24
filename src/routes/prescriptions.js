@@ -5,18 +5,10 @@ const { Prescription } = require('../domain/prescription')
 const { StateMachine } = require('../state-machine/state-machine')
 const { newBadRequestError, isBusinessError } = require('../utils/errors')
 const { PrescriptionRepository } = require('../repositories/prescriptions-repository')
-const permissions = require('../permissions/identifiedUser')
 const errors = require('../utils/errors')
 const moment = require('moment')
 
-const secureMiddleware = (req, res, next) => {
-  const { authorization } = req.headers
-  const { id, type } = JSON.parse(authorization.split('Bearer ')[1])
-  const identifiedUser = permissions.getIdentifiedUserBy(type, Number.parseInt(id, 10))
-  req.identifiedUser = identifiedUser
-  return next()
-}
-router.post('/', secureMiddleware, async (req, res, next) => {
+router.post('/', async (req, res, next) => {
   const { logger } = req.app.locals
   const { identifiedUser } = req
 
@@ -41,7 +33,7 @@ router.post('/', secureMiddleware, async (req, res, next) => {
   }
 })
 
-router.get('/', secureMiddleware, async (req, res, next) => {
+router.get('/', async (req, res, next) => {
   const { identifiedUser } = req
   const prescriptionQuery = identifiedUser.getQuery(req.query)
   try {
@@ -54,7 +46,7 @@ router.get('/', secureMiddleware, async (req, res, next) => {
   }
 })
 
-router.get('/:id', secureMiddleware, (req, res, next) => {
+router.get('/:id', (req, res, next) => {
   const { logger } = req.app.locals
   const { identifiedUser } = req
   return PrescriptionRepository.getById(req.params.id)
@@ -66,7 +58,7 @@ router.get('/:id', secureMiddleware, (req, res, next) => {
     .catch(next)
 })
 
-router.put('/:id', secureMiddleware, (req, res, next) => {
+router.put('/:id', (req, res, next) => {
   const { logger } = req.app.locals
   const { identifiedUser } = req
   const { body } = req
