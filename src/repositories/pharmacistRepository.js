@@ -1,6 +1,8 @@
 const { Pharmacist } = require('../domain/pharmacist')
-const { newNotFoundError, newEntityAlreadyCreated } = require('../utils/errors')
+const { newNotFoundError, newEntityAlreadyCreated, newInvalidUsernameOrPasswordError } = require('../utils/errors')
 const { generateNewSequencer } = require('../utils/utils')
+const { PHARMACIST } = require('./tablesNames')
+const knex = require('../init/knexConnection')
 
 const sequencer = generateNewSequencer()
 
@@ -35,7 +37,22 @@ class PharmacistRepository {
       return reject(newNotFoundError(`No pharmacist was found with id ${id}`))
     })
   }
+
+  login(username, password) {
+    return knex
+      .select()
+      .from(PHARMACIST)
+      .where(`${PHARMACIST}.user_name`, username)
+      .andWhere(`${PHARMACIST}.password`, password)
+      .first()
+      .then((response) => {
+        if (!response) {
+          throw newInvalidUsernameOrPasswordError('Usuario y/o contraseña invalido')
+        }
+        return response
+      })
+  }
 }
 module.exports = {
-  PharmacistRepository: new PharmacistRepository(),
+  PharmacistRepository: new PharmacistRepository()
 }

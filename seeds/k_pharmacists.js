@@ -10,6 +10,7 @@ exports.seed = knex => knex(PHARMACIST)
       name: 'Anda',
       last_name: 'Lepint',
       user_name: 'andale',
+      password: '1234',
       contact_number: '1520202020',
       nationality: 'ARGENTINO',
       address: 'Lo loca 412',
@@ -25,6 +26,7 @@ exports.seed = knex => knex(PHARMACIST)
       user_name: 'mavilar',
       contact_number: '1520202020',
       nationality: 'ARGENTINO',
+      password: '1234',
       address: 'perez 4122',
       email: 'mavilar@yahoo.com',
       matriculation: '1837172'
@@ -36,6 +38,7 @@ exports.seed = knex => knex(PHARMACIST)
       name: 'Anda',
       last_name: 'Johnson',
       user_name: 'alan',
+      password: '1234',
       contact_number: '1520202020',
       nationality: 'VENEZOLANO',
       address: 'Menro 932',
