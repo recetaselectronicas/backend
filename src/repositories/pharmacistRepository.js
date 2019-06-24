@@ -1,6 +1,8 @@
 const { Pharmacist } = require('../domain/pharmacist')
 const { newNotFoundError, newEntityAlreadyCreated } = require('../utils/errors')
 const { generateNewSequencer } = require('../utils/utils')
+const { PHARMACIST } = require('./tablesNames')
+const knex = require('../init/knexConnection')
 
 const sequencer = generateNewSequencer()
 
@@ -25,15 +27,19 @@ class PharmacistRepository {
     return new Promise((resolve, reject) => resolve([...this.pharmacists]))
   }
 
-  getById(id) {
-    id = +id
-    return new Promise((resolve, reject) => {
-      const pharmacist = this.pharmacists.find(pharmacist => pharmacist.id === id)
-      if (pharmacist) {
-        return resolve(Pharmacist.fromObject(pharmacist))
-      }
-      return reject(newNotFoundError(`No pharmacist was found with id ${id}`))
-    })
+  async getById(id) {
+    const res = await knex.select()
+      .from(PHARMACIST)
+      .where({
+        [`${PHARMACIST}.id`]: id,
+      })
+      .first()
+    if (!res) {
+      throw newNotFoundError(`No affiliate was found with id ${id}`)
+    }
+    const pharmacist = Pharmacist.fromObject(res)
+    console.log(pharmacist)
+    return pharmacist
   }
 }
 module.exports = {
