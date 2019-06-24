@@ -139,8 +139,8 @@ class PrescriptionRepository {
     return new Promise((resolve, reject) => resolve([...this.prescriptions]))
   }
 
-  getById(id) {
-    return knex
+  async getById(id) {
+    const prescription = await knex
       .select(
         `${PRESCRIPTION}.diagnosis`,
         `${PRESCRIPTION}.prolonged_treatment`,
@@ -173,11 +173,14 @@ class PrescriptionRepository {
       .where(`${PRESCRIPTION}.id`, id)
       .first()
       .then(this.getDomainPrescription)
-      .catch((error) => {
-        console.log('error getting by id prescritption', error)
-        throw newNotFoundError(`No prescription was found with id ${id}`)
-      })
+
+    if (!prescription) {
+      throw newNotFoundError(`No prescription was found with id ${id}`)
+    }
+
+    return this.fillPrescriptionData(prescription, false)
   }
+
   getIssuedToConfirmed() {
     return knex
       .select(`${PRESCRIPTION}.id`)
