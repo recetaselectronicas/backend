@@ -7,7 +7,7 @@ class PharmacistAgeCriteria extends PharmacistCriteria {
   }
 
   doGetAttributeValue(index) {
-    return +this.getPharmacistValue(index).birthDate.diff(moment(), 'years') || NaN
+    return +moment().diff(this.getPharmacistValue(index).birthDate, 'years') || NaN
   }
 }
 

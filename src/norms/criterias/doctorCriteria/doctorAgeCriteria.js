@@ -4,7 +4,7 @@ const { DoctorCriteria } = require('./doctorCriteria')
 
 class DoctorAgeCriteria extends DoctorCriteria {
   getAttributeValue() {
-    return this.prescription.doctor.birthDate && +this.prescription.doctor.birthDate.diff(moment(), 'years') || NaN
+    return this.prescription.doctor.birthDate && +moment().diff(this.prescription.doctor.birthDate, 'years') || NaN
   }
 
   getAttribute() {

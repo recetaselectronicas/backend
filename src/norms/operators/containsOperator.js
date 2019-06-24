@@ -18,7 +18,7 @@ class ContainsOperator extends Operator {
   }
 
   satisfies() {
-    return this.attributeValue && this.attributeValue.toString().contains(this.containedValue) || false
+    return this.attributeValue && this.attributeValue.toString().toLowerCase().includes(this.containedValue.toLowerCase()) || false
   }
 
   getName() {
