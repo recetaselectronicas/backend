@@ -224,21 +224,25 @@ class PrescriptionRepository {
       })
   }
   getIssuedToConfirmed() {
-      return knex
+    return knex
       .select(`${PRESCRIPTION}.id`)
       .table(PRESCRIPTION)
-      .where(`${PRESCRIPTION}.id_state`, states.ISSUED.id )
+      .where(`${PRESCRIPTION}.id_state`, states.ISSUED.id)
       .andWhereRaw(`${PRESCRIPTION}.issued_date < SUBTIME(SYSDATE(), "00:02:00")`)
-    }
+  }
 
   getPrescriptionsToExpirate() {
-      return knex
+    return knex
       .select(`${PRESCRIPTION}.id`)
       .table(PRESCRIPTION)
-      .where(`${PRESCRIPTION}.id_state`, states.CONFIRMED.id  )
-      .orWhere(`${PRESCRIPTION}.id_state`, states.PARTIALLY_RECEIVED.id )
-      .andWhereRaw(`SYSDATE() > ADDDATE(${PRESCRIPTION}.issued_date, INTERVAL ( ${PRESCRIPTION}.ttl - 20) MINUTE)`)
-    }
+      .where((builder) =>
+        builder.where(`${PRESCRIPTION}.id_state`, states.CONFIRMED.id).orWhere(`${PRESCRIPTION}.id_state`, states.PARTIALLY_RECEIVED.id)
+      )
+      .andWhere(function () {
+        this.andWhereRaw(`SYSDATE() > ADDDATE(${PRESCRIPTION}.issued_date, INTERVAL ( (${PRESCRIPTION}.ttl) - 20) MINUTE)`)
+      })
+
+  }
 
   getByExample(_prescription) {
     return new Promise((resolve, reject) => {
