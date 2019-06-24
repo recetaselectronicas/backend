@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 const { Affiliate } = require('../domain/affiliate')
 const { Plan } = require('../domain/plan')
-const { newNotFoundError, newEntityAlreadyCreated } = require('../utils/errors')
+const { newNotFoundError, newEntityAlreadyCreated, newInvalidUsernameOrPasswordError } = require('../utils/errors')
 const { AFFILIATE, PATIENT, PLAN } = require('./tablesNames')
 const knex = require('../init/knexConnection')
 const { logger } = require('../utils/utils')
@@ -50,12 +50,13 @@ class AffiliateRepository {
   }
 
   getById(id) {
-    return knex.select()
+    return knex
+      .select()
       .from(AFFILIATE)
       .innerJoin(PATIENT, `${AFFILIATE}.id_patient`, `${PATIENT}.id`)
       .innerJoin(PLAN, `${AFFILIATE}.id_plan`, `${PLAN}.id`)
       .where({
-        [`${AFFILIATE}.id`]: id,
+        [`${AFFILIATE}.id`]: id
       })
       .first()
       .then((res) => {
@@ -73,6 +74,21 @@ class AffiliateRepository {
       .catch((error) => {
         logger.error('error getting by id affiliate', error)
         throw newNotFoundError(`No affiliate was found with id ${id}`)
+      })
+  }
+
+  login(username, password) {
+    return knex
+      .select()
+      .from(PATIENT)
+      .where(`${PATIENT}.user_name`, username)
+      .andWhere(`${PATIENT}.password`, password)
+      .first()
+      .then((response) => {
+        if (!response) {
+          throw newInvalidUsernameOrPasswordError('Usuario y/o contraseña invalido')
+        }
+        return response
       })
   }
 }

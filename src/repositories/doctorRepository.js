@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable class-methods-use-this */
 const { Doctor } = require('../domain/doctor')
-const { newNotFoundError, newEntityAlreadyCreated } = require('../utils/errors')
+const { newNotFoundError, newEntityAlreadyCreated, newInvalidUsernameOrPasswordError } = require('../utils/errors')
 
 const knex = require('../init/knexConnection')
 const { DOCTOR, SPECIALITY, ATTENTION } = require('./tablesNames')
@@ -25,7 +25,7 @@ class DoctorRepository {
       address: plainDoctor.address,
       email: plainDoctor.email,
       national_matriculation: plainDoctor.nationalMatriculation,
-      provincial_matriculation: plainDoctor.provincialMatriculation,
+      provincial_matriculation: plainDoctor.provincialMatriculation
     }
     return knex(DOCTOR)
       .insert(insertableDoctor)
@@ -37,7 +37,11 @@ class DoctorRepository {
   }
 
   async getById(id) {
-    const res = await knex.select().table(DOCTOR).where('id', id).first()
+    const res = await knex
+      .select()
+      .table(DOCTOR)
+      .where('id', id)
+      .first()
     if (!res) {
       throw newNotFoundError(`No doctor was found with id ${id}`)
     }
@@ -47,7 +51,9 @@ class DoctorRepository {
   }
 
   async fillDoctor(doctor) {
-    const specialty = await knex.select().table(SPECIALITY)
+    const specialty = await knex
+      .select()
+      .table(SPECIALITY)
       .innerJoin(ATTENTION, `${ATTENTION}.id_specialty`, `${SPECIALITY}.id`)
       .where({
         [`${ATTENTION}.id_doctor`]: doctor.id
@@ -57,7 +63,22 @@ class DoctorRepository {
       doctor.specialty = specialty
     }
   }
+
+  login(username, password) {
+    return knex
+      .select()
+      .from(DOCTOR)
+      .where(`${DOCTOR}.user_name`, username)
+      .andWhere(`${DOCTOR}.password`, password)
+      .first()
+      .then((response) => {
+        if (!response) {
+          throw newInvalidUsernameOrPasswordError('Usuario y/o contraseña invalido')
+        }
+        return response
+      })
+  }
 }
 module.exports = {
-  DoctorRepository: new DoctorRepository(),
+  DoctorRepository: new DoctorRepository()
 }

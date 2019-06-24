@@ -156,5 +156,6 @@ module.exports = {
   getIdentifiedDoctor,
   getIdentifiedPharmacist,
   getIdentifiedMedicalInsurance,
-  getIdentifiedUserBy
+  getIdentifiedUserBy,
+  userPermissions
 }
