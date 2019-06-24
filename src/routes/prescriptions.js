@@ -12,6 +12,7 @@ const moment = require('moment')
 router.post('/', async (req, res, next) => {
   const { logger } = req.app.locals
   const prescription = Prescription.fromObject(req.body)
+  await PrescriptionRepository.fillPrescriptionData(prescription, false)
   let idCreatedPrescription
   try {
     idCreatedPrescription = await StateMachine.toIssued(prescription)

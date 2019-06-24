@@ -32,6 +32,7 @@ class InstitutionRepository {
       .table(INSTITUTION)
       .where('id', id)
       .first()
+      .then(res => Institution.fromObject(res))
       .catch((error) => {
         console.log('error getting by id instituion', error)
         throw newNotFoundError(`No institution was found with id ${id}`)

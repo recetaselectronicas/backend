@@ -4,30 +4,30 @@ exports.seed = knex => knex(PLAN)
   .del()
   .then(() => knex(PLAN).insert([
     {
-      description: 'plan pobre',
-      entry_date: '123123',
-      leaving_date: '123123',
-      percentage: 50,
-      id_medical_insurance: 1
-    },
-    {
-      description: 'plan rico',
-      entry_date: '123123',
-      leaving_date: '123123',
+      description: 'Coseguro',
+      entry_date: '01/01/2000',
+      leaving_date: '',
       percentage: 20,
       id_medical_insurance: 1
     },
     {
-      description: 'plan medio',
-      entry_date: '123123',
-      leaving_date: '123123',
+      description: 'Crónicos',
+      entry_date: '01/01/2000',
+      leaving_date: '',
       percentage: 70,
+      id_medical_insurance: 1
+    },
+    {
+      description: 'PMO',
+      entry_date: '01/01/2000',
+      leaving_date: '',
+      percentage: 50,
       id_medical_insurance: 2
     },
     {
-      description: 'plan algo',
-      entry_date: '123123',
-      leaving_date: '123123',
+      description: 'Subvencionado',
+      entry_date: '01/01/2000',
+      leaving_date: '',
       percentage: 80,
       id_medical_insurance: 2
     }

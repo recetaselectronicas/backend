@@ -4,15 +4,19 @@ exports.up = knex => knex.schema
   .withSchema('recetas')
   .createTable(DOCTOR, (table) => {
     table.increments('id')
+    table.string('user_name', 255).notNullable()
+    table.string('password', 255).notNullable()
     table.string('name', 255).notNullable()
     table.string('last_name', 255).notNullable()
+    table.string('birth_date', 255).notNullable()
+    table.string('entry_date', 255).notNullable()
+    table.string('leaving_date', 255)
     table.string('contact_number', 255).notNullable()
     table.string('nationality', 255).notNullable()
     table.string('address', 255).notNullable()
     table.string('email', 255).notNullable()
     table.string('national_matriculation', 255).notNullable()
     table.string('provincial_matriculation', 255).notNullable()
-    table.string('specialty', 255).notNullable()
   })
   .createTable(MEDICAL_INSURANCE, (table) => {
     table.increments('id')
@@ -24,7 +28,7 @@ exports.up = knex => knex.schema
     table.string('address', 255).notNullable()
     table.string('email', 255).notNullable()
   })
-  .createTable('medical_primer', (table) => {
+  .createTable(MEDICAL_PRIMER, (table) => {
     table.integer('id_doctor').unsigned()
     table.foreign('id_doctor').references(`${DOCTOR}.id`)
     table.integer('id_medical_insurance').unsigned()

@@ -12,4 +12,14 @@ router.get('/', async (req, res, next) => {
   }
 })
 
+router.get('/:id', async (req, res, next) => {
+  const { id } = req.params
+  try {
+    const institution = await InstitutionRepository.getById(id)
+    return res.json(institution.toPlainObject())
+  } catch (e) {
+    return next(e)
+  }
+})
+
 module.exports = router

@@ -23,4 +23,14 @@ router.get('/troquel/:troquel', async (req, res, next) => {
   }
 })
 
+router.get('/:id', async (req, res, next) => {
+  const { id } = req.params
+  try {
+    const medicine = await MedicineRepository.getById(id)
+    return res.json(medicine.toPlainObject())
+  } catch (e) {
+    return next(e)
+  }
+})
+
 module.exports = router

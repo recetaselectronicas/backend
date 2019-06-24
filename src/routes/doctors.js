@@ -20,4 +20,15 @@ router.get('/', (req, res, next) => {
     .catch(next)
 })
 
+router.get('/:id', async (req, res, next) => {
+  const { id } = req.params
+  try {
+    const doctor = await DoctorRepository.getById(id)
+    return res.json(doctor.toPlainObject())
+  } catch (e) {
+    console.error(e)
+    return next(e)
+  }
+})
+
 module.exports = router
