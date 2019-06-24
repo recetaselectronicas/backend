@@ -4,9 +4,9 @@ exports.seed = knex => knex(PHARMACIST)
   .del()
   .then(() => knex(PHARMACIST).insert([
     {
-      entry_date: '',
+      entry_date: '01/01/2000',
       leaving_date: '',
-      birth_date: '',
+      birth_date: '01/01/1980',
       name: 'Anda',
       last_name: 'Lepint',
       user_name: 'andale',
@@ -18,9 +18,9 @@ exports.seed = knex => knex(PHARMACIST)
       matriculation: '8271236'
     },
     {
-      entry_date: '',
+      entry_date: '01/01/2000',
       leaving_date: '',
-      birth_date: '',
+      birth_date: '01/01/1970',
       name: 'Maria',
       last_name: 'Avilar',
       user_name: 'mavilar',
@@ -32,9 +32,9 @@ exports.seed = knex => knex(PHARMACIST)
       matriculation: '1837172'
     },
     {
-      entry_date: '',
+      entry_date: '01/01/2000',
       leaving_date: '',
-      birth_date: '',
+      birth_date: '01/01/1995',
       name: 'Anda',
       last_name: 'Johnson',
       user_name: 'alan',

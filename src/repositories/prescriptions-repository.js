@@ -14,6 +14,7 @@ const knex = require('../init/knexConnection')
 const Promise = require('bluebird')
 const { dateTimeFormat } = require('../utils/utils')
 const { states } = require('./../state-machine/state')
+const lang = require('lodash/lang')
 
 class PrescriptionRepository {
   constructor() {
@@ -31,58 +32,11 @@ class PrescriptionRepository {
   }
 
   async create(_prescription) {
-    const prescription = Prescription.fromObject(_prescription).clone()
+    let prescription = Prescription.fromObject(_prescription).clone()
     if (prescription.id) {
       throw newEntityAlreadyCreated('Prescription allready created')
     }
-    const errors = []
-    try {
-      prescription.setAffiliate((prescription.affiliate.id && (await AffiliateRepository.getById(prescription.affiliate.id))) || prescription.affiliate)
-    } catch (error) {
-      errors.push(error)
-    }
-    try {
-      prescription.setInstitution(prescription.institution.id && (await InstitutionRepository.getById(prescription.institution.id || prescription.institution)))
-    } catch (error) {
-      errors.push(error)
-    }
-    try {
-      prescription.setMedicalInsurance(
-        prescription.medicalInsurance.id && (await MedicalInsuranceRepository.getById(prescription.medicalInsurance.id || prescription.medicalInsurance))
-      )
-    } catch (error) {
-      errors.push(error)
-    }
-    try {
-      prescription.setDoctor(prescription.doctor.id && (await DoctorRepository.getById(prescription.doctor.id || prescription.doctor)))
-    } catch (error) {
-      errors.push(error)
-    }
-    for (const item of prescription.items) {
-      try {
-        item.prescribed.medicine = (item.prescribed.medicine.id && (await MedicineRepository.getById(item.prescribed.medicine.id))) || item.prescribed.medicine
-      } catch (error) {
-        errors.push(error)
-      }
-      try {
-        item.received.medicine = (item.received.medicine.id && (await MedicineRepository.getById(item.received.medicine.id))) || item.received.medicine
-      } catch (error) {
-        errors.push(error)
-      }
-      try {
-        item.received.pharmacist = (item.received.pharmacist.id && (await PharmacistRepository.getById(item.received.pharmacist.id))) || item.received.pharmacist
-      } catch (error) {
-        errors.push(error)
-      }
-      try {
-        item.audited.medicine = (item.audited.medicine.id && (await MedicineRepository.getById(item.audited.medicine.id))) || item.audited.medicine
-      } catch (error) {
-        errors.push(error)
-      }
-    }
-    if (errors.length) {
-      throw errors
-    }
+    prescription = await this.fillPrescriptionData(prescription, true)
     const plainPrescription = prescription.toPlainObject()
     const insertablePrescription = {
       issued_date: dateTimeFormat.toDate(plainPrescription.issuedDate).toDate(),
@@ -399,31 +353,32 @@ class PrescriptionRepository {
   }
 
   async fillPrescriptionData(prescription, checkErrors) {
+    const muttedPrescription = Prescription.fromObject(prescription).clone()
     const errors = []
     try {
-      prescription.setAffiliate((prescription.affiliate.id && (await AffiliateRepository.getById(prescription.affiliate.id))) || prescription.affiliate)
+      muttedPrescription.setAffiliate((muttedPrescription.affiliate.id && (await AffiliateRepository.getById(muttedPrescription.affiliate.id))) || muttedPrescription.affiliate)
     } catch (error) {
       errors.push(error)
     }
     try {
-      prescription.setInstitution(prescription.institution.id && (await InstitutionRepository.getById(prescription.institution.id || prescription.institution)))
+      muttedPrescription.setInstitution(muttedPrescription.institution.id && (await InstitutionRepository.getById(muttedPrescription.institution.id || muttedPrescription.institution)))
     } catch (error) {
       errors.push(error)
     }
     try {
-      prescription.setMedicalInsurance(
-        prescription.medicalInsurance.id && (await MedicalInsuranceRepository.getById(prescription.medicalInsurance.id || prescription.medicalInsurance))
+      muttedPrescription.setMedicalInsurance(
+        muttedPrescription.medicalInsurance.id && (await MedicalInsuranceRepository.getById(muttedPrescription.medicalInsurance.id || muttedPrescription.medicalInsurance))
       )
     } catch (error) {
       errors.push(error)
     }
     try {
-      prescription.setDoctor(prescription.doctor.id && (await DoctorRepository.getById(prescription.doctor.id || prescription.doctor)))
+      muttedPrescription.setDoctor(muttedPrescription.doctor.id && (await DoctorRepository.getById(muttedPrescription.doctor.id || muttedPrescription.doctor)))
     } catch (error) {
       errors.push(error)
     }
     // eslint-disable-next-line no-restricted-syntax
-    for (const item of prescription.items) {
+    for (const item of muttedPrescription.items) {
       try {
         item.prescribed.medicine = (item.prescribed.medicine.id && (await MedicineRepository.getById(item.prescribed.medicine.id))) || item.prescribed.medicine
       } catch (error) {
@@ -448,6 +403,7 @@ class PrescriptionRepository {
     if (checkErrors && errors.length) {
       throw errors
     }
+    return muttedPrescription
   }
 }
 
