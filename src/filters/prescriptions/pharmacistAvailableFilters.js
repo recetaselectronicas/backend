@@ -13,6 +13,7 @@ pharmacistAvailableFilters.filters.status.values = [
   availableStates.AUDITED,
   availableStates.REJECTED,
   availableStates.PARTIALLY_REJECTED,
+  availableStates.CONFIRMED
 ]
 pharmacistAvailableFilters.filters.issueDateRange = lang.cloneDeep(prescriptionFilters.issueDateRange)
 pharmacistAvailableFilters.filters.soldDateRange = lang.cloneDeep(prescriptionFilters.soldDateRange)

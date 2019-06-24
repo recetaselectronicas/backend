@@ -9,9 +9,19 @@ const permissions = require('../permissions/identifiedUser')
 const errors = require('../utils/errors')
 const moment = require('moment')
 
-router.post('/', async (req, res, next) => {
+const secureMiddleware = (req, res, next) => {
+  const { authorization } = req.headers
+  const { id, type } = JSON.parse(authorization.split('Bearer ')[1])
+  const identifiedUser = permissions.getIdentifiedUserBy(type, Number.parseInt(id, 10))
+  req.identifiedUser = identifiedUser
+  return next()
+}
+router.post('/', secureMiddleware, async (req, res, next) => {
   const { logger } = req.app.locals
+  const { identifiedUser } = req
+
   const prescription = Prescription.fromObject(req.body)
+  prescription.doctor.id = identifiedUser.id
   let idCreatedPrescription
   try {
     idCreatedPrescription = await StateMachine.toIssued(prescription)
@@ -29,25 +39,12 @@ router.post('/', async (req, res, next) => {
   }
 })
 
-const secureMiddleware = (req, res, next) => {
-  req.identifiedUser = permissions.getIdentifiedAffiliate(1)
-  return next()
-}
-const secureMiddleware2 = (req, res, next) => {
-  req.identifiedUser = permissions.getIdentifiedPharmacist(2)
-  return next()
-}
-const secureMiddleware3 = (req, res, next) => {
-  req.identifiedUser = permissions.getIdentifiedDoctor(1)
-  return next()
-}
-
 router.get('/', secureMiddleware, async (req, res, next) => {
   const { identifiedUser } = req
   const prescriptionQuery = identifiedUser.getQuery(req.query)
   try {
     const prescriptions = await PrescriptionRepository.getByQuery(prescriptionQuery)
-    const filters = await identifiedUser.populateFilters(identifiedUser.getFilters())
+    const filters = await identifiedUser.getFilters()
     const response = { result: prescriptions.map(pres => pres.toPlainObject()), ...filters }
     return res.json(response)
   } catch (error) {
@@ -127,8 +124,7 @@ const toState = {
 
       return StateMachine.toAudit(prescription)
     }
-  },
-
+  }
 }
 
 module.exports = router

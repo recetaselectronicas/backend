@@ -2,6 +2,7 @@ const lang = require('lodash/lang')
 const filters = require('../filters/prescriptions/prescriptionFilters')
 const { newForbiddenResourceException } = require('../utils/errors')
 const { InstitutionRepository } = require('../repositories/institutionRepository')
+const { states } = require('../state-machine/state')
 
 const userTypes = {
   AFFILIATE: 'affiliate',
@@ -25,17 +26,15 @@ const identifiedUser = {
   getActions: null,
   canReceive: null,
   canCancel: null,
-  canAudit: null,
+  canAudit: null
 }
 
 const identifiedAffiliate = {
   ...identifiedUser,
   type: userTypes.AFFILIATE,
-  getFilters: filters.getAffiliateAvailableFilters,
-  populateFilters: async (userFilter) => {
-    const muttedFilters = { ...userFilter }
+  getFilters: async () => {
+    const muttedFilters = filters.getAffiliateAvailableFilters()
     muttedFilters.filters.institution.values = await InstitutionRepository.getAll().map(({ id, description }) => ({ id, value: description }))
-
     return muttedFilters
   },
   getQuery(params) {
@@ -46,10 +45,10 @@ const identifiedAffiliate = {
       throw newForbiddenResourceException("Can't access this prescription")
     }
   },
-  getActions: prescription => [{ id: availableActions.CANCEL }, { id: availableActions.AUDIT }, { id: availableActions.RECEIVE }],
-  canReceive: () => true,
-  canCancel: () => true,
-  canAudit: () => true,
+  getActions: prescription => [],
+  canReceive: () => false,
+  canCancel: () => false,
+  canAudit: () => false
 }
 
 const identifiedDoctor = {
@@ -64,10 +63,10 @@ const identifiedDoctor = {
       throw newForbiddenResourceException("Can't access this prescription")
     }
   },
-  getActions: prescription => [availableActions.CANCEL],
+  getActions: prescription => [{ id: availableActions.CANCEL, disabled: prescription.status !== states.ISSUED.id }],
   canReceive: () => false,
   canCancel: () => true,
-  canAudit: () => false,
+  canAudit: () => false
 }
 
 const identifiedPharmacist = {
@@ -82,10 +81,10 @@ const identifiedPharmacist = {
       throw newForbiddenResourceException("Can't access this prescription")
     }
   },
-  getActions: prescription => [availableActions.RECEIVE],
+  getActions: prescription => [{ id: availableActions.RECEIVE, disabled: prescription.status !== states.CONFIRMED.id }],
   canReceive: () => true,
   canCancel: () => false,
-  canAudit: () => false,
+  canAudit: () => false
 }
 
 const identifiedMedicalInsurance = {
@@ -100,10 +99,18 @@ const identifiedMedicalInsurance = {
       throw newForbiddenResourceException("Can't access this prescription")
     }
   },
-  getActions: prescription => [availableActions.AUDIT],
+  getActions: ({ status }) => {
+    const canAudit = status === states.RECEIVED.id || status === states.PARTIALLY_RECEIVED.id
+    return [
+      {
+        id: availableActions.AUDIT,
+        disabled: !canAudit
+      }
+    ]
+  },
   canReceive: () => false,
   canCancel: () => false,
-  canAudit: () => true,
+  canAudit: () => true
 }
 
 const getIdentifiedAffiliate = (id) => {
@@ -129,10 +136,25 @@ const getIdentifiedMedicalInsurance = (id) => {
   medicalInsurance.id = id
   return medicalInsurance
 }
-
+const userPermissions = {
+  affiliate: {
+    getPermissions: id => getIdentifiedAffiliate(id)
+  },
+  medicalInsurance: {
+    getPermissions: id => getIdentifiedMedicalInsurance(id)
+  },
+  pharmacist: {
+    getPermissions: id => getIdentifiedPharmacist(id)
+  },
+  doctor: {
+    getPermissions: id => getIdentifiedDoctor(id)
+  }
+}
+const getIdentifiedUserBy = (type, id) => userPermissions[type].getPermissions(id)
 module.exports = {
   getIdentifiedAffiliate,
   getIdentifiedDoctor,
   getIdentifiedPharmacist,
-  getIdentifiedMedicalInsurance
+  getIdentifiedMedicalInsurance,
+  getIdentifiedUserBy
 }
