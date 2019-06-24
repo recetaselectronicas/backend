@@ -9,5 +9,6 @@ exports.seed = knex => knex(LABORATORY)
     { description: 'Pfizer' },
     { description: 'Novartis Argentina' },
     { description: 'Laboratorios Gador' },
-    { description: 'Sanofi Aventis' }
+    { description: 'Sanofi Aventis' },
+    { description: 'Montpellier' }
   ]))

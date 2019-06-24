@@ -51,7 +51,21 @@ class MedicineRepository {
 
   async getById(id) {
     const res = await knex
-      .select().from(MEDICINE).debug(true)
+      .select(
+        `${MEDICINE}.id`,
+        `${MEDICINE}.troquel`,
+        `${MEDICINE}.pharmaceutical_action`,
+        `${MEDICINE}.description`,
+        `${MEDICINE}.entry_date`,
+        `${MEDICINE}.leaving_date`,
+        `${MEDICINE}.bar_code`,
+        `${BRAND}.description as brand_description`,
+        `${SHAPE}.description as presentation_description`,
+        `${SIZE}.description as size_description`,
+        `${LABORATORY}.description as laboratory_description`,
+        `${POTENCY}.description as potency_description`,
+        `${DRUG}.description as drug_description`,
+      ).from(MEDICINE)
       .join(BRAND, `${BRAND}.id`, `${MEDICINE}.id_brand`)
       .join(SHAPE, `${SHAPE}.id`, `${MEDICINE}.id_shape`)
       .join(SIZE, `${SIZE}.id`, `${MEDICINE}.id_size`)
@@ -62,11 +76,9 @@ class MedicineRepository {
         [`${MEDICINE}.id`]: id
       })
       .first()
-      .debug(true)
     if (!res) {
       throw newNotFoundError(`No medicine was found with id ${id}`)
     }
-    console.log(res)
     const medicine = Medicine.fromObject(res)
     return medicine
   }
