@@ -58,10 +58,15 @@ const generateNewSequencer = () => ({
   },
 })
 
+const waitAll = promises => promises.map(promise => promise
+  .catch(err => ({ result: 'error', res: err }))
+  .then(res => ({ result: 'ok', res })))
+
 module.exports = {
   logger,
   formats,
   dateFormat,
   dateTimeFormat,
   generateNewSequencer,
+  waitAll
 }
