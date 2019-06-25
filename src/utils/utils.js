@@ -59,8 +59,8 @@ const generateNewSequencer = () => ({
 })
 
 const waitAll = promises => promises.map(promise => promise
-  .catch(err => ({ result: 'error', res: err }))
-  .then(res => ({ result: 'ok', res })))
+  .then(res => ({ result: 'ok', res }))
+  .catch(err => ({ result: 'error', res: err })))
 
 module.exports = {
   logger,

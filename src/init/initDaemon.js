@@ -56,7 +56,7 @@ const init = () => {
           logger.error(`But ${result.errorQuantity} updates failed. Please take a look at this.`)
         }
       })
-  }, 3000)
+  }, 30000)
   setInterval(() => { checkExpired() }, 30000)
 }
 
