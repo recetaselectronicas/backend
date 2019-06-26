@@ -13,30 +13,16 @@ describe('when do a get in /prescriptions', () => {
     status: {
       key: 'status',
       values: [
-        {
-          id: 'CONFIRMED',
-          value: 'CONFIRMADA'
-        },
-        {
-          id: 'ISSUED',
-          value: 'EMITIDA'
-        },
-        {
-          id: 'EXPIRED',
-          value: 'VENCIDA'
-        },
-        {
-          id: 'RECEIVED',
-          value: 'RECEPCIONADA'
-        },
-        {
-          id: 'PARTIALLY_RECEIVED',
-          value: 'PARCIALMENTE RECEPCIONADA'
-        },
-        {
-          id: 'CANCELLED',
-          value: 'CANCELADA'
-        }
+        { id: 'RECEIVED', value: 'RECEPCIONADA' },
+        { id: 'PARTIALLY_RECEIVED', value: 'PARCIALMENTE RECEPCIONADA' },
+        { id: 'INCOMPLETE', value: 'INCOMPLETA' },
+        { id: 'AUDITED', value: 'AUDITADA' },
+        { id: 'REJECTED', value: 'RECHAZADA' },
+        { id: 'PARTIALLY_REJECTED', value: 'PARCIALMENTE RECHAZADA' },
+        { id: 'CONFIRMED', value: 'CONFIRMADA' },
+        { id: 'ISSUED', value: 'EMITIDA' },
+        { id: 'CANCELLED', value: 'CANCELADA' },
+        { id: 'EXPIRED', value: 'VENCIDA' }
       ]
     },
     issueDateRange: {

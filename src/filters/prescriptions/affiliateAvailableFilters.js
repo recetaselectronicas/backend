@@ -7,12 +7,16 @@ const affiliateAvailableFilters = lang.cloneDeep(filtersModel)
 affiliateAvailableFilters.filters.id = lang.cloneDeep(prescriptionFilters.id)
 affiliateAvailableFilters.filters.status = lang.cloneDeep(prescriptionFilters.status)
 affiliateAvailableFilters.filters.status.values = [
-  availableStates.CONFIRMED,
-  availableStates.ISSUED,
-  availableStates.EXPIRED,
   availableStates.RECEIVED,
   availableStates.PARTIALLY_RECEIVED,
-  availableStates.CANCELLED
+  availableStates.INCOMPLETE,
+  availableStates.AUDITED,
+  availableStates.REJECTED,
+  availableStates.PARTIALLY_REJECTED,
+  availableStates.CONFIRMED,
+  availableStates.ISSUED,
+  availableStates.CANCELLED,
+  availableStates.EXPIRED
 ]
 affiliateAvailableFilters.filters.issueDateRange = lang.cloneDeep(prescriptionFilters.issueDateRange)
 affiliateAvailableFilters.filters.soldDateRange = lang.cloneDeep(prescriptionFilters.soldDateRange)

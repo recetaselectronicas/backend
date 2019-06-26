@@ -7,16 +7,16 @@ const medicalInsuranceAvailableFilters = lang.cloneDeep(filtersModel)
 medicalInsuranceAvailableFilters.filters.id = lang.cloneDeep(prescriptionFilters.id)
 medicalInsuranceAvailableFilters.filters.status = lang.cloneDeep(prescriptionFilters.status)
 medicalInsuranceAvailableFilters.filters.status.values = [
-  availableStates.ISSUED,
-  availableStates.CANCELLED,
-  availableStates.CONFIRMED,
-  availableStates.EXPIRED,
   availableStates.RECEIVED,
   availableStates.PARTIALLY_RECEIVED,
   availableStates.INCOMPLETE,
   availableStates.AUDITED,
   availableStates.REJECTED,
   availableStates.PARTIALLY_REJECTED,
+  availableStates.CONFIRMED,
+  availableStates.ISSUED,
+  availableStates.CANCELLED,
+  availableStates.EXPIRED
 ]
 medicalInsuranceAvailableFilters.filters.issueDateRange = lang.cloneDeep(prescriptionFilters.issueDateRange)
 medicalInsuranceAvailableFilters.filters.soldDateRange = lang.cloneDeep(prescriptionFilters.soldDateRange)
@@ -29,8 +29,6 @@ medicalInsuranceAvailableFilters.filters.medicine = lang.cloneDeep(prescriptionF
 medicalInsuranceAvailableFilters.orders.values.id = lang.cloneDeep(prescriptionFilters.orders.values.id)
 medicalInsuranceAvailableFilters.orders.values.issuedDate = lang.cloneDeep(prescriptionFilters.orders.values.issuedDate)
 medicalInsuranceAvailableFilters.orders.values.soldDate = lang.cloneDeep(prescriptionFilters.orders.values.soldDate)
-medicalInsuranceAvailableFilters.orders.values.auditedDate = lang.cloneDeep(
-  prescriptionFilters.orders.values.auditedDate,
-)
+medicalInsuranceAvailableFilters.orders.values.auditedDate = lang.cloneDeep(prescriptionFilters.orders.values.auditedDate)
 
 module.exports = medicalInsuranceAvailableFilters
