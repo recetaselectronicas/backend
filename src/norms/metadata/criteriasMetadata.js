@@ -38,6 +38,7 @@ const { AffiliateCredentialCriteria } = require('../criterias/affiliateCriteria/
 const { AffiliateGenderCriteria } = require('../criterias/affiliateCriteria/affiliateGenderCriteria')
 const { AffiliateNationalityCriteria } = require('../criterias/affiliateCriteria/affiliateNationalityCriteria')
 const { AffiliatePlanCriteria } = require('../criterias/affiliateCriteria/affiliatePlanCriteria')
+const { AffiliateActiveCriteria } = require('../criterias/affiliateCriteria/affiliateActiveCriteria')
 const { DoctorAgeCriteria } = require('../criterias/doctorCriteria/doctorAgeCriteria')
 const { DoctorNationalMatriculationCriteria } = require('../criterias/doctorCriteria/doctorNationalMatriculationCriteria')
 const { DoctorNationalityCriteria } = require('../criterias/doctorCriteria/doctorNationalityCriteria')
@@ -100,6 +101,7 @@ const CRITERIA_METADATA = {
     NATIONALITY: json => new AffiliateNationalityCriteria().initialize(CRITERIA_METADATA.getModel(json)),
     CREDENTIAL: json => new AffiliateCredentialCriteria().initialize(CRITERIA_METADATA.getModel(json)),
     PLAN: json => new AffiliatePlanCriteria().initialize(CRITERIA_METADATA.getModel(json)),
+    ACTIVE: json => new AffiliateActiveCriteria().initialize(CRITERIA_METADATA.getModel(json)),
   },
   DOCTOR: {
     AGE: json => new DoctorAgeCriteria().initialize(CRITERIA_METADATA.getModel(json)),

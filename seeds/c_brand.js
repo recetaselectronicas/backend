@@ -9,5 +9,6 @@ exports.seed = knex => knex(BRAND)
     { description: 'Curaplus' },
     { description: 'Actron' },
     { description: 'T4' },
-    { description: 'Betacort' }
+    { description: 'Betacort' },
+    { description: 'Dioxaflex' }
   ]))

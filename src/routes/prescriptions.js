@@ -13,8 +13,8 @@ router.post('/', async (req, res, next) => {
   const { identifiedUser } = req
 
   let prescription = Prescription.fromObject(req.body)
+  // TODO : Chequear si tiene permisos para hacer la creacion
   prescription.doctor.id = identifiedUser.id
-  // TODO : dejar de mutar
   prescription = await PrescriptionRepository.fillPrescriptionData(prescription, false)
   let idCreatedPrescription
   try {

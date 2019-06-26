@@ -6,5 +6,6 @@ exports.seed = knex => knex(SHAPE)
     { description: 'En polvo' },
     { description: 'Comprimidos' },
     { description: 'Gotas' },
-    { description: 'Ungüento' }
+    { description: 'Ungüento' },
+    { description: 'Tabletas Masticables' }
   ]))

@@ -8,5 +8,6 @@ exports.seed = knex => knex(DRUG)
     { description: 'Amoxixilina' },
     { description: 'Levotirixina' },
     { description: 'Diclofenac' },
-    { description: 'Betametasona' }
+    { description: 'Betametasona' },
+    { description: 'Pseudoefedrina' }
   ]))

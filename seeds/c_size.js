@@ -8,5 +8,5 @@ exports.seed = knex => knex(SIZE)
     { description: 'X 8 U' },
     { description: 'X 15 U' },
     { description: 'X 60 U' },
-    { description: 'x 50 mg' }
+    { description: 'X 15 G' }
   ]))

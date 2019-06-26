@@ -224,6 +224,11 @@ const CRITERIA_METADATA = [
         value: 'Plan',
         type: dataTypes.string
       },
+      {
+        attribute: 'ACTIVE',
+        value: 'Activo',
+        type: dataTypes.boolean
+      }
     ]
   },
   {
