@@ -84,7 +84,7 @@ const identifiedPharmacist = {
     }
   },
   getMenu: () => [{ label: 'Ver recetas', url: '/recetas' }, { label: 'Recepcionar', url: '/recepcionar' }],
-  getActions: prescription => [{ id: availableActions.RECEIVE, disabled: prescription.status !== states.CONFIRMED.id }],
+  getActions: prescription => [{ id: availableActions.RECEIVE, disabled: prescription.status !== states.CONFIRMED.id && prescription.status !== states.PARTIALLY_RECEIVED.id }],
   canReceive: () => true,
   canCancel: () => false,
   canAudit: () => false

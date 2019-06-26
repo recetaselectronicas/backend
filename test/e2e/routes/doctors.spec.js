@@ -97,6 +97,7 @@ describe('when do a get in /doctors/{id}/medical-insurances', () => {
 
     it('respond with 500 ', () => request(app)
       .get(`/doctors/${doctorId}/medical-insurances`)
+      .set('Authorization', 'Bearer {"type":"affiliate", "id": "1"}')
       .expect(500))
   })
 })
