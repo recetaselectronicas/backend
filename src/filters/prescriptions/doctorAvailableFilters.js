@@ -7,13 +7,16 @@ const doctorAvailableFilters = lang.cloneDeep(filtersModel)
 doctorAvailableFilters.filters.id = lang.cloneDeep(prescriptionFilters.id)
 doctorAvailableFilters.filters.status = lang.cloneDeep(prescriptionFilters.status)
 doctorAvailableFilters.filters.status.values = [
-  availableStates.ISSUED,
-  availableStates.CANCELLED,
-  availableStates.CONFIRMED,
+  availableStates.RECEIVED,
+  availableStates.PARTIALLY_RECEIVED,
   availableStates.INCOMPLETE,
   availableStates.AUDITED,
   availableStates.REJECTED,
   availableStates.PARTIALLY_REJECTED,
+  availableStates.CONFIRMED,
+  availableStates.ISSUED,
+  availableStates.CANCELLED,
+  availableStates.EXPIRED
 ]
 doctorAvailableFilters.filters.issueDateRange = lang.cloneDeep(prescriptionFilters.issueDateRange)
 doctorAvailableFilters.filters.institution = lang.cloneDeep(prescriptionFilters.institution)
