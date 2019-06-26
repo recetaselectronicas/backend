@@ -48,8 +48,8 @@ router.get('/', async (req, res, next) => {
 
 router.get('/:id', (req, res, next) => {
   const { logger } = req.app.locals
-  const { identifiedUser } = req
-  return PrescriptionRepository.getById(req.params.id)
+  const { identifiedUser, query } = req
+  return PrescriptionRepository.getById(req.params.id, query)
     .then((prescription) => {
       // identifiedUser.checkForbiden(prescription)
       const actions = identifiedUser.getActions(prescription)
