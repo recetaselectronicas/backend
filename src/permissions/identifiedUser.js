@@ -83,7 +83,7 @@ const identifiedPharmacist = {
       throw newForbiddenResourceException("Can't access this prescription")
     }
   },
-  getMenu: () => [{ label: 'Ver recetas', url: '/recetas' }],
+  getMenu: () => [{ label: 'Ver recetas', url: '/recetas' }, { label: 'Recepcionar', url: '/recepcionar' }],
   getActions: prescription => [{ id: availableActions.RECEIVE, disabled: prescription.status !== states.CONFIRMED.id }],
   canReceive: () => true,
   canCancel: () => false,

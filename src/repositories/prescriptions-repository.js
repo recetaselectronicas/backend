@@ -139,8 +139,9 @@ class PrescriptionRepository {
     return new Promise((resolve, reject) => resolve([...this.prescriptions]))
   }
 
-  async getById(id) {
-    const prescription = await knex
+  async getById(id, query = {}) {
+    const { medicalInsurance, affiliate } = query
+    const knexQuery = knex
       .select(
         `${PRESCRIPTION}.diagnosis`,
         `${PRESCRIPTION}.prolonged_treatment`,
@@ -170,10 +171,17 @@ class PrescriptionRepository {
       .leftJoin(MEDICAL_INSURANCE, `${PRESCRIPTION}.id_medical_insurance`, `${MEDICAL_INSURANCE}.id`)
       .leftJoin(STATE, `${PRESCRIPTION}.id_state`, `${STATE}.id`)
       .leftJoin(DOCTOR, `${PRESCRIPTION}.id_doctor`, `${DOCTOR}.id`)
-      .where(`${PRESCRIPTION}.id`, id)
-      .first()
-      .then(this.getDomainPrescription)
 
+    if (medicalInsurance) {
+      knexQuery.where(`${PRESCRIPTION}.id_medical_insurance`, Number.parseInt(medicalInsurance, 10))
+    }
+
+    if (affiliate) {
+      knexQuery.where(`${PRESCRIPTION}.id_affiliate`, Number.parseInt(affiliate, 10))
+    }
+
+    const queryReponse = await knexQuery.where(`${PRESCRIPTION}.id`, id).first()
+    const prescription = await this.getDomainPrescription(queryReponse)
     if (!prescription) {
       throw newNotFoundError(`No prescription was found with id ${id}`)
     }
@@ -193,13 +201,10 @@ class PrescriptionRepository {
     return knex
       .select(`${PRESCRIPTION}.id`)
       .table(PRESCRIPTION)
-      .where((builder) =>
-        builder.where(`${PRESCRIPTION}.id_state`, states.CONFIRMED.id).orWhere(`${PRESCRIPTION}.id_state`, states.PARTIALLY_RECEIVED.id)
-      )
+      .where(builder => builder.where(`${PRESCRIPTION}.id_state`, states.CONFIRMED.id).orWhere(`${PRESCRIPTION}.id_state`, states.PARTIALLY_RECEIVED.id))
       .andWhere(function () {
         this.andWhereRaw(`SYSDATE() > ADDDATE(${PRESCRIPTION}.issued_date, INTERVAL ( (${PRESCRIPTION}.ttl) - 20) MINUTE)`)
       })
-
   }
 
   getByExample(_prescription) {
@@ -364,7 +369,9 @@ class PrescriptionRepository {
       errors.push(error)
     }
     try {
-      muttedPrescription.setInstitution(muttedPrescription.institution.id && (await InstitutionRepository.getById(muttedPrescription.institution.id || muttedPrescription.institution)))
+      muttedPrescription.setInstitution(
+        muttedPrescription.institution.id && (await InstitutionRepository.getById(muttedPrescription.institution.id || muttedPrescription.institution))
+      )
     } catch (error) {
       errors.push(error)
     }
