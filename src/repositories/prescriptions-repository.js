@@ -233,6 +233,7 @@ class PrescriptionRepository {
   async getByQuery(query) {
     const { filters, orders } = query
     const { status, id, institution } = filters
+    const { affiliate, doctor, medicalInsurance, pharmacist } = filters
     const { orderKey, sortKey } = orders
     try {
       const knexQuery = knex
@@ -252,6 +253,7 @@ class PrescriptionRepository {
           `${MEDICAL_INSURANCE}.description as medical_insurance_description`,
           `${MEDICAL_INSURANCE}.id as medical_insurance_id`,
           `${STATE}.description as status`,
+          `${DOCTOR}.id as id_doctor`,
           `${DOCTOR}.name as name_doctor`,
           `${DOCTOR}.last_name as last_name_doctor`
         )
@@ -270,12 +272,28 @@ class PrescriptionRepository {
       if (institution && institution.length > 0) {
         knexQuery.whereIn(`${PRESCRIPTION}.id_institution`, institution)
       }
+      if (affiliate) {
+        knexQuery.where(`${AFFILIATE}.id`, affiliate)
+      }
+      if (doctor) {
+        knexQuery.where(`${DOCTOR}.id`, doctor)
+      }
+      if (medicalInsurance) {
+        knexQuery.where(`${MEDICAL_INSURANCE}.id`, medicalInsurance)
+      }
+      if (pharmacist) {
+        knexQuery.whereExists(knex
+          .select()
+          .from(ITEM)
+          .join(PRESCRIPTION, `${PRESCRIPTION}.id`, `${ITEM}.id_prescription`)
+          .where(`${ITEM}.id_pharmacist`, pharmacist))
+      }
       if (orderKey && sortKey) {
         knexQuery.orderBy(orderKey, sortKey)
       }
 
       const prescriptions = await knexQuery
-      return await Promise.all(prescriptions.map(this.getDomainPrescription))
+      return await Promise.all(prescriptions.map(pres => this.getDomainPrescription(pres).then(pres2 => this.fillPrescriptionData(pres2))))
     } catch (error) {
       console.log('fatal error', error)
       throw error
@@ -336,27 +354,29 @@ class PrescriptionRepository {
 
   async getDomainPrescription(response) {
     const muttedPrescription = { ...response }
-    muttedPrescription.affiliate = {
-      id: response.idAffiliate,
-      code: response.codeAffiliate,
-      name: response.nameAffiliate,
-      surname: response.surnameAffiliate
+    if (response) {
+      muttedPrescription.affiliate = {
+        id: response.idAffiliate,
+        code: response.codeAffiliate,
+        name: response.nameAffiliate,
+        surname: response.surnameAffiliate
+      }
+      muttedPrescription.institution = {
+        id: response.institutionId,
+        description: response.institutionDescription,
+        address: response.institutionAddress
+      }
+      muttedPrescription.medicalInsurance = {
+        id: response.medicalInsuranceId,
+        description: response.medicalInsuranceDescription
+      }
+      muttedPrescription.doctor = {
+        id: response.idDoctor,
+        name: response.nameDoctor,
+        lastName: response.lastNameDoctor
+      }
+      muttedPrescription.items = await this.getItems(muttedPrescription.id)
     }
-    muttedPrescription.institution = {
-      id: response.institutionId,
-      description: response.institutionDescription,
-      address: response.institutionAddress
-    }
-    muttedPrescription.medicalInsurance = {
-      id: response.medicalInsuranceId,
-      description: response.medicalInsuranceDescription
-    }
-    muttedPrescription.doctor = {
-      id: response.idDoctor,
-      name: response.nameDoctor,
-      lastName: response.lastNameDoctor
-    }
-    muttedPrescription.items = await this.getItems(muttedPrescription.id)
     return Prescription.fromObject(muttedPrescription)
   }
 

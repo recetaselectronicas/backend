@@ -11,9 +11,10 @@ const moment = require('moment')
 router.post('/', async (req, res, next) => {
   const { logger } = req.app.locals
   const { identifiedUser } = req
-
+  if (!identifiedUser.canIssue()) {
+    return next(errors.newForbiddenResourceException('No puede emitir la receta, no tiene los permisos necesarios'))
+  }
   let prescription = Prescription.fromObject(req.body)
-  // TODO : Chequear si tiene permisos para hacer la creacion
   prescription.doctor.id = identifiedUser.id
   prescription = await PrescriptionRepository.fillPrescriptionData(prescription, false)
   let idCreatedPrescription

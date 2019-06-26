@@ -1,5 +1,5 @@
 const {
-  MEDICINE, ITEM, VADEMECUM, COVERAGE, COMPOSITION, BRAND, SHAPE, SIZE, LABORATORY, POTENCY, DRUG
+  MEDICINE, ITEM, VADEMECUM, COVERAGE, COMPOSITION, BRAND, SHAPE, SIZE, LABORATORY, POTENCY, DRUG, PRESCRIPTION, PHARMACIST, PLAN
 } = require('../src/repositories/tablesNames')
 
 /* iD, troquel, accion_farma, descripcion, fecha_alta, fecha_baja,
@@ -18,7 +18,8 @@ const {
     table.string('leaving_date', 255)
     table.integer('id_vademecum').unsigned()
     table.foreign('id_vademecum').references(`${VADEMECUM}.id`)
-    table.integer('id_plan').unsigned() // TODO: FK
+    table.integer('id_plan').unsigned()
+    table.foreign('id_plan').references(`${PLAN}.id`)
 
     return table
   })
@@ -61,34 +62,25 @@ const {
    id_medicamento_auditado, cantidad_auditado, fecha_venta, id_farmaceutico, */
   .createTable(ITEM, (table) => {
     table.increments('id')
-    table
-      .integer('id_prescription')
-      .unsigned()
-      .notNullable()
-      // TODO FK
+    table.integer('id_prescription').unsigned().notNullable()
+    table.foreign('id_prescription').references(`${PRESCRIPTION}.id`)
 
     // medicamentos prescriptos
-    table
-      .integer('id_medicine_prescribed')
-      .unsigned()
-      .notNullable()
+    table.integer('id_medicine_prescribed').unsigned().notNullable()
     table.foreign('id_medicine_prescribed').references(`${MEDICINE}.id`)
-    table
-      .integer('prescribed_quantity')
-      .unsigned()
-      .notNullable()
-      // medicamentos recepcionados
+    table.integer('prescribed_quantity').unsigned().notNullable()
+    // medicamentos recepcionados
     table.integer('id_medicine_received').unsigned()
     table.foreign('id_medicine_received').references(`${MEDICINE}.id`)
     table.integer('received_quantity').unsigned()
+    table.integer('id_pharmacist').unsigned()
+    table.foreign('id_pharmacist').references(`${PHARMACIST}.id`)
+    table.string('sold_date', 255)
 
     // medicamentos auditados
     table.integer('id_medicine_audited').unsigned()
     table.foreign('id_medicine_audited').references(`${MEDICINE}.id`)
     table.integer('audited_quantity').unsigned()
-
-    table.string('sold_date', 255)
-    table.integer('id_pharmacist').unsigned()
   })
 
 exports.down = knex => knex.schema

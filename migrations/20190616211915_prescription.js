@@ -1,5 +1,5 @@
 const {
-  PRESCRIPTION, MEDICAL_INSURANCE, AFFILIATE, DOCTOR, STATE, NORM, INSTITUTION
+  PRESCRIPTION, MEDICAL_INSURANCE, AFFILIATE, DOCTOR, STATE, INSTITUTION
 } = require('../src/repositories/tablesNames')
 
 exports.up = knex => knex.schema.withSchema('recetas').createTable(PRESCRIPTION, (table) => {

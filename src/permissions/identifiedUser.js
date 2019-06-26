@@ -24,6 +24,7 @@ const identifiedUser = {
   getQuery: null,
   checkForbiden: null,
   getActions: null,
+  canIssue: null,
   canReceive: null,
   canCancel: null,
   canAudit: null
@@ -47,6 +48,7 @@ const identifiedAffiliate = {
   },
   getActions: prescription => [],
   getMenu: () => [{ label: 'Ver recetas', url: '/recetas' }],
+  canIssue: () => false,
   canReceive: () => false,
   canCancel: () => false,
   canAudit: () => false
@@ -66,6 +68,7 @@ const identifiedDoctor = {
   },
   getMenu: () => [{ label: 'Emitir', url: '/emitir' }, { label: 'Ver recetas', url: '/recetas' }],
   getActions: prescription => [{ id: availableActions.CANCEL, disabled: prescription.status !== states.ISSUED.id }],
+  canIssue: () => true,
   canReceive: () => false,
   canCancel: () => true,
   canAudit: () => false
@@ -84,7 +87,8 @@ const identifiedPharmacist = {
     }
   },
   getMenu: () => [{ label: 'Ver recetas', url: '/recetas' }, { label: 'Recepcionar', url: '/recepcionar' }],
-  getActions: prescription => [{ id: availableActions.RECEIVE, disabled: prescription.status !== states.CONFIRMED.id }],
+  getActions: prescription => [{ id: availableActions.RECEIVE, disabled: prescription.status !== states.CONFIRMED.id && prescription.status !== states.PARTIALLY_RECEIVED.id }],
+  canIssue: () => false,
   canReceive: () => true,
   canCancel: () => false,
   canAudit: () => false
@@ -112,7 +116,7 @@ const identifiedMedicalInsurance = {
     ]
   },
   getMenu: () => [{ label: 'Normas', url: '/normas' }, { label: 'Ver recetas', url: '/recetas' }],
-
+  canIssue: () => false,
   canReceive: () => false,
   canCancel: () => false,
   canAudit: () => true
