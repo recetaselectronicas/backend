@@ -80,11 +80,11 @@ router.put('/:id', (req, res, next) => {
 const toState = {
   CANCELLED: {
     change: (prescription, data) => {
+      // TODO: Agregar en objeto de presciption el atributo statusReason
       prescription.statusReason = data.reason
       if (!data.identifiedUser.canCancel()) {
         throw errors.newForbiddenResourceException('No puede cancelar la receta')
       }
-      // TODO: Agregar en objeto de presciption el atributo statusReason
       return StateMachine.toCancelled(prescription)
     }
   },
@@ -94,14 +94,11 @@ const toState = {
         throw errors.newForbiddenResourceException('No puede recepcionar la receta')
       }
       data.items.forEach((item) => {
-        const itemToReceive = prescription.items.find(i => i.id == item.id)
-        if (itemToReceive.received.quantity) {
-          throw errors.newEntityAlreadyCreated('El item ya fué recepcionado')
-        }
+        const itemToReceive = prescription.items.find(_item => _item.id === item.id)
         itemToReceive.receive(item.quantity, moment(), item.medicine, { id: data.identifiedUser.id })
       })
 
-      return StateMachine.toReceive(prescription)
+      return PrescriptionRepository.fillPrescriptionItemsData(prescription).then(_prescription => StateMachine.toReceive(_prescription))
     }
   },
   AUDIT: {
@@ -110,10 +107,7 @@ const toState = {
         throw errors.newForbiddenResourceException('No puede auditar la receta')
       }
       data.items.forEach((item) => {
-        const itemToAudit = prescription.items.find(i => i.id == item.id)
-        if (itemToAudit.audited.quantity) {
-          throw errors.newEntityAlreadyCreated('El item ya fué auditado')
-        }
+        const itemToAudit = prescription.items.find(i => i.id === item.id)
         itemToAudit.audit(item.quantity, item.medicine)
       })
 

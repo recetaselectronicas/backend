@@ -138,6 +138,12 @@ const getDiferentValueError = (value, otherValue, entity, field, message) => {
   }
   return null
 }
+const getEqualValueError = (value, otherValue, entity, field, message) => {
+  if (value === otherValue) {
+    return newInvalidValueError(message || `${entity} ${field} must not be ${otherValue}`, generateFieldCause(entity, field, value, otherValue))
+  }
+  return null
+}
 const getValueNotInListError = (value, otherValues, entity, field, message) => {
   // TODO: comparo con value.status. Hay que definir como se setea el estado-> state.ISSUED o state.ISSUED.status
   const found = otherValues.find(aValue => aValue === value)
@@ -146,7 +152,13 @@ const getValueNotInListError = (value, otherValues, entity, field, message) => {
   }
   return null
 }
-
+const getValuetInListError = (value, otherValues, entity, field, message) => {
+  const found = otherValues.find(aValue => aValue === value)
+  if (found) {
+    return newInvalidValueError(message || `${entity} ${field} must not be one of this ${otherValues}`, generateFieldCause(entity, field, value, otherValues))
+  }
+  return null
+}
 const getObjectDoesntMatchError = (object, path, isValidValue, entity, field, nullMessage, invalidValueMessage) => {
   if (!_object.has(object, path)) {
     return newNullOrEmptyError(nullMessage || `${entity} must have a value at ${field}`, generateFieldCause(entity, field))
@@ -165,9 +177,10 @@ const getArrayDoesntMatchError = (array, path, isValidValue, entity, field, null
         return newNullOrEmptyError(nullMessage || `${entity} must have a value at ${field}`, generateIndexFieldCause(entity, field, index))
       }
       const actualValue = _object.get(element, path)
-      if (!isValidValue(actualValue)) {
+      if (!isValidValue(actualValue, index)) {
         return newInvalidValueError(invalidValueMessage || `${entity} ${field} has an invalid value`, generateIndexFieldCause(entity, field, index, actualValue))
       }
+      return null
     })
   )
   return errors
@@ -192,9 +205,11 @@ module.exports = {
   generateIndexFieldCause,
   getArrayNotEmptyError,
   getDiferentValueError,
+  getEqualValueError,
   getNotNullError,
   getObjectNotEmptyError,
   getValueNotInListError,
+  getValuetInListError,
   getBeNullError,
   getObjectDoesntMatchError,
   getArrayDoesntMatchError,

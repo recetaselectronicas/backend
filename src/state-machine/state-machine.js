@@ -57,8 +57,8 @@ class StateMachine {
       return this.toIncomplete(prescription)
     }
     return this.toExpired(prescription)
-
   }
+
   toExpired(prescription) {
     return this.validateToExpired(prescription).then(() => {
       prescription.status = states.EXPIRED.id
@@ -79,9 +79,9 @@ class StateMachine {
       prescription.status = states.INCOMPLETE.id
       return PrescriptionRepository.update(prescription)
     })
-    .catch((err)=>{
-      console.error(err)
-    })
+      .catch((err) => {
+        console.error(err)
+      })
   }
 
   validateToIncomplete(prescription) {

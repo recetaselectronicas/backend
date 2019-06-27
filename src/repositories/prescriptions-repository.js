@@ -282,11 +282,7 @@ class PrescriptionRepository {
         knexQuery.where(`${MEDICAL_INSURANCE}.id`, medicalInsurance)
       }
       if (pharmacist) {
-        knexQuery.whereExists(knex
-          .select()
-          .from(ITEM)
-          .join(PRESCRIPTION, `${PRESCRIPTION}.id`, `${ITEM}.id_prescription`)
-          .where(`${ITEM}.id_pharmacist`, pharmacist))
+        knexQuery.whereRaw('exists (select \'x\' from item where item.id_prescription = prescription.id and item.id_pharmacist = ?)', [pharmacist])
       }
       if (orderKey && sortKey) {
         knexQuery.orderBy(orderKey, sortKey)
@@ -407,6 +403,38 @@ class PrescriptionRepository {
     } catch (error) {
       errors.push(error)
     }
+    // eslint-disable-next-line no-restricted-syntax
+    for (const item of muttedPrescription.items) {
+      try {
+        item.prescribed.medicine = (item.prescribed.medicine.id && (await MedicineRepository.getById(item.prescribed.medicine.id))) || item.prescribed.medicine
+      } catch (error) {
+        errors.push(error)
+      }
+      try {
+        item.received.medicine = (item.received.medicine.id && (await MedicineRepository.getById(item.received.medicine.id))) || item.received.medicine
+      } catch (error) {
+        errors.push(error)
+      }
+      try {
+        item.received.pharmacist = (item.received.pharmacist.id && (await PharmacistRepository.getById(item.received.pharmacist.id))) || item.received.pharmacist
+      } catch (error) {
+        errors.push(error)
+      }
+      try {
+        item.audited.medicine = (item.audited.medicine.id && (await MedicineRepository.getById(item.audited.medicine.id))) || item.audited.medicine
+      } catch (error) {
+        errors.push(error)
+      }
+    }
+    if (checkErrors && errors.length) {
+      throw errors
+    }
+    return muttedPrescription
+  }
+
+  async fillPrescriptionItemsData(prescription, checkErrors) {
+    const muttedPrescription = Prescription.fromObject(prescription).clone()
+    const errors = []
     // eslint-disable-next-line no-restricted-syntax
     for (const item of muttedPrescription.items) {
       try {

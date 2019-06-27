@@ -1,15 +1,19 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-throw-literal */
+const array = require('lodash/array')
+const lang = require('lodash/lang')
 const { newNullOrEmptyError, generateFieldCause } = require('../utils/errors')
 const {
   getArrayNotEmptyError,
   getNotNullError,
   getDiferentValueError,
+  getEqualValueError,
   getValueNotInListError,
   getBeNullError,
   getArrayDoesntMatchError,
   getObjectDoesntMatchError
 } = require('../utils/errors')
 const { codes } = require('../codes/entities-codes')
-const array = require('lodash/array')
 
 const { name: prescriptionEntity, fields: prescriptionFields } = codes.PRESCRIPTION
 const { name: affiliateEntity, fields: affiliateFields } = codes.AFFILIATE
@@ -17,7 +21,7 @@ const { name: doctorEntity, fields: doctorFields } = codes.DOCTOR
 const { name: medicalInsuranceEntity, fields: medicalInsuranceFields } = codes.MEDICAL_INSURANCE
 const { name: itemEntity, fields: itemFields } = codes.ITEM
 
-const validator = function (prescription) {
+function validator(prescription) {
   if (!prescription) {
     throw [newNullOrEmptyError('prescription cant be null or empty', generateFieldCause(prescriptionEntity, null))]
   }
@@ -102,40 +106,10 @@ const EXPIRED = {
   getStatusError: prescription => getDiferentValueError(prescription.status, CONFIRMED.id, prescriptionEntity, prescriptionFields.status),
   getErrors: (prescription) => {
     const errors = CONFIRMED.getErrors(prescription)
-    // TODO: Agregar validaciones para pasar a VENCIDA
     return errors
   },
   getSpecificErrors: (prescription) => {
     const errors = []
-    return errors
-  }
-}
-const RECEIVED = {
-  id: 'RECEIVED',
-  status: 'RECEPCIONADA',
-  validate: validator,
-  getStatusError: prescription => getValueNotInListError(prescription.status, [CONFIRMED.id, PARTIALLY_RECEIVED.id], prescriptionEntity, prescriptionFields.status),
-  getErrors: (prescription) => {
-    let errors = []
-    if (prescription.status === CONFIRMED.id) {
-      errors = CONFIRMED.getErrors(prescription)
-    }
-    if (prescription.status === PARTIALLY_RECEIVED.id) {
-      errors = PARTIALLY_RECEIVED.getErrors(prescription)
-    }
-    // TODO: Agregar validaciones para pasar a RECEPCIONADA
-    return errors
-  },
-  getSpecificErrors: (prescription) => {
-    const errors = [
-      getNotNullError(prescription.soldDate, prescriptionEntity, prescriptionFields.soldDate),
-      ...getArrayDoesntMatchError(prescription.items, 'received.quantity', value => typeof value === 'number' && !!value, itemEntity, itemFields.received.quantity),
-      ...getArrayDoesntMatchError(prescription.items, 'received.medicine.id', value => typeof value === 'number' && !!value, itemEntity, itemFields.received.medicine.id),
-      ...getArrayDoesntMatchError(prescription.items, 'received.pharmacist.id', value => typeof value === 'number' && !!value, itemEntity, itemFields.received.pharmacist.id),
-      // ...getArrayDoesntMatchError(prescription.items, 'received.soldDate', value => typeof value === 'moment' && !!value, itemEntity, itemFields.received.soldDate),
-      ...getArrayDoesntMatchError(prescription.items, 'audited.quantity', value => !value, itemEntity, itemFields.audited.quantity),
-      ...getArrayDoesntMatchError(prescription.items, 'audited.medicine.id', value => !value, itemEntity, itemFields.audited.medicine.id)
-    ]
     return errors
   }
 }
@@ -145,13 +119,48 @@ const PARTIALLY_RECEIVED = {
   validate: validator,
   getStatusError: prescription => getValueNotInListError(prescription.status, [CONFIRMED.id, PARTIALLY_RECEIVED.id], prescriptionEntity, prescriptionFields.status),
   getErrors: (prescription) => {
-    const errors = CONFIRMED.getErrors(prescription)
-    // TODO: Agregar validaciones para pasar a PARCIALMENTE_RECEPCIONADAS
+    // Si viene de PARTIALLY_RECEIVED se va a ejecutar este mismo código
+    const receivedItems = prescription.items.filter(item => item.received.quantity || item.received.medicine.id || item.received.pharmacist.id)
+    // console.log(JSON.stringify(receivedItems, null, 4))
+    const errors = array.concat(
+      CONFIRMED.getErrors(prescription),
+      [
+        getNotNullError(prescription.soldDate, prescriptionEntity, prescriptionFields.soldDate),
+        getEqualValueError(receivedItems.length, 0, prescriptionEntity, prescriptionFields.itemsQuantity),
+        ...getArrayDoesntMatchError(receivedItems, 'received.quantity', value => lang.isNumber(value) && !!value, itemEntity, itemFields.received.quantity),
+        ...getArrayDoesntMatchError(receivedItems, 'received.medicine.id', value => lang.isNumber(value) && !!value, itemEntity, itemFields.received.medicine.id),
+        ...getArrayDoesntMatchError(receivedItems, 'received.pharmacist.id', value => lang.isNumber(value) && !!value, itemEntity, itemFields.received.pharmacist.id),
+        ...getArrayDoesntMatchError(receivedItems, 'received.quantity', (value, index) => value <= receivedItems[index].prescribed.quantity, itemEntity, itemFields.received.quantity, null, 'item received quantity must be lesser or equal to item precribed quantity.'),
+        ...getArrayDoesntMatchError(receivedItems, 'received.medicine.drugDescription', (value, index) => value === receivedItems[index].prescribed.medicine.drugDescription, itemEntity, itemFields.prescribed.medicine.drug, null, 'item received medicine drug must be equal to item precribed medicine drug.'),
+      ]
+    )
     return errors
   },
   getSpecificErrors: (prescription) => {
     const errors = [
-      getNotNullError(prescription.soldDate, prescriptionEntity, prescriptionFields.soldDate),
+      ...getArrayDoesntMatchError(prescription.items, 'audited.quantity', value => !value, itemEntity, itemFields.audited.quantity),
+      ...getArrayDoesntMatchError(prescription.items, 'audited.medicine.id', value => !value, itemEntity, itemFields.audited.medicine.id)
+    ]
+    return errors
+  }
+}
+const RECEIVED = {
+  id: 'RECEIVED',
+  status: 'RECEPCIONADA',
+  validate: validator,
+  getStatusError: prescription => getValueNotInListError(prescription.status, [CONFIRMED.id, PARTIALLY_RECEIVED.id], prescriptionEntity, prescriptionFields.status),
+  getErrors: (prescription) => {
+    const receivedItems = prescription.items.filter(item => item.received.quantity || item.received.medicine.id || item.received.pharmacist.id)
+    const errors = array.concat(
+      PARTIALLY_RECEIVED.getErrors(prescription),
+      [
+        getDiferentValueError(receivedItems.length, prescription.items.length, prescriptionEntity, prescriptionFields.itemsQuantity)
+      ]
+    )
+    return errors
+  },
+  getSpecificErrors: (prescription) => {
+    const errors = [
       ...getArrayDoesntMatchError(prescription.items, 'audited.quantity', value => !value, itemEntity, itemFields.audited.quantity),
       ...getArrayDoesntMatchError(prescription.items, 'audited.medicine.id', value => !value, itemEntity, itemFields.audited.medicine.id)
     ]
@@ -165,7 +174,6 @@ const INCOMPLETE = {
   getStatusError: prescription => getDiferentValueError(prescription.status, PARTIALLY_RECEIVED.id, prescriptionEntity, prescriptionFields.status),
   getErrors: (prescription) => {
     const errors = PARTIALLY_RECEIVED.getErrors(prescription)
-    // TODO: Agregar validaciones para pasar a INCOMPLETA
     return errors
   },
   getSpecificErrors: (prescription) => {

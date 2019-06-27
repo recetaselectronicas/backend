@@ -16,6 +16,7 @@ const codes = {
       norm: 'norm',
       statusReason: 'statusReason',
       items: 'items',
+      itemsQuantity: 'itemsQuantity'
     },
   },
   AFFILIATE: {
@@ -43,6 +44,7 @@ const codes = {
         quantity: 'prescribed.quantity',
         medicine: {
           id: 'prescribed.medicine.id',
+          drug: 'received.medicine.drugDescription'
         },
       },
       received: {
