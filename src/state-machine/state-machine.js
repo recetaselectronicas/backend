@@ -42,13 +42,9 @@ class StateMachine {
     })
   }
 
-  validateToConfirmed(prescription) {
-    return new Promise((resolve, reject) => {
-      // console.log("Hasta aca llegooooooo", prescription)
-      states.CONFIRMED.validate(prescription)
-      // TODO: Llamar al validador de reglas de negocio
-      return resolve()
-    })
+  async validateToConfirmed(prescription) {
+    states.CONFIRMED.validate(prescription)
+    await this.validateNorm(prescription, states.CONFIRMED.id)
   }
 
 
@@ -66,12 +62,9 @@ class StateMachine {
     })
   }
 
-  validateToExpired(prescription) {
-    return new Promise((resolve, reject) => {
-      states.EXPIRED.validate(prescription)
-      // TODO: Llamar al validador de reglas de negocio
-      return resolve()
-    })
+  async validateToExpired(prescription) {
+    states.EXPIRED.validate(prescription)
+    await this.validateNorm(prescription, states.EXPIRED.id)
   }
 
   toIncomplete(prescription) {
@@ -79,17 +72,11 @@ class StateMachine {
       prescription.status = states.INCOMPLETE.id
       return PrescriptionRepository.update(prescription)
     })
-      .catch((err) => {
-        console.error(err)
-      })
   }
 
-  validateToIncomplete(prescription) {
-    return new Promise((resolve, reject) => {
-      states.INCOMPLETE.validate(prescription)
-      // TODO: Llamar al validador de reglas de negocio
-      return resolve()
-    })
+  async validateToIncomplete(prescription) {
+    states.INCOMPLETE.validate(prescription)
+    await this.validateNorm(prescription, states.INCOMPLETE.id)
   }
 
   toReceive(prescription) {
@@ -107,12 +94,9 @@ class StateMachine {
     })
   }
 
-  validateToReceived(prescription) {
-    return new Promise((resolve, reject) => {
-      states.RECEIVED.validate(prescription)
-      // TODO: Llamar al validador de reglas de negocio
-      return resolve()
-    })
+  async validateToReceived(prescription) {
+    states.RECEIVED.validate(prescription)
+    await this.validateNorm(prescription, states.RECEIVED.id)
   }
 
   toPartiallyReceived(prescription) {
@@ -122,12 +106,9 @@ class StateMachine {
     })
   }
 
-  validateToPartiallyReceived(prescription) {
-    return new Promise((resolve, reject) => {
-      states.PARTIALLY_RECEIVED.validate(prescription)
-      // TODO: Llamar al validador de reglas de negocio
-      return resolve()
-    })
+  async validateToPartiallyReceived(prescription) {
+    states.PARTIALLY_RECEIVED.validate(prescription)
+    await this.validateNorm(prescription, states.PARTIALLY_RECEIVED.id)
   }
 
   toAudit(prescription) {
@@ -150,12 +131,9 @@ class StateMachine {
       })
   }
 
-  validateToAudited(prescription) {
-    return new Promise((resolve, reject) => {
-      states.AUDITED.validate(prescription)
-      // TODO: Llamar al validador de reglas de negocio
-      return resolve()
-    })
+  async validateToAudited(prescription) {
+    states.AUDITED.validate(prescription)
+    await this.validateNorm(prescription, states.AUDITED.id)
   }
 
   toRejected(prescription) {
@@ -166,12 +144,9 @@ class StateMachine {
       })
   }
 
-  validateToRejected(prescription) {
-    return new Promise((resolve, reject) => {
-      states.REJECTED.validate(prescription)
-      // TODO: Llamar al validador de reglas de negocio
-      return resolve()
-    })
+  async validateToRejected(prescription) {
+    states.REJECTED.validate(prescription)
+    await this.validateNorm(prescription, states.REJECTED.id)
   }
 
   toPartiallyRejected(prescription) {
@@ -182,12 +157,9 @@ class StateMachine {
       })
   }
 
-  validateToPartiallyRejected(prescription) {
-    return new Promise((resolve, reject) => {
-      states.PARTIALLY_REJECTED.validate(prescription)
-      // TODO: Llamar al validador de reglas de negocio
-      return resolve()
-    })
+  async validateToPartiallyRejected(prescription) {
+    states.PARTIALLY_REJECTED.validate(prescription)
+    await this.validateNorm(prescription, states.PARTIALLY_REJECTED.id)
   }
 }
 
