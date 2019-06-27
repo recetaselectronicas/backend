@@ -318,10 +318,10 @@ class PrescriptionRepository {
         `${medicineReceived}.id as medicine_received_id`
       )
       .table(ITEM)
-      .where('id_prescription', prescriptionId)
       .leftJoin(`${MEDICINE} as ${medicinePrescribed}`, `${ITEM}.id_medicine_prescribed`, `${medicinePrescribed}.id`)
       .leftJoin(`${MEDICINE} as ${medicineAudited}`, `${ITEM}.id_medicine_audited`, `${medicineAudited}.id`)
       .leftJoin(`${MEDICINE} as ${medicineReceived}`, `${ITEM}.id_medicine_received`, `${medicineReceived}.id`)
+      .where(`${ITEM}.id_prescription`, prescriptionId)
       .then(response => response.map(item => ({
         id: item.id,
         prescribed: {
