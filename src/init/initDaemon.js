@@ -7,7 +7,7 @@ const { StateMachine } = require('../state-machine/state-machine')
 const init = () => {
   logger.info(`Daemon its running `)
   setInterval(function () { checkIssued() }, 30000);
-  // setInterval(function () { checkExpired() }, 30000);
+  setInterval(function () { checkExpired() }, 30000);
 }
 
 const checkIssued = () => {

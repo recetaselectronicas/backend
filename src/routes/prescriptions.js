@@ -107,11 +107,11 @@ const toState = {
         throw errors.newForbiddenResourceException('No puede auditar la receta')
       }
       data.items.forEach((item) => {
-        const itemToAudit = prescription.items.find(i => i.id === item.id)
+        const itemToAudit = prescription.items.find(_item => _item.id === item.id)
         itemToAudit.audit(item.quantity, item.medicine)
       })
 
-      return StateMachine.toAudit(prescription)
+      return PrescriptionRepository.fillPrescriptionItemsData(prescription).then(_prescription => StateMachine.toAudit(_prescription))
     }
   }
 }

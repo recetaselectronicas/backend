@@ -2,7 +2,7 @@
 /* eslint-disable no-throw-literal */
 const array = require('lodash/array')
 const lang = require('lodash/lang')
-const { newNullOrEmptyError, generateFieldCause } = require('../utils/errors')
+const { newNullOrEmptyError, generateFieldCause, newInvalidValueError } = require('../utils/errors')
 const {
   getArrayNotEmptyError,
   getNotNullError,
@@ -11,7 +11,7 @@ const {
   getValueNotInListError,
   getBeNullError,
   getArrayDoesntMatchError,
-  getObjectDoesntMatchError
+  getObjectDoesntMatchError,
 } = require('../utils/errors')
 const { codes } = require('../codes/entities-codes')
 
@@ -49,8 +49,7 @@ const ISSUED = {
       getObjectDoesntMatchError(prescription, 'doctor.id', value => typeof value === 'number' && !!value, doctorEntity, doctorFields.id),
       getNotNullError(prescription.medicalInsurance, prescriptionEntity, prescriptionFields.medicalInsurance),
       getObjectDoesntMatchError(prescription, 'medicalInsurance.id', value => typeof value === 'number' && !!value, medicalInsuranceEntity, medicalInsuranceFields.id),
-      // TODO : descomentar esto
-      // getNotNullError(prescription.norm, prescriptionEntity, prescriptionFields.norm),
+      getNotNullError(prescription.norm, prescriptionEntity, prescriptionFields.norm),
       getArrayNotEmptyError(prescription.items, prescriptionEntity, prescriptionFields.items),
       ...getArrayDoesntMatchError(prescription.items, 'prescribed.quantity', value => typeof value === 'number' && !!value, itemEntity, itemFields.prescribed.quantity),
       ...getArrayDoesntMatchError(prescription.items, 'prescribed.medicine.id', value => typeof value === 'number' && !!value, itemEntity, itemFields.prescribed.medicine.id)
@@ -194,18 +193,23 @@ const AUDITED = {
     if (prescription.status === RECEIVED.id) {
       errors = RECEIVED.getErrors(prescription)
     }
-    // TODO: Agregar validaciones para pasar a INCOMPLETA
+    const receivedItems = prescription.items.filter(item => item.received.quantity || item.received.medicine.id || item.received.pharmacist.id)
+    const auditedItems = prescription.items.filter(item => item.audited.quantity || item.audited.medicine.id)
+    errors = array.concat(
+      errors,
+      [
+        getNotNullError(prescription.auditedDate, prescriptionEntity, prescriptionFields.auditedDate),
+        getDiferentValueError(auditedItems.length, receivedItems.length, prescriptionEntity, prescriptionFields.itemsQuantity, 'Prescription item audited quantity must be equal to item receive quantity'),
+        ...getArrayDoesntMatchError(receivedItems, 'audited.quantity', value => lang.isNumber(value) && !!value, itemEntity, itemFields.audited.quantity),
+        ...getArrayDoesntMatchError(receivedItems, 'audited.medicine.id', value => lang.isNumber(value) && !!value, itemEntity, itemFields.audited.medicine.id),
+        ...getArrayDoesntMatchError(receivedItems, 'audited.quantity', (value, index) => value === receivedItems[index].received.quantity, itemEntity, itemFields.audited.quantity, null, 'item audited quantity must be equal to item received quantity.'),
+        ...getArrayDoesntMatchError(receivedItems, 'audited.medicine.id', (value, index) => value === receivedItems[index].received.medicine.id, itemEntity, itemFields.audited.medicine.id, null, 'item audited medicine must be equal to item received medicine.'),
+      ]
+    )
     return errors
   },
   getSpecificErrors: (prescription) => {
-    const errors = [
-      // ...getArrayDoesntMatchError(prescription.items, 'received.quantity', value => typeof value === 'number' && !!value, itemEntity, itemFields.received.quantity),
-      // ...getArrayDoesntMatchError(prescription.items, 'received.medicine.id', value => typeof value === 'number' && !!value, itemEntity, itemFields.received.medicine.id),
-      // ...getArrayDoesntMatchError(prescription.items, 'received.pharmacist.id', value => typeof value === 'number' && !!value, itemEntity, itemFields.received.pharmacist.id),
-      // // ...getArrayDoesntMatchError(prescription.items, 'received.soldDate', value => typeof value === 'moment' && !!value, itemEntity, itemFields.received.soldDate),
-      // ...getArrayDoesntMatchError(prescription.items, 'audited.quantity', value => typeof value === 'number' && !!value, itemEntity, itemFields.audited.quantity),
-      // ...getArrayDoesntMatchError(prescription.items, 'audited.medicine.id', value => typeof value === 'number' && !!value, itemEntity, itemFields.audited.medicine.id)
-    ]
+    const errors = []
     return errors
   }
 }
@@ -222,7 +226,13 @@ const REJECTED = {
     if (prescription.status === RECEIVED.id) {
       errors = RECEIVED.getErrors(prescription)
     }
-    // TODO: Agregar validaciones para pasar a RECHAZADA
+    const auditedItems = prescription.items.filter(item => item.audited.quantity || item.audited.medicine.id)
+    if (auditedItems.length !== 0) {
+      if (auditedItems.some(item => item.audited.quantity === item.received.quantity && item.audited.medicine.id === item.received.medicine.id)) {
+        errors.push(newInvalidValueError('Some items where audited ok.', generateFieldCause(prescriptionEntity, prescriptionFields.items)))
+      }
+    }
+    errors.push(getNotNullError(prescription.auditedDate, prescriptionEntity, prescriptionFields.auditedDate))
     return errors
   },
   getSpecificErrors: (prescription) => {
@@ -243,7 +253,6 @@ const PARTIALLY_REJECTED = {
     if (prescription.status === RECEIVED.id) {
       errors = RECEIVED.getErrors(prescription)
     }
-    // TODO: Agregar validaciones para pasar a PARCIALMENTE_RECHAZADA
     return errors
   },
   getSpecificErrors: (prescription) => {
