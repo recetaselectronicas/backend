@@ -88,7 +88,7 @@ exports.seed = knex => knex(MEDICINE)
       id_potency: 10
     },
     {
-      description: 'Curaplus 500 mg x 15 U',
+      description: 'Quraplus 500 mg x 15 U',
       troquel: '123423-2',
       pharmaceutical_action: 'antitermico, descongestivo, mucolitico y antihistaminico',
       entry_date: '01/01/2000',
