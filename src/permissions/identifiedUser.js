@@ -57,7 +57,11 @@ const identifiedAffiliate = {
 const identifiedDoctor = {
   ...identifiedUser,
   type: userTypes.DOCTOR,
-  getFilters: filters.getDoctorAvailableFilters,
+  getFilters: async () => {
+    const muttedFilters = filters.getDoctorAvailableFilters()
+    muttedFilters.filters.institution.values = await InstitutionRepository.getAll().map(({ id, description }) => ({ id, value: description }))
+    return muttedFilters
+  },
   getQuery(params) {
     return filters.getDoctorQueryByParams(params, this.id)
   },
@@ -77,7 +81,11 @@ const identifiedDoctor = {
 const identifiedPharmacist = {
   ...identifiedUser,
   type: userTypes.PHARMACIST,
-  getFilters: filters.getPharmacistAvailableFilters,
+  getFilters: async () => {
+    const muttedFilters = filters.getPharmacistAvailableFilters()
+    muttedFilters.filters.institution.values = await InstitutionRepository.getAll().map(({ id, description }) => ({ id, value: description }))
+    return muttedFilters
+  },
   getQuery(params) {
     return filters.getPharmacistQueryByParams(params, this.id)
   },
@@ -97,7 +105,11 @@ const identifiedPharmacist = {
 const identifiedMedicalInsurance = {
   ...identifiedUser,
   type: userTypes.MEDICAL_INSURANCE,
-  getFilters: filters.getMedicalInsuranceAvailableFilters,
+  getFilters: async () => {
+    const muttedFilters = filters.getMedicalInsuranceAvailableFilters()
+    muttedFilters.filters.institution.values = await InstitutionRepository.getAll().map(({ id, description }) => ({ id, value: description }))
+    return muttedFilters
+  },
   getQuery(params) {
     return filters.getMedicalInsuranceQueryByParams(params, this.id)
   },
