@@ -82,12 +82,11 @@ class PrescriptionRepository {
 
     const plainPrescription = prescription.toPlainObject()
     const updatetablePrescription = {
-      // issued_date: dateTimeFormat.toDate(plainPrescription.issuedDate).toDate(),
       issued_date: plainPrescription.issuedDate,
       sold_date: plainPrescription.soldDate,
       audited_date: plainPrescription.auditedDate,
       id_state: plainPrescription.status,
-      reason: plainPrescription.reason
+      status_reason: plainPrescription.statusReason
     }
     const prescriptionId = plainPrescription.id
     try {
@@ -123,14 +122,14 @@ class PrescriptionRepository {
     }
   }
 
-  updateTo(_prescription, newStatus) {
-    const prescription = Prescription.fromObject(_prescription)
-    return knex(PRESCRIPTION)
-      .where('id', prescription.id)
-      .update({
-        id_state: newStatus
-      })
-  }
+  // updateTo(_prescription, newStatus) {
+  //   const prescription = Prescription.fromObject(_prescription)
+  //   return knex(PRESCRIPTION)
+  //     .where('id', prescription.id)
+  //     .update({
+  //       id_state: newStatus
+  //     })
+  // }
 
   count() {
     return new Promise((resolve, reject) => resolve(this.prescriptions.length))
@@ -151,6 +150,7 @@ class PrescriptionRepository {
         `${PRESCRIPTION}.soldDate`,
         `${PRESCRIPTION}.auditedDate`,
         `${PRESCRIPTION}.ttl`,
+        `${PRESCRIPTION}.status_reason`,
         `${PRESCRIPTION}.id_norm as norm`,
         `${AFFILIATE}.id as id_affiliate`,
         `${AFFILIATE}.code as code_affiliate`,
@@ -209,29 +209,6 @@ class PrescriptionRepository {
       })
   }
 
-  getByExample(_prescription) {
-    return new Promise((resolve, reject) => {
-      const searchedPrescription = Prescription.fromObject(_prescription)
-      const prescriptions = this.prescriptions.filter(
-        aPrescription => (searchedPrescription.issueDate && searchedPrescription.issueDate === aPrescription.issueDate)
-          || (searchedPrescription.soldDate && searchedPrescription.soldDate === aPrescription.soldDate)
-          || (searchedPrescription.auditedDate && searchedPrescription.auditedDate === aPrescription.auditedDate)
-          || (searchedPrescription.institution && searchedPrescription.institution.id === aPrescription.institution.id)
-          || (searchedPrescription.affiliate && searchedPrescription.affiliate.id === aPrescription.affiliate.id)
-          || (searchedPrescription.doctor && searchedPrescription.doctor.id === aPrescription.doctor.id)
-          || (searchedPrescription.medicalInsurance && searchedPrescription.medicalInsurance.id === aPrescription.medicalInsurance.id)
-      )
-      return resolve(prescriptions)
-    })
-  }
-
-  getByStatus(status) {
-    return new Promise((resolve, reject) => {
-      const prescriptions = this.prescriptions.filter(prescription => prescription.status === status)
-      return resolve(prescriptions)
-    })
-  }
-
   async getByQuery(query) {
     const { filters, orders } = query
     const { status, id, institution } = filters
@@ -246,6 +223,7 @@ class PrescriptionRepository {
           `${PRESCRIPTION}.issuedDate`,
           `${PRESCRIPTION}.soldDate`,
           `${PRESCRIPTION}.ttl`,
+          `${PRESCRIPTION}.status_reason`,
           `${PRESCRIPTION}.id_norm as norm`,
           `${AFFILIATE}.id as id_affiliate`,
           `${AFFILIATE}.code as code_affiliate`,
