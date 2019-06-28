@@ -23,6 +23,7 @@ pharmacistAvailableFilters.filters.soldDateRange = lang.cloneDeep(prescriptionFi
 pharmacistAvailableFilters.filters.institution = lang.cloneDeep(prescriptionFilters.institution)
 pharmacistAvailableFilters.filters.medicalInsurance = lang.cloneDeep(prescriptionFilters.medicalInsurance)
 pharmacistAvailableFilters.filters.medicine = lang.cloneDeep(prescriptionFilters.medicine)
+pharmacistAvailableFilters.orders = lang.cloneDeep(prescriptionFilters.orders)
 pharmacistAvailableFilters.orders.values.id = lang.cloneDeep(prescriptionFilters.orders.values.id)
 pharmacistAvailableFilters.orders.values.issuedDate = lang.cloneDeep(prescriptionFilters.orders.values.issuedDate)
 pharmacistAvailableFilters.orders.values.soldDate = lang.cloneDeep(prescriptionFilters.orders.values.soldDate)

@@ -211,8 +211,9 @@ class PrescriptionRepository {
 
   async getByQuery(query) {
     const { filters, orders } = query
-    const { status, id, institution } = filters
+    const { status, id, institution, fromIssueDate, toIssueDate } = filters
     const { affiliate, doctor, medicalInsurance, pharmacist } = filters
+    console.log("hola", query)
     const { orderKey, sortKey } = orders
     try {
       const knexQuery = knex
@@ -265,9 +266,17 @@ class PrescriptionRepository {
       if (pharmacist) {
         knexQuery.whereRaw('exists (select \'x\' from item where item.id_prescription = prescription.id and item.id_pharmacist = ?)', [pharmacist])
       }
+      if (fromIssueDate) {
+        knexQuery.where(`${PRESCRIPTION}.issued_date`, '>=', fromIssueDate)
+      }
+      if (toIssueDate) {
+        knexQuery.where(`${PRESCRIPTION}.issued_date`, '<=', toIssueDate)
+      }
+
       if (orderKey && sortKey) {
         knexQuery.orderBy(orderKey, sortKey)
       }
+
 
       const prescriptions = await knexQuery
       return await Promise.all(prescriptions.map(pres => this.getDomainPrescription(pres).then(pres2 => this.fillPrescriptionData(pres2))))
