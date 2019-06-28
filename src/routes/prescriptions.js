@@ -95,6 +95,9 @@ const toState = {
       }
       data.items.forEach((item) => {
         const itemToReceive = prescription.items.find(_item => _item.id === item.id)
+        if (itemToReceive.received.medicine.id) {
+          throw errors.newEntityAlreadyCreated('No puede recepcionar el item. Ya fue recepcionado')
+        }
         itemToReceive.receive(item.quantity, moment(), item.medicine, { id: data.identifiedUser.id })
       })
 

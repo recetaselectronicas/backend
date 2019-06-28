@@ -41,5 +41,44 @@ exports.seed = knex => knex(PATIENT)
       address: 'brasil 3333',
       nationality: 'VENEZOLANO',
       nic_number: '40590213'
+    },
+    {
+      user_name: 'javete',
+      password: 1234,
+      contact_number: '23213123',
+      name: 'Javier',
+      surname: 'Devotox',
+      birth_date: '08/11/1996',
+      gender: 'M',
+      email: 'javier@gmail.com',
+      address: 'Jase 12',
+      nationality: 'CHILENO',
+      nic_number: '1234712'
+    },
+    {
+      user_name: 'marina',
+      password: 1234,
+      contact_number: '2342345',
+      name: 'Marina',
+      surname: 'Flores',
+      birth_date: '01/01/1987',
+      gender: 'F',
+      email: 'marina@mail.com',
+      address: 'brasil 3333',
+      nationality: 'ARGENTINO',
+      nic_number: '3424352'
+    },
+    {
+      user_name: 'gasti',
+      password: 1234,
+      contact_number: '3235433',
+      name: 'Gaston',
+      surname: 'Mastri',
+      birth_date: '01/01/1932',
+      gender: 'M',
+      email: 'gasti.mastri@gmail.com',
+      address: 'pepe 54',
+      nationality: 'VENEZOLANO',
+      nic_number: '40590213'
     }
   ]))

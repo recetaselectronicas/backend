@@ -61,9 +61,13 @@ module.exports = {
       norm1 = normalizeNorm(norm1)
       norm2 = normalizeNorm(norm2)
       norm3 = normalizeNorm(norm3)
-      await NormRepository.create(norm1)
-      await NormRepository.create(norm2)
-      await NormRepository.create(norm3)
+      try {
+        await NormRepository.create(norm1)
+        await NormRepository.create(norm2)
+        await NormRepository.create(norm3)
+      } catch (e) {
+        logger.error('Error while generating norms data: ', e)
+      }
       logger.info('All norms generated ok')
     } else {
       logger.info('Norm`s bootstrap not executed. If you want to execute it, go to config.js and set executeBootstrap.mongo to true')

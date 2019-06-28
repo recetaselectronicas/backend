@@ -2,9 +2,9 @@ const { PHARMACIST } = require('../src/repositories/tablesNames')
 
 exports.up = knex => knex.schema.withSchema('recetas').createTable(PHARMACIST, (table) => {
   table.increments('id')
-  table.string('entry_date', 255).notNullable()
-  table.string('leaving_date', 255)
-  table.string('birth_date', 255).notNullable()
+  table.datetime('entry_date').notNullable()
+  table.datetime('leaving_date')
+  table.date('birth_date', 255).notNullable()
   table.string('name', 255).notNullable()
   table.string('last_name', 255).notNullable()
   table.string('user_name', 255).notNullable()

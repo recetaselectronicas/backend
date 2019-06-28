@@ -6,7 +6,13 @@ exports.seed = knex => knex(COMPOSITION)
     { id_medicine: 1, id_vademecum: 2 },
     { id_medicine: 2, id_vademecum: 2 },
     { id_medicine: 3, id_vademecum: 2 },
+    { id_medicine: 4, id_vademecum: 2 },
+    { id_medicine: 5, id_vademecum: 2 },
+    { id_medicine: 6, id_vademecum: 2 },
     { id_medicine: 1, id_vademecum: 3 },
     { id_medicine: 2, id_vademecum: 3 },
-    { id_medicine: 3, id_vademecum: 3 }
+    { id_medicine: 3, id_vademecum: 3 },
+    { id_medicine: 4, id_vademecum: 3 },
+    { id_medicine: 5, id_vademecum: 3 },
+    { id_medicine: 6, id_vademecum: 3 },
   ]))

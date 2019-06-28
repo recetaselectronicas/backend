@@ -8,9 +8,9 @@ exports.up = knex => knex.schema
     table.string('password', 255).notNullable()
     table.string('name', 255).notNullable()
     table.string('last_name', 255).notNullable()
-    table.string('birth_date', 255).notNullable()
-    table.string('entry_date', 255).notNullable()
-    table.string('leaving_date', 255)
+    table.date('birth_date').notNullable()
+    table.datetime('entry_date').notNullable()
+    table.datetime('leaving_date')
     table.string('contact_number', 255).notNullable()
     table.string('nationality', 255).notNullable()
     table.string('address', 255).notNullable()
@@ -34,9 +34,9 @@ exports.up = knex => knex.schema
     table.integer('id_medical_insurance').unsigned()
     table.foreign('id_medical_insurance').references(`${MEDICAL_INSURANCE}.id`)
 
-    table.string('entry_date', 255).notNullable()
-    table.string('leaving_date', 255).notNullable()
-    table.primary(['id_doctor', 'id_medical_insurance', 'entry_date', 'leaving_date'])
+    table.datetime('entry_date').notNullable()
+    table.datetime('leaving_date')
+    table.primary(['id_doctor', 'id_medical_insurance', 'entry_date'])
     return table
   })
 

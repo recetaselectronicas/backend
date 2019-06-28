@@ -19,6 +19,7 @@ class Prescription {
     this.doctor = null
     this.medicalInsurance = null
     this.status = null
+    this.statusReason = null
     this.norm = null
     this.items = []
   }
@@ -81,6 +82,7 @@ class Prescription {
       doctor: this.doctor && this.doctor.toPlainObject(),
       medicalInsurance: this.medicalInsurance && this.medicalInsurance.toPlainObject(),
       status: this.status,
+      statusReason: this.statusReason,
       norm: this.norm,
       items: this.items.length ? this.items.map(item => item.toPlainObject()) : this.items,
     })
@@ -108,6 +110,7 @@ class Prescription {
     prescription.setDoctor(object.doctor)
     prescription.setMedicalInsurance(object.medicalInsurance)
     prescription.status = object.status || prescription.status
+    prescription.statusReason = object.statusReason || prescription.statusReason
     prescription.norm = object.norm || prescription.norm
     if (object.items && object.items.length) {
       object.items.forEach(item => prescription.addItem(item))

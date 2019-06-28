@@ -4,10 +4,9 @@ const {
 
 exports.up = knex => knex.schema.withSchema('recetas').createTable(PRESCRIPTION, (table) => {
   table.increments('id')
-  // table.string('issued_date', 50).notNullable()
   table.datetime('issued_date').notNullable()
-  table.string('sold_date', 50)
-  table.string('audited_date', 50)
+  table.datetime('sold_date')
+  table.datetime('audited_date')
   table.boolean('prolonged_treatment')
   table.string('diagnosis', 255)
   table.integer('ttl').notNullable()
@@ -17,6 +16,7 @@ exports.up = knex => knex.schema.withSchema('recetas').createTable(PRESCRIPTION,
   table.string('id_state').notNullable()
   table.string('id_norm', 255).notNullable()
   table.integer('id_institution').unsigned()
+  table.string('status_reason', 255)
 
   table.foreign('id_medical_insurance').references(`${MEDICAL_INSURANCE}.id`)
   table.foreign('id_affiliate').references(`${AFFILIATE}.id`)

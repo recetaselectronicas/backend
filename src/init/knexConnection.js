@@ -1,6 +1,9 @@
+/* eslint-disable func-names */
 const moment = require('moment')
 const initKnex = require('knex')
 const { snakeCase } = require('lodash')
+const addKnexHooks = require('./knexHooks')
+const { dateFormat, dateTimeFormat, formats } = require('../utils/utils')
 
 const toCamel = s => s.replace(/([-_][a-z])/gi, $1 => $1
   .toUpperCase()
@@ -32,7 +35,7 @@ const keysToCamel = function (o) {
   return o
 }
 
-module.exports = initKnex({
+const knex = initKnex({
   client: 'mysql',
   connection: {
     host: '127.0.0.1',
@@ -44,7 +47,10 @@ module.exports = initKnex({
         return (field.string() === '1')
       }
       if (field.type === 'DATETIME') {
-        return moment(field.string()).format('DD/MM/YYYY HH:mm')
+        return moment(field.string()).format(formats.dateTimeFormat)
+      }
+      if (field.type === 'DATE') {
+        return moment(field.string()).format(formats.dateFormat)
       }
       return next()
     }
@@ -57,3 +63,8 @@ module.exports = initKnex({
   },
   wrapIdentifier: (value, origImpl) => origImpl(snakeCase(value)),
 })
+
+// Agrega hooks para cuando se hace un insert o update se transformen todas las fechas de string a Dates
+addKnexHooks(knex)
+
+module.exports = knex

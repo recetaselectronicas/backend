@@ -44,6 +44,20 @@ exports.seed = knex => knex(PHARMACIST)
       address: 'Menro 932',
       email: 'ajohnson@gmail.com',
       matriculation: '17347823'
+    },
+    {
+      entry_date: '01/01/2000',
+      leaving_date: '',
+      birth_date: '01/01/1989',
+      name: 'Pepe',
+      last_name: 'Josefo',
+      user_name: 'pepe',
+      password: '1234',
+      contact_number: '6834934',
+      nationality: 'VENEZOLANO',
+      address: 'Calle falsa 123',
+      email: 'pepe@gmail.com',
+      matriculation: '89394645'
     }
   ]))
 

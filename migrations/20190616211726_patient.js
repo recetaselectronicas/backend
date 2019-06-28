@@ -7,7 +7,7 @@ exports.up = knex => knex.schema.withSchema('recetas').createTable(PATIENT, (tab
   table.string('contact_number', 255)
   table.string('name', 255).notNullable()
   table.string('surname', 255).notNullable()
-  table.string('birth_date', 255).notNullable()
+  table.date('birth_date').notNullable()
   table.string('gender', 255).notNullable()
   table.string('email', 255).notNullable()
   table.string('address', 255).notNullable()

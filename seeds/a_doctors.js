@@ -1,6 +1,7 @@
 const { DOCTOR } = require('../src/repositories/tablesNames')
+const addKnexHooks = require('../src/init/knexHooks')
 
-exports.seed = knex => knex(DOCTOR)
+exports.seed = knex => addKnexHooks(knex)(DOCTOR)
   .del()
   .then(() => knex(DOCTOR).insert([
     {
