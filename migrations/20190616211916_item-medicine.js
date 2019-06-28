@@ -14,8 +14,8 @@ const {
   })
 // tabla de cobertura : Cobertura: (fecha_desde, id_vademecum, id_plan, fecha_hasta)
   .createTable(COVERAGE, (table) => {
-    table.string('entry_date', 255).notNullable()
-    table.string('leaving_date', 255)
+    table.datetime('entry_date').notNullable()
+    table.datetime('leaving_date')
     table.integer('id_vademecum').unsigned()
     table.foreign('id_vademecum').references(`${VADEMECUM}.id`)
     table.integer('id_plan').unsigned()
@@ -30,8 +30,8 @@ const {
     table.string('troquel', 255).notNullable()
     table.string('pharmaceutical_action', 255).notNullable()
     table.string('description', 255).notNullable()
-    table.string('entry_date', 255).notNullable()
-    table.string('leaving_date', 255)
+    table.datetime('entry_date').notNullable()
+    table.datetime('leaving_date')
     table.string('bar_code', 255).notNullable()
     table.integer('id_brand').unsigned().notNullable()
     table.integer('id_size').unsigned().notNullable()
@@ -75,7 +75,7 @@ const {
     table.integer('received_quantity').unsigned()
     table.integer('id_pharmacist').unsigned()
     table.foreign('id_pharmacist').references(`${PHARMACIST}.id`)
-    table.string('sold_date', 255)
+    table.datetime('sold_date')
 
     // medicamentos auditados
     table.integer('id_medicine_audited').unsigned()

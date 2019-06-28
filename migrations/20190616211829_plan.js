@@ -3,8 +3,8 @@ const { PLAN, MEDICAL_INSURANCE } = require('../src/repositories/tablesNames')
 exports.up = knex => knex.schema.withSchema('recetas').createTable(PLAN, (table) => {
   table.increments('id')
   table.string('description', 255).notNullable()
-  table.string('entry_date', 255).notNullable()
-  table.string('leaving_date', 255)
+  table.datetime('entry_date').notNullable()
+  table.datetime('leaving_date')
   table.integer('percentage')
   table.integer('id_medical_insurance').unsigned()
 

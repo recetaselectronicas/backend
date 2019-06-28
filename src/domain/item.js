@@ -1,4 +1,6 @@
 const { dateTimeFormat } = require('../utils/utils')
+const { Medicine } = require('./medicine')
+const { Pharmacist } = require('./pharmacist')
 
 class Item {
   constructor() {
@@ -59,17 +61,17 @@ class Item {
       id: this.id,
       prescribed: {
         quantity: this.prescribed.quantity,
-        medicine: this.prescribed.medicine
+        medicine: Medicine.fromObject(this.prescribed.medicine).toPlainObject()
       },
       received: {
         quantity: this.received.quantity,
         soldDate: this.getSoldDate(),
-        medicine: this.received.medicine,
-        pharmacist: this.received.pharmacist
+        medicine: Medicine.fromObject(this.received.medicine).toPlainObject(),
+        pharmacist: Pharmacist.fromObject(this.received.pharmacist).toPlainObject()
       },
       audited: {
         quantity: this.audited.quantity,
-        medicine: this.audited.medicine
+        medicine: Medicine.fromObject(this.audited.medicine).toPlainObject()
       }
     })
   }

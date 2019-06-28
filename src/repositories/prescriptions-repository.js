@@ -39,7 +39,8 @@ class PrescriptionRepository {
     prescription = await this.fillPrescriptionData(prescription, true)
     const plainPrescription = prescription.toPlainObject()
     const insertablePrescription = {
-      issued_date: dateTimeFormat.toDate(plainPrescription.issuedDate).toDate(),
+      // issued_date: dateTimeFormat.toDate(plainPrescription.issuedDate).toDate(),
+      issued_date: plainPrescription.issuedDate,
       sold_date: plainPrescription.soldDate,
       audited_date: plainPrescription.auditedDate,
       prolonged_treatment: plainPrescription.prolongedTreatment,
@@ -81,8 +82,8 @@ class PrescriptionRepository {
 
     const plainPrescription = prescription.toPlainObject()
     const updatetablePrescription = {
-      issued_date: dateTimeFormat.toDate(plainPrescription.issuedDate).toDate(),
-      // plainPrescription.issuedDate,
+      // issued_date: dateTimeFormat.toDate(plainPrescription.issuedDate).toDate(),
+      issued_date: plainPrescription.issuedDate,
       sold_date: plainPrescription.soldDate,
       audited_date: plainPrescription.auditedDate,
       id_state: plainPrescription.status,
@@ -182,10 +183,10 @@ class PrescriptionRepository {
     }
 
     const queryReponse = await knexQuery.where(`${PRESCRIPTION}.id`, id).first()
-    const prescription = await this.getDomainPrescription(queryReponse)
-    if (!prescription) {
+    if (!queryReponse) {
       throw newNotFoundError(`No prescription was found with id ${id}`)
     }
+    const prescription = await this.getDomainPrescription(queryReponse)
 
     return this.fillPrescriptionData(prescription, false)
   }
