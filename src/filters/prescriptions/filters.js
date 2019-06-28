@@ -53,7 +53,7 @@ module.exports = {
     keyTo: 'toIssueDate',
     getMatchingValues(key, value) {
       const formatedDate = moment(value, this.format)
-      return formatedDate.isValid() && value
+      return formatedDate.isValid() && formatedDate.toDate()
     },
     format: formats.dateTimeFormat
   },

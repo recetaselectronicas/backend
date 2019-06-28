@@ -22,6 +22,7 @@ doctorAvailableFilters.filters.issueDateRange = lang.cloneDeep(prescriptionFilte
 doctorAvailableFilters.filters.institution = lang.cloneDeep(prescriptionFilters.institution)
 doctorAvailableFilters.filters.medicalInsurance = lang.cloneDeep(prescriptionFilters.medicalInsurance)
 doctorAvailableFilters.filters.medicine = lang.cloneDeep(prescriptionFilters.medicine)
+doctorAvailableFilters.orders = lang.cloneDeep(prescriptionFilters.orders)
 doctorAvailableFilters.orders.values.id = lang.cloneDeep(prescriptionFilters.orders.values.id)
 doctorAvailableFilters.orders.values.issuedDate = lang.cloneDeep(prescriptionFilters.orders.values.issuedDate)
 

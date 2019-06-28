@@ -26,6 +26,7 @@ medicalInsuranceAvailableFilters.filters.doctor = lang.cloneDeep(prescriptionFil
 medicalInsuranceAvailableFilters.filters.affiliate = lang.cloneDeep(prescriptionFilters.affiliate)
 medicalInsuranceAvailableFilters.filters.pharmacist = lang.cloneDeep(prescriptionFilters.pharmacist)
 medicalInsuranceAvailableFilters.filters.medicine = lang.cloneDeep(prescriptionFilters.medicine)
+medicalInsuranceAvailableFilters.orders = lang.cloneDeep(prescriptionFilters.orders)
 medicalInsuranceAvailableFilters.orders.values.id = lang.cloneDeep(prescriptionFilters.orders.values.id)
 medicalInsuranceAvailableFilters.orders.values.issuedDate = lang.cloneDeep(prescriptionFilters.orders.values.issuedDate)
 medicalInsuranceAvailableFilters.orders.values.soldDate = lang.cloneDeep(prescriptionFilters.orders.values.soldDate)
