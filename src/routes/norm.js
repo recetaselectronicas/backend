@@ -11,14 +11,14 @@ const permissions = require('../permissions/identifiedUser')
 // es la norma que se quiere ver o crear
 
 
-const secureMiddleware = (req, res, next) => {
-  req.identifiedUser = permissions.getIdentifiedMedicalInsurance(1)
-  return next()
-}
+// const secureMiddleware = (req, res, next) => {
+//   req.identifiedUser = permissions.getIdentifiedMedicalInsurance(1)
+//   return next()
+// }
 
 // Agregar la validacion de integridad de la norma
 // Probar un armado con una receta dummy
-router.post('/', secureMiddleware, async (req, res, next) => {
+router.post('/', async (req, res, next) => {
   const norm = req.body
   const { identifiedUser } = req
   try {
@@ -36,7 +36,7 @@ router.post('/', secureMiddleware, async (req, res, next) => {
   }
 })
 
-router.get('/actual', secureMiddleware, async (req, res, next) => {
+router.get('/actual', async (req, res, next) => {
   const { identifiedUser } = req
   try {
     const norm = await NormRepository.getCurrentNormByMedicalInsuranceId(identifiedUser.id)

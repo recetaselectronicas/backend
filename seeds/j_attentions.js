@@ -6,7 +6,7 @@ exports.seed = knex => knex(ATTENTION)
     {
       entry_date: '01/01/2000',
       leaving_date: '',
-      id_specialty: 1,
+      id_specialty: 7,
       id_doctor: 1
     },
     {

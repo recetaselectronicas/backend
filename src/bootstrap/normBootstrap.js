@@ -70,7 +70,7 @@ module.exports = {
       }
       logger.info('All norms generated ok')
     } else {
-      logger.info('Norm`s bootstrap not executed. If you want to execute it, go to config.js and set executeBootstrap.mongo to true')
+      logger.warn('Norm`s bootstrap not executed. If you want to execute it, go to config.js and set executeBootstrap.mongo to true')
     }
   }
 }

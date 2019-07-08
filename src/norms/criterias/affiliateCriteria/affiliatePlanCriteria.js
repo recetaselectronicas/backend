@@ -2,7 +2,10 @@ const { AffiliateCriteria } = require('./affiliateCriteria')
 
 class AffiliatePlanCriteria extends AffiliateCriteria {
   getAttributeValue() {
-    return this.prescription.affiliate.plan.description
+    if (this.prescription.affiliate.id) {
+      return this.prescription.affiliate.plan.description
+    }
+    return ''
   }
 
   getAttribute() {

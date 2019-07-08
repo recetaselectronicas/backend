@@ -51,7 +51,35 @@ class AffiliateRepository {
 
   getById(id) {
     return knex
-      .select()
+      .select(
+        `${AFFILIATE}.id`,
+        `${AFFILIATE}.from_date`,
+        `${AFFILIATE}.to_date`,
+        `${AFFILIATE}.code`,
+        `${AFFILIATE}.category`,
+        `${PATIENT}.id as id_patient`,
+        `${PATIENT}.user_name`,
+        `${PATIENT}.password`,
+        `${PATIENT}.contact_number`,
+        `${PATIENT}.name`,
+        `${PATIENT}.surname`,
+        `${PATIENT}.birth_date`,
+        `${PATIENT}.gender`,
+        `${PATIENT}.email`,
+        `${PATIENT}.address`,
+        `${PATIENT}.nationality`,
+        `${PATIENT}.nic_number`,
+        `${PATIENT}.nic_issue_date`,
+        `${PATIENT}.nic_type`,
+        `${PATIENT}.nic_exemplary`,
+        `${PATIENT}.nic_photo`,
+        `${PLAN}.id as id_plan`,
+        `${PLAN}.description`,
+        `${PLAN}.entry_date`,
+        `${PLAN}.leaving_date`,
+        `${PLAN}.percentage`,
+        `${PLAN}.id_medical_insurance`
+      )
       .from(AFFILIATE)
       .innerJoin(PATIENT, `${AFFILIATE}.id_patient`, `${PATIENT}.id`)
       .innerJoin(PLAN, `${AFFILIATE}.id_plan`, `${PLAN}.id`)
@@ -68,7 +96,7 @@ class AffiliateRepository {
         plan.entryDate = res.entryDate
         plan.leavingDate = res.leavingDate
         const affiliate = Affiliate.fromObject(res)
-        affiliate.plan = Plan.fromObject(res)
+        affiliate.plan = Plan.fromObject(plan)
         return affiliate
       })
       .catch((error) => {

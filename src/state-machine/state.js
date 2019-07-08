@@ -119,7 +119,6 @@ const PARTIALLY_RECEIVED = {
   getErrors: (prescription) => {
     // Si viene de PARTIALLY_RECEIVED se va a ejecutar este mismo código
     const receivedItems = prescription.items.filter(item => item.received.quantity || item.received.medicine.id || item.received.pharmacist.id)
-    // console.log(JSON.stringify(receivedItems, null, 4))
     const errors = array.concat(
       CONFIRMED.getErrors(prescription),
       [

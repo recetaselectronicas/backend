@@ -259,7 +259,7 @@ const CRITERIA_METADATA = [
       {
         attribute: 'SPECIALTY',
         value: 'Especialidad',
-        type: dataTypes.typed
+        type: dataTypes.code
       },
     ]
   },

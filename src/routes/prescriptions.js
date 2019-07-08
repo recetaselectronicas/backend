@@ -1,12 +1,12 @@
 const express = require('express')
 
 const router = express.Router()
+const moment = require('moment')
 const { Prescription } = require('../domain/prescription')
 const { StateMachine } = require('../state-machine/state-machine')
 const { newBadRequestError, isBusinessError } = require('../utils/errors')
 const { PrescriptionRepository } = require('../repositories/prescriptions-repository')
 const errors = require('../utils/errors')
-const moment = require('moment')
 
 router.post('/', async (req, res, next) => {
   const { logger } = req.app.locals

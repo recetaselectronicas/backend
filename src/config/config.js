@@ -1,7 +1,11 @@
 const config = {
   executeBootstrap: {
-    mongo: true,
+    mongo: false,
     relational: false
+  },
+  executeDaemon: {
+    issued: false,
+    expired: false
   },
   conections: {
     mongo: {

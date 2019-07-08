@@ -39,7 +39,6 @@ class PrescriptionRepository {
     prescription = await this.fillPrescriptionData(prescription, true)
     const plainPrescription = prescription.toPlainObject()
     const insertablePrescription = {
-      // issued_date: dateTimeFormat.toDate(plainPrescription.issuedDate).toDate(),
       issued_date: plainPrescription.issuedDate,
       sold_date: plainPrescription.soldDate,
       audited_date: plainPrescription.auditedDate,
@@ -196,7 +195,7 @@ class PrescriptionRepository {
       .select(`${PRESCRIPTION}.id`)
       .table(PRESCRIPTION)
       .where(`${PRESCRIPTION}.id_state`, states.ISSUED.id)
-      .andWhereRaw(`${PRESCRIPTION}.issued_date < SUBTIME(SYSDATE(), "00:02:00")`)
+      .andWhereRaw(`${PRESCRIPTION}.issued_date < SUBTIME(SYSDATE(), "00:01:00")`)
   }
 
   getPrescriptionsToExpirate() {
@@ -213,7 +212,6 @@ class PrescriptionRepository {
     const { filters, orders } = query
     const { status, id, institution, fromIssueDate, toIssueDate } = filters
     const { affiliate, doctor, medicalInsurance, pharmacist } = filters
-    console.log("hola", query)
     const { orderKey, sortKey } = orders
     try {
       const knexQuery = knex

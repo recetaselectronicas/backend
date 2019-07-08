@@ -8,5 +8,6 @@ exports.seed = knex => knex(SPECIALITY)
     { description: 'Cirujano' },
     { description: 'Psicologo' },
     { description: 'Oncologo' },
-    { description: 'Cardiologo' }
+    { description: 'Cardiologo' },
+    { description: 'Endocrinólogo' }
   ]))
