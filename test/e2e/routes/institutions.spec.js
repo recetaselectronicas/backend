@@ -2,6 +2,15 @@ const request = require('supertest')
 const { init } = require('../../../src/init/initServer')
 const { InstitutionRepository } = require('../../../src/repositories/institutionRepository')
 const { Institution } = require('../../../src/domain/institution')
+const session = require('../../../src/repositories/sessionRepository')
+
+session.SessionRepository = {
+  validateAndGetSession: () => ({
+    toUserData: () => ({
+      userType: 'affiliate', id: 1, username: 'jose'
+    })
+  })
+}
 
 const app = init()
 app.locals.logger = { info: () => {}, error: () => {} }
@@ -27,7 +36,7 @@ describe('when do a get in /institutions', () => {
 
     it('return all available the institutions', () => request(app)
       .get('/institutions')
-      .set('Authorization', 'Bearer {"type":"affiliate", "id": "1"}')
+      .set('Authorization', 'Bearer xcvbnmzxcvbnm')
       .expect(200)
       .then((res) => {
         const firstInstitution = res.body[0]
@@ -47,7 +56,7 @@ describe('when do a get in /institutions', () => {
 
     it('respond with 500 ', () => request(app)
       .get('/institutions')
-      .set('Authorization', 'Bearer {"type":"affiliate", "id": "1"}')
+      .set('Authorization', 'Bearer zxcvbnmzxcvbnm')
       .expect(500))
   })
 })
