@@ -25,6 +25,8 @@
     "class-methods-use-this": "off",
     "comma-dangle": "off",
     "eol-last": "off",
-    "no-plusplus": "off"
+    "no-plusplus": "off",
+    "object-curly-newline": "off",
+    "no-underscore-dangle": "off"
   }
 }

@@ -61,7 +61,12 @@ const knex = initKnex({
     }
     return keysToCamel(result)
   },
-  wrapIdentifier: (value, origImpl) => origImpl(snakeCase(value)),
+  wrapIdentifier: (value, origImpl) => {
+    if (value !== 'knex_migrations_lock' && value !== 'knex_migrations' && value !== '*') {
+      return origImpl(snakeCase(value))
+    }
+    return origImpl(value)
+  }
 })
 
 // Agrega hooks para cuando se hace un insert o update se transformen todas las fechas de string a Dates

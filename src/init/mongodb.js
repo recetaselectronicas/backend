@@ -7,12 +7,15 @@ const { host } = config.conections.mongo
 const { port } = config.conections.mongo
 const url = `mongodb://${host}:${port}`
 const prescriptionDBName = 'prescriptions'
+const normsCollection = 'norms'
+const sessionsCollection = 'sessions'
 
 
 const mongoClient = {
   client: null,
   prescriptionDB: null,
   normsCollection: null,
+  sessionsCollection: null,
   ObjectID
 }
 
@@ -24,18 +27,23 @@ const initMongoDB = () => new Promise((resolve, reject) => {
       return resolve()
     }
     mongoClient.prescriptionDB = cli.db(prescriptionDBName)
-    mongoClient.normsCollection = mongoClient.prescriptionDB.collection('norms')
+    mongoClient.normsCollection = mongoClient.prescriptionDB.collection(normsCollection)
+    mongoClient.sessionsCollection = mongoClient.prescriptionDB.collection(sessionsCollection)
     mongoClient.client = cli
+    const promises = []
+    promises.push(mongoClient.sessionsCollection.deleteMany({}))
     if (config.executeBootstrap.mongo) {
-      mongoClient.normsCollection.deleteMany({})
-        .then(() => {
-          logger.info('MongoDB initialized OK')
-          return resolve()
-        })
-    } else {
-      logger.info('MongoDB initialized OK')
-      return resolve()
+      promises.push(mongoClient.normsCollection.deleteMany({}))
     }
+    return Promise.all(promises)
+      .then(() => {
+        logger.info('MongoDB initialized OK')
+        return resolve()
+      })
+      .catch((error) => {
+        logger.error('Error while initializing mongo collections', error)
+        return resolve()
+      })
   })
 })
 

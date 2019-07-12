@@ -1,7 +1,7 @@
 const config = {
   executeBootstrap: {
     mongo: false,
-    relational: false
+    mysql: false
   },
   executeDaemon: {
     issued: false,

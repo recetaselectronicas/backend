@@ -47,21 +47,6 @@ class MedicalInsuranceRepository {
         throw newNotFoundError(`No medicalInsurance was found with id ${id}`)
       })
   }
-
-  login(username, password) {
-    return knex
-      .select()
-      .from(MEDICAL_INSURANCE)
-      .where(`${MEDICAL_INSURANCE}.user_name`, username)
-      .andWhere(`${MEDICAL_INSURANCE}.password`, password)
-      .first()
-      .then((response) => {
-        if (!response) {
-          throw newInvalidUsernameOrPasswordError('Usuario y/o contraseña invalido')
-        }
-        return response
-      })
-  }
 }
 
 module.exports = {

@@ -4,8 +4,9 @@ const router = express.Router()
 const { MedicalInsuranceRepository } = require('../repositories/medicalInsuranceRepository')
 const { DoctorRepository } = require('../repositories/doctorRepository')
 
-router.get('/:id/medical-insurances', async (req, res, next) => {
-  const doctorId = req.params.id
+router.get('/medical-insurances', async (req, res, next) => {
+  const { identifiedUser } = req
+  const doctorId = identifiedUser.id
   try {
     const medicalInsurances = await MedicalInsuranceRepository.getMedicalInsuranceByMedic(doctorId)
     return res.status(200).send(medicalInsurances.map(medicalInsurance => medicalInsurance.toPlainObject()))
