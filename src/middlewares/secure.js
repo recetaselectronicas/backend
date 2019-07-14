@@ -10,7 +10,7 @@ module.exports = async (req, res, next) => {
     }
     const session = await SessionRepository.validateAndGetSession({ token, refresh: true })
     const userData = session.toUserData()
-    const identifiedUser = getIdentifiedUserBy(userData.userType, Number.parseInt(userData.id, 10))
+    const identifiedUser = getIdentifiedUserBy(userData.userType, Number.parseInt(userData.id, 10), userData.username)
     req.identifiedUser = identifiedUser
 
     return next()

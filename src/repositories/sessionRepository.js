@@ -33,9 +33,9 @@ const invalidUserOrPassError = 'invalid username or password'
 class SessionRepository {
   constructor() {
     this.authentications = {
-      [authenticationTypes.USR_PASS]: this.checkUsrPassAuthentication,
-      [authenticationTypes.TWO_FACTOR]: this.checkTwoFactorAuthentication,
-      [authenticationTypes.DNI]: this.checkDNIAuthentication
+      [authenticationTypes.USR_PASS]: this.checkAndGetUsrPassAuthentication,
+      [authenticationTypes.TWO_FACTOR]: this.checkAndGetTwoFactorAuthentication,
+      [authenticationTypes.DNI]: this.checkAndGetDNIAuthentication
     }
   }
 
@@ -81,11 +81,11 @@ class SessionRepository {
     return Session.fromJson(session)
   }
 
-  checkAndGetAuthentication(authenticationType, userType, data) {
+  async checkAndGetAuthentication(authenticationType, userType, data) {
     if (!this.authentications[authenticationType]) {
       throw new Error('Wrong authenticationType given')
     }
-    this.authentications[authenticationType](userType, data)
+    return this.authentications[authenticationType](userType, data)
   }
 
   async checkAndGetUsrPassAuthentication(userType, data) {
