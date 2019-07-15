@@ -1,4 +1,5 @@
 const { MEDICAL_BOOKLET, MEDICAL_INSURANCE, DOCTOR } = require('../src/repositories/tablesNames')
+const { authenticationTypes } = require('../src/permissions/identifiedUser')
 
 exports.up = knex => knex.schema
   .withSchema('recetas')
@@ -17,6 +18,9 @@ exports.up = knex => knex.schema
     table.string('email', 255).notNullable()
     table.string('national_matriculation', 255).notNullable()
     table.string('provincial_matriculation', 255).notNullable()
+    table.string('two_factor_key', 255)
+    table.boolean('two_factor_verified').defaultTo(false)
+    table.string('default_authentication_method', 255).defaultTo(authenticationTypes.USR_PASS)
   })
   .createTable(MEDICAL_INSURANCE, (table) => {
     table.increments('id')
@@ -27,6 +31,9 @@ exports.up = knex => knex.schema
     table.string('corporate_name', 255).notNullable()
     table.string('address', 255).notNullable()
     table.string('email', 255).notNullable()
+    table.string('two_factor_key', 255)
+    table.boolean('two_factor_verified').defaultTo(false)
+    table.string('default_authentication_method', 255).defaultTo(authenticationTypes.USR_PASS)
   })
   .createTable(MEDICAL_BOOKLET, (table) => {
     table.integer('id_doctor').unsigned()

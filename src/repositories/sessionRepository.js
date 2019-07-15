@@ -5,6 +5,7 @@ const knex = require('../init/knexConnection')
 const { newInvalidUsernameOrPasswordError, newNotFoundError, newSessionExpiredError } = require('../utils/errors')
 const { Session } = require('../domain/session')
 const { mongoClient } = require('../init/mongodb')
+const speakeasy = require('speakeasy')
 
 const authenticationMap = {
   [userTypes.AFFILIATE]: {
@@ -29,6 +30,7 @@ const getAuthenticationObject = (userType) => {
 }
 
 const invalidUserOrPassError = 'invalid username or password'
+const ivalidTokenError = 'invalid token'
 
 class SessionRepository {
   constructor() {
@@ -107,12 +109,97 @@ class SessionRepository {
     return entity
   }
 
-  checkAndGetTwoFactorAuthentication(userType, data) {
+  async checkAndGetTwoFactorAuthentication(userType, { id, code }, verify) {
+    const authenticationObject = getAuthenticationObject(userType)
+    const entity = await knex
+      .select()
+      .from(authenticationObject.tableName)
+      .where(`${authenticationObject.tableName}.id`, id)
+      .first()
+
+    if (!entity) {
+      throw newInvalidUsernameOrPasswordError(ivalidTokenError)
+    }
+    const { twoFactorKey } = entity // 'GRMC6JTBO5TVGLCFKJEEQR3EFRDDO6SQPBSGKV3VJFOXKP2MERGQ'
+    const verfified = speakeasy.totp.verify({
+      secret: twoFactorKey,
+      encoding: 'base32',
+      token: code
+    })
+    if (!verfified) {
+      throw newInvalidUsernameOrPasswordError(ivalidTokenError)
+    }
+    if (verify) {
+      const result = await knex
+        .table(authenticationObject.tableName)
+        .update({
+          two_factor_verified: true
+        })
+        .where({
+          id
+        })
+    } else if (!entity.twoFactorVerified) {
+      throw newInvalidUsernameOrPasswordError('You haven`t verify two factor authentication.')
+    }
+    return entity
+  }
+
+  async checkAndGetDNIAuthentication(userType, data) {
 
   }
 
-  checkAndGetDNIAuthentication(userType, data) {
+  async generateAndGetTwoFactorSecret(userType, username) {
+    const authenticationObject = getAuthenticationObject(userType)
+    const secret = speakeasy.generateSecret({ name: `Unify (${username})` })
+    const result = await knex
+      .table(authenticationObject.tableName)
+      .update({
+        two_factor_key: secret.base32,
+        two_factor_verified: false
+      })
+      .where({
+        user_name: username
+      })
+    if (result !== 1) {
+      throw new Error('Error while storing two factor key')
+    }
+    return secret
+  }
 
+  async getUserConfiguration(userType, id) {
+    const authenticationObject = getAuthenticationObject(userType)
+    const entity = await knex
+      .select()
+      .from(authenticationObject.tableName)
+      .where({
+        id
+      })
+      .first()
+
+    if (!entity) {
+      throw newNotFoundError('User not found')
+    }
+    const userPass = {
+      username: entity.userName,
+      isDefault: entity.defaultAuthenticationMethod === authenticationTypes.USR_PASS
+    }
+    const twoFactor = {
+      keyGenerated: !!entity.twoFactorKey,
+      verified: entity.twoFactorVerified,
+      isDefault: entity.defaultAuthenticationMethod === authenticationTypes.TWO_FACTOR // TODO: Agregar el defaultAuthenticationMethod a la base y crear un endpoint para setear el default
+    }
+    const dniPhoto = {
+      dataGenerated: !!entity.nicData,
+      isDefault: entity.defaultAuthenticationMethod === authenticationTypes.DNI
+    }
+    const authentication = {
+      userPass,
+      twoFactor
+    }
+    if (userType === userTypes.AFFILIATE) {
+      authentication.dniPhoto = dniPhoto
+    }
+    return authentication
   }
 }
 

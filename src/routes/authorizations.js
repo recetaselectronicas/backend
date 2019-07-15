@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 const express = require('express')
 
 const router = express.Router()
@@ -10,10 +11,12 @@ const { AffiliateRepository } = require('../repositories/affiliateRepository')
 
 const authorizationHandler = {
   [authorizationActionTypes.ISSUE_PRESCRIPTION]: async (identifiedUser, authentication, prescription) => {
+    authentication.id = identifiedUser.id
     return AuthorizationProvider.issuePrescription(identifiedUser, authentication, prescription)
   },
   [authorizationActionTypes.AUTHORIZE_ISSUE_PRESCRIPTION]: async (identifiedUser, authentication, prescription) => {
     const affiliate = await AffiliateRepository.getById(prescription.affiliate.id)
+    authentication.id = affiliate.idPatient
     return AuthorizationProvider.allowIssuePrescription(affiliate, identifiedUser, authentication, prescription)
   },
   [authorizationActionTypes.RECEIVE_PRESCRIPTION]: () => {},
