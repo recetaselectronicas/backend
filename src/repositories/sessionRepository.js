@@ -199,9 +199,9 @@ class SessionRepository {
       userPass,
       twoFactor
     }
-    if (userType === userTypes.AFFILIATE) {
-      authentication.dniPhoto = dniPhoto
-    }
+    // if (userType === userTypes.AFFILIATE) {
+    //   authentication.dniPhoto = dniPhoto
+    // }
     return authentication
   }
 
