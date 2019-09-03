@@ -3,6 +3,10 @@ const lang = require('lodash/lang')
 const filters = require('../filters/prescriptions/prescriptionFilters')
 const { newForbiddenResourceException } = require('../utils/errors')
 const { InstitutionRepository } = require('../repositories/institutionRepository')
+const { AffiliateRepository } = require('../repositories/affiliateRepository')
+const { DoctorRepository } = require('../repositories/doctorRepository')
+const { MedicalInsuranceRepository } = require('../repositories/medicalInsuranceRepository')
+const { PharmacistRepository } = require('../repositories/pharmacistRepository')
 const { states } = require('../state-machine/state')
 
 const userTypes = {
@@ -41,7 +45,9 @@ const identifiedUser = {
   canIssue: null,
   canReceive: null,
   canCancel: null,
-  canAudit: null
+  canAudit: null,
+  getMenu: null,
+  getData: null
 }
 
 const identifiedAffiliate = {
@@ -62,6 +68,9 @@ const identifiedAffiliate = {
   },
   getActions: prescription => [],
   getMenu: () => [{ label: 'Ver recetas', url: '/recetas' }],
+  getData() {
+    return AffiliateRepository.getById(this.id)
+  },
   canIssue: () => false,
   canReceive: () => false,
   canCancel: () => false,
@@ -85,6 +94,9 @@ const identifiedDoctor = {
     }
   },
   getMenu: () => [{ label: 'Emitir', url: '/emitir' }, { label: 'Ver recetas', url: '/recetas' }],
+  getData() {
+    return DoctorRepository.getById(this.id)
+  },
   getActions: prescription => [{ id: availableActions.CANCEL, disabled: prescription.status !== states.ISSUED.id }],
   canIssue: () => true,
   canReceive: () => false,
@@ -109,6 +121,9 @@ const identifiedPharmacist = {
     }
   },
   getMenu: () => [{ label: 'Ver recetas', url: '/recetas' }, { label: 'Recepcionar', url: '/recepcionar' }],
+  getData() {
+    return PharmacistRepository.getById(this.id)
+  },
   getActions: prescription => [{ id: availableActions.RECEIVE, disabled: prescription.status !== states.CONFIRMED.id && prescription.status !== states.PARTIALLY_RECEIVED.id }],
   canIssue: () => false,
   canReceive: () => true,
@@ -142,6 +157,9 @@ const identifiedMedicalInsurance = {
     ]
   },
   getMenu: () => [{ label: 'Normas', url: '/normas' }, { label: 'Ver recetas', url: '/recetas' }],
+  getData() {
+    return MedicalInsuranceRepository.getById(this.id)
+  },
   canIssue: () => false,
   canReceive: () => false,
   canCancel: () => false,
