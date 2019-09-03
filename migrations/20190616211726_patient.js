@@ -1,4 +1,5 @@
 const { PATIENT } = require('../src/repositories/tablesNames')
+const { authenticationTypes } = require('../src/permissions/identifiedUser')
 
 exports.up = knex => knex.schema.withSchema('recetas').createTable(PATIENT, (table) => {
   table.increments('id')
@@ -17,6 +18,10 @@ exports.up = knex => knex.schema.withSchema('recetas').createTable(PATIENT, (tab
   table.string('nic_type', 255)
   table.string('nic_exemplary', 255)
   table.string('nic_photo', 255)
+  table.string('nic_data', 255)
+  table.string('two_factor_key', 255)
+  table.boolean('two_factor_verified').defaultTo(false)
+  table.string('default_authentication_method', 255).defaultTo(authenticationTypes.USR_PASS)
 })
 
 exports.down = knex => knex.schema.withSchema('recetas').dropTable(PATIENT)

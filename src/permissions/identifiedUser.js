@@ -37,6 +37,7 @@ const availableActions = {
 
 const identifiedUser = {
   id: null,
+  username: null,
   type: null,
   getFilters: null,
   getQuery: null,
@@ -166,44 +167,48 @@ const identifiedMedicalInsurance = {
   canAudit: () => true
 }
 
-const getIdentifiedAffiliate = (id) => {
+const getIdentifiedAffiliate = (id, username) => {
   const affiliate = lang.cloneDeep(identifiedAffiliate)
   affiliate.id = id
+  affiliate.username = username
   return affiliate
 }
 
-const getIdentifiedDoctor = (id) => {
+const getIdentifiedDoctor = (id, username) => {
   const doctor = lang.cloneDeep(identifiedDoctor)
   doctor.id = id
+  doctor.username = username
   return doctor
 }
 
-const getIdentifiedPharmacist = (id) => {
+const getIdentifiedPharmacist = (id, username) => {
   const pharmacist = lang.cloneDeep(identifiedPharmacist)
   pharmacist.id = id
+  pharmacist.username = username
   return pharmacist
 }
 
-const getIdentifiedMedicalInsurance = (id) => {
+const getIdentifiedMedicalInsurance = (id, username) => {
   const medicalInsurance = lang.cloneDeep(identifiedMedicalInsurance)
   medicalInsurance.id = id
+  medicalInsurance.username = username
   return medicalInsurance
 }
 const userPermissions = {
   affiliate: {
-    getPermissions: id => getIdentifiedAffiliate(id)
+    getPermissions: (id, username) => getIdentifiedAffiliate(id, username)
   },
   medicalInsurance: {
-    getPermissions: id => getIdentifiedMedicalInsurance(id)
+    getPermissions: (id, username) => getIdentifiedMedicalInsurance(id, username)
   },
   pharmacist: {
-    getPermissions: id => getIdentifiedPharmacist(id)
+    getPermissions: (id, username) => getIdentifiedPharmacist(id, username)
   },
   doctor: {
-    getPermissions: id => getIdentifiedDoctor(id)
+    getPermissions: (id, username) => getIdentifiedDoctor(id, username)
   }
 }
-const getIdentifiedUserBy = (type, id) => userPermissions[type].getPermissions(id)
+const getIdentifiedUserBy = (type, id, username) => userPermissions[type].getPermissions(id, username)
 module.exports = {
   getIdentifiedAffiliate,
   getIdentifiedDoctor,
