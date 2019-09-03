@@ -1,11 +1,11 @@
 /* eslint-disable no-underscore-dangle */
+const speakeasy = require('speakeasy')
 const { userTypes, authenticationTypes, authorizationActionTypes } = require('../permissions/identifiedUser')
 const { PATIENT, DOCTOR, PHARMACIST, MEDICAL_INSURANCE } = require('./tablesNames')
 const knex = require('../init/knexConnection')
 const { newInvalidUsernameOrPasswordError, newNotFoundError, newSessionExpiredError, newBadRequestError } = require('../utils/errors')
 const { Session } = require('../domain/session')
 const { mongoClient } = require('../init/mongodb')
-const speakeasy = require('speakeasy')
 
 const authenticationMap = {
   [userTypes.AFFILIATE]: {
