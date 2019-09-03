@@ -40,7 +40,7 @@ const knex = initKnex({
   connection: {
     host: '127.0.0.1',
     user: 'root',
-    password: 'root',
+    password: '1234',
     database: 'recetas',
     typeCast(field, next) {
       if (field.type === 'TINY' && field.length === 1) {
