@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const lang = require('lodash/lang')
 const filters = require('../filters/prescriptions/prescriptionFilters')
 const { newForbiddenResourceException } = require('../utils/errors')
@@ -9,6 +10,19 @@ const userTypes = {
   DOCTOR: 'doctor',
   PHARMACIST: 'pharmacist',
   MEDICAL_INSURANCE: 'medicalInsurance'
+}
+
+const authenticationTypes = {
+  USR_PASS: 'usr_pass',
+  TWO_FACTOR: 'two_factor',
+  DNI: 'dni'
+}
+
+const authorizationActionTypes = {
+  RECEIVE_PRESCRIPTION: 'receive',
+  AUTHORIZE_RECEIVE_PRESCRIPTION: 'authorize_receive',
+  ISSUE_PRESCRIPTION: 'issue',
+  AUTHORIZE_ISSUE_PRESCRIPTION: 'authorize_issue'
 }
 
 const availableActions = {
@@ -178,5 +192,8 @@ module.exports = {
   getIdentifiedPharmacist,
   getIdentifiedMedicalInsurance,
   getIdentifiedUserBy,
-  userPermissions
+  userPermissions,
+  authenticationTypes,
+  authorizationActionTypes,
+  userTypes
 }

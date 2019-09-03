@@ -104,22 +104,8 @@ class AffiliateRepository {
         throw newNotFoundError(`No affiliate was found with id ${id}`)
       })
   }
-
-  login(username, password) {
-    return knex
-      .select()
-      .from(PATIENT)
-      .where(`${PATIENT}.user_name`, username)
-      .andWhere(`${PATIENT}.password`, password)
-      .first()
-      .then((response) => {
-        if (!response) {
-          throw newInvalidUsernameOrPasswordError('Usuario y/o contraseña invalido')
-        }
-        return response
-      })
-  }
 }
+
 module.exports = {
   AffiliateRepository: new AffiliateRepository()
 }

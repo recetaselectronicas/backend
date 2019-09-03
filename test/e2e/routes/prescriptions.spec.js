@@ -1,6 +1,15 @@
 const request = require('supertest')
 const { init } = require('../../../src/init/initServer')
 const { InstitutionRepository } = require('../../../src/repositories/institutionRepository')
+const session = require('../../../src/repositories/sessionRepository')
+
+session.SessionRepository = {
+  validateAndGetSession: () => ({
+    toUserData: () => ({
+      userType: 'affiliate', id: 1, username: 'jose'
+    })
+  })
+}
 
 const app = init()
 app.locals.logger = { info: () => {}, error: () => {} }
@@ -88,7 +97,7 @@ describe('when do a get in /prescriptions', () => {
   })
   it('respond with correct filters', () => request(app)
     .get('/prescriptions')
-    .set('Authorization', 'Bearer {"type":"affiliate", "id": "1"}')
+    .set('Authorization', 'Bearer zxcvbnmzxcvbnm')
     .expect(200)
     .then((res) => {
       expect(res.body.filters).toEqual(filtersValue)

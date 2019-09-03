@@ -1,7 +1,10 @@
 const _object = require('lodash/object')
 const _array = require('lodash/array')
 
+const ERRORS_TYPE = 'UNIFY'
+
 const error = {
+  type: ERRORS_TYPE, // codigo para reconocer nuestros errores
   code: '', // codigo de error
   message: '', // mensaje descriptivo del error
   status: undefined, // statusCode, para web
@@ -13,48 +16,18 @@ const causes = {
 }
 
 const errors = {
-  UNEXPECTED_ERROR: {
-    ...error,
-    code: '0-000',
-    message: 'Unexpected error ocurred',
-    status: 500
-  },
+  UNEXPECTED_ERROR: { ...error, code: '0-000', message: 'Unexpected error ocurred', status: 500 },
   GENERIC_ERROR: { ...error, code: '0-001', message: 'Ups something went wrong' },
   DUPLICATED_VALUE_ERROR: { ...error, code: '1-000', message: 'Duplicated field values' },
   NULL_OR_EMPTY_VALUE_ERROR: { ...error, code: '1-001', message: 'Null or empty field value' },
   INVALID_VALUE_ERROR: { ...error, code: '1-002', message: 'Invalid field value' },
   ENTITY_ALREADY_CREATED: { ...error, code: '1-003', message: 'Entity already created' },
   NORM_RULE_FAILED: { ...error, code: '1-004', message: 'Rule failed' },
-  NOT_FOUND_ERROR: {
-    ...error,
-    code: '1-100',
-    message: 'Not found',
-    status: 404
-  },
-  BAD_REQUEST: {
-    ...error,
-    code: '1-101',
-    message: 'Please verify the payload and try again',
-    status: 400
-  },
-  INVALID_USERNAME_OR_PASSWORD_ERROR: {
-    ...error,
-    code: '2-000',
-    message: 'Invalid username or password',
-    status: 401
-  },
-  SESSION_EXPIRED_ERROR: {
-    ...error,
-    code: '2-001',
-    message: 'Your session has expired',
-    status: 403
-  },
-  FORBIDDEN_RESOURCE_EXCEPTION: {
-    ...error,
-    code: '2-002',
-    message: 'You can´t perform that action',
-    status: 403
-  },
+  NOT_FOUND_ERROR: { ...error, code: '1-100', message: 'Not found', status: 404 },
+  BAD_REQUEST: { ...error, code: '1-101', message: 'Please verify the payload and try again', status: 400 },
+  INVALID_USERNAME_OR_PASSWORD_ERROR: { ...error, code: '2-000', message: 'Invalid username or password', status: 401 },
+  SESSION_EXPIRED_ERROR: { ...error, code: '2-001', message: 'Your session has expired', status: 403 },
+  FORBIDDEN_RESOURCE_EXCEPTION: { ...error, code: '2-002', message: 'You can´t perform that action', status: 403 },
 }
 
 const newError = (type, message, cause, status) => {
@@ -65,7 +38,7 @@ const newError = (type, message, cause, status) => {
   return anError
 }
 
-const isBusinessError = error => error && ((error.code && error.message) || error.length)
+const isBusinessError = error => error && (error.type === ERRORS_TYPE || (error.length && error.find(err => err.type === ERRORS_TYPE)))
 
 const newUnexpectedError = (message, cause, status) => newError('UNEXPECTED_ERROR', message, cause, status)
 const newGenericError = (message, cause, status) => newError('GENERIC_ERROR', message, cause, status)

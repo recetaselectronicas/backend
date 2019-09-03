@@ -63,22 +63,8 @@ class DoctorRepository {
       doctor.specialty = specialty
     }
   }
-
-  login(username, password) {
-    return knex
-      .select()
-      .from(DOCTOR)
-      .where(`${DOCTOR}.user_name`, username)
-      .andWhere(`${DOCTOR}.password`, password)
-      .first()
-      .then((response) => {
-        if (!response) {
-          throw newInvalidUsernameOrPasswordError('Usuario y/o contraseña invalido')
-        }
-        return response
-      })
-  }
 }
+
 module.exports = {
   DoctorRepository: new DoctorRepository()
 }

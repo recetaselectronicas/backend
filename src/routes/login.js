@@ -1,14 +1,13 @@
 const express = require('express')
-const bodyParser = require('body-parser')
-const usersLogin = require('../permissions/usersLogin')
+const { SessionRepository } = require('../repositories/sessionRepository')
 
 const router = express.Router()
 
-router.post('/', bodyParser.json(), async (req, res, next) => {
+router.post('/', async (req, res, next) => {
   const { username, password, type } = req.body
   try {
-    const entity = await usersLogin[type].login(username, password)
-    return res.status(200).json({ id: entity.id })
+    const session = await SessionRepository.login(type, username, password)
+    return res.status(200).json({ token: session.toJson().token })
   } catch (error) {
     return next(error)
   }

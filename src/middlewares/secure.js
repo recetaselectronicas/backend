@@ -1,14 +1,20 @@
 const { getIdentifiedUserBy } = require('../permissions/identifiedUser')
 const { newForbiddenResourceException } = require('../utils/errors')
+const { SessionRepository } = require('../repositories/sessionRepository')
 
-module.exports = (req, res, next) => {
-  const { authorization } = req.headers
-  if (!authorization) {
-    throw newForbiddenResourceException()
+module.exports = async (req, res, next) => {
+  const { token } = req
+  try {
+    if (!token) {
+      throw newForbiddenResourceException()
+    }
+    const session = await SessionRepository.validateAndGetSession({ token, refresh: true })
+    const userData = session.toUserData()
+    const identifiedUser = getIdentifiedUserBy(userData.userType, Number.parseInt(userData.id, 10))
+    req.identifiedUser = identifiedUser
+
+    return next()
+  } catch (error) {
+    return next(newForbiddenResourceException(null, error))
   }
-  const { id, type } = JSON.parse(authorization.split('Bearer ')[1])
-  const identifiedUser = getIdentifiedUserBy(type, Number.parseInt(id, 10))
-  req.identifiedUser = identifiedUser
-
-  return next()
 }

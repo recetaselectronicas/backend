@@ -68,9 +68,9 @@ module.exports = {
       } catch (e) {
         logger.error('Error while generating norms data: ', e)
       }
-      logger.info('All norms generated ok')
+      logger.info('MongoDB`s bootstrap ran OK')
     } else {
-      logger.warn('Norm`s bootstrap not executed. If you want to execute it, go to config.js and set executeBootstrap.mongo to true')
+      logger.warn('MongoDB`s bootstrap not executed. If you want to execute it, go to config.js and set executeBootstrap.mongo to true')
     }
   }
 }
