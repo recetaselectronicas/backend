@@ -6,9 +6,10 @@ const { Prescription } = require('../domain/prescription')
 const { StateMachine } = require('../state-machine/state-machine')
 const { newBadRequestError, isBusinessError } = require('../utils/errors')
 const { PrescriptionRepository } = require('../repositories/prescriptions-repository')
+const verifiers = require('../middlewares/verifiers')
 const errors = require('../utils/errors')
 
-router.post('/', async (req, res, next) => {
+router.post('/', verifiers.issueVerifier, async (req, res, next) => {
   const { logger } = req.app.locals
   const { identifiedUser } = req
   if (!identifiedUser.canIssue()) {
@@ -59,7 +60,7 @@ router.get('/:id', (req, res, next) => {
     .catch(next)
 })
 
-router.put('/:id', (req, res, next) => {
+router.put('/:id', verifiers.receiveVerifier, (req, res, next) => {
   const { logger } = req.app.locals
   const { identifiedUser } = req
   const { body } = req
@@ -95,6 +96,9 @@ const toState = {
       }
       data.items.forEach((item) => {
         const itemToReceive = prescription.items.find(_item => _item.id === item.id)
+        if (!itemToReceive) {
+          throw errors.newBadRequestError('Item inválido')
+        }
         if (itemToReceive.received.medicine.id) {
           throw errors.newEntityAlreadyCreated('No puede recepcionar el item. Ya fue recepcionado')
         }

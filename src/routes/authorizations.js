@@ -2,12 +2,11 @@
 const express = require('express')
 
 const router = express.Router()
-const { Prescription } = require('../domain/prescription')
-const { newBadRequestError, isBusinessError, newForbiddenResourceException } = require('../utils/errors')
-const { authorizationActionTypes, userTypes, authenticationTypes } = require('../permissions/identifiedUser')
+const { newBadRequestError } = require('../utils/errors')
+const { authorizationActionTypes } = require('../permissions/identifiedUser')
 const { AuthorizationProvider } = require('../authorization/authorizationProvider')
-const { SessionRepository } = require('../repositories/sessionRepository')
 const { AffiliateRepository } = require('../repositories/affiliateRepository')
+const { PrescriptionRepository } = require('../repositories/prescriptions-repository')
 
 const authorizationHandler = {
   [authorizationActionTypes.ISSUE_PRESCRIPTION]: async (identifiedUser, authentication, prescription) => {
@@ -19,8 +18,18 @@ const authorizationHandler = {
     authentication.id = affiliate.idPatient
     return AuthorizationProvider.allowIssuePrescription(affiliate, identifiedUser, authentication, prescription)
   },
-  [authorizationActionTypes.RECEIVE_PRESCRIPTION]: () => {},
-  [authorizationActionTypes.AUTHORIZE_RECEIVE_PRESCRIPTION]: () => {}
+  [authorizationActionTypes.RECEIVE_PRESCRIPTION]: async (identifiedUser, authentication, prescription) => {
+    authentication.id = identifiedUser.id
+    prescription.items.forEach((item) => { item.medicine = { id: item.medicine.id } })
+    return AuthorizationProvider.receivePrescription(identifiedUser, authentication, prescription)
+  },
+  [authorizationActionTypes.AUTHORIZE_RECEIVE_PRESCRIPTION]: async (identifiedUser, authentication, prescription) => {
+    const savedPrescription = await PrescriptionRepository.getById(prescription.id)
+    const affiliate = await AffiliateRepository.getById(savedPrescription.affiliate.id)
+    authentication.id = affiliate.idPatient
+    prescription = { id: prescription.id }
+    return AuthorizationProvider.allowReceivePrescription(affiliate, identifiedUser, authentication, prescription)
+  }
 }
 
 router.post('/', async (req, res, next) => {
