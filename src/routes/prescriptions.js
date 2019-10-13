@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-use-before-define */
 const express = require('express')
 
 const router = express.Router()
@@ -35,6 +38,25 @@ router.post('/', verifiers.issueVerifier, async (req, res, next) => {
   }
 })
 
+router.post('/verify', async (req, res, next) => {
+  const { identifiedUser } = req
+  if (!identifiedUser.canIssue()) {
+    return next(errors.newForbiddenResourceException('No puede emitir la receta, no tiene los permisos necesarios'))
+  }
+  let prescription = Prescription.fromObject(req.body)
+  prescription.doctor.id = identifiedUser.id
+  try {
+    prescription = await PrescriptionRepository.fillPrescriptionData(prescription, false)
+    await StateMachine.toIssued(prescription, false)
+    return res.status(200).json()
+  } catch (err) {
+    if (isBusinessError(err)) {
+      return next(newBadRequestError('Invalid prescription payload', err, 400))
+    }
+    return next(err)
+  }
+})
+
 router.get('/', async (req, res, next) => {
   const { identifiedUser } = req
   const prescriptionQuery = identifiedUser.getQuery(req.query)
@@ -49,7 +71,6 @@ router.get('/', async (req, res, next) => {
 })
 
 router.get('/:id', (req, res, next) => {
-  const { logger } = req.app.locals
   const { identifiedUser, query } = req
   return PrescriptionRepository.getById(req.params.id, query)
     .then((prescription) => {
@@ -61,7 +82,6 @@ router.get('/:id', (req, res, next) => {
 })
 
 router.put('/:id', verifiers.receiveVerifier, (req, res, next) => {
-  const { logger } = req.app.locals
   const { identifiedUser } = req
   const { body } = req
   const { id } = req.params
