@@ -3,7 +3,7 @@ const express = require('express')
 const router = express.Router()
 const { SessionRepository } = require('../repositories/sessionRepository')
 
-router.get('/menu', async (req, res, next) => {
+router.get('/menu', async (req, res) => {
   const { identifiedUser } = req
   return res.status(200).json(identifiedUser.getMenu())
 })
@@ -29,6 +29,16 @@ router.put('/configuration', async (req, res, next) => {
   }
 })
 
+router.get('/authentication/default', async (req, res, next) => {
+  const { identifiedUser } = req
+  try {
+    const defaultAuthentication = await SessionRepository.getUserDefaultAuthentication(identifiedUser.type, identifiedUser.id)
+    return res.json(defaultAuthentication)
+  } catch (e) {
+    return next(e)
+  }
+})
+
 router.put('/authentication/user-pass', async (req, res, next) => {
   const { identifiedUser } = req
   const { body } = req
@@ -40,7 +50,7 @@ router.put('/authentication/user-pass', async (req, res, next) => {
   }
 })
 
-router.get('/authentication/two-factor', async (req, res, next) => {
+router.post('/authentication/two-factor/generate', async (req, res, next) => {
   const { identifiedUser } = req
   try {
     const secret = await SessionRepository.generateAndGetTwoFactorSecret(identifiedUser.type, identifiedUser)
@@ -55,7 +65,7 @@ router.post('/authentication/two-factor', async (req, res, next) => {
   const { authentication } = req.body
   try {
     authentication.id = identifiedUser.id
-    const entity = await SessionRepository.checkAndGetTwoFactorAuthentication(identifiedUser.type, authentication, true)
+    await SessionRepository.checkAndGetTwoFactorAuthentication(identifiedUser.type, authentication, true)
     return res.status(201).json()
   } catch (e) {
     return next(e)

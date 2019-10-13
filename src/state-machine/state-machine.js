@@ -29,10 +29,13 @@ class StateMachine {
     await this.validateNorm(prescription, states.ISSUED.id)
   }
 
-  toCancelled(prescription) {
+  toCancelled(prescription, updatePrescription = true) {
     return this.validateToCancelled(prescription).then(() => {
       prescription.status = states.CANCELLED.id
-      return PrescriptionRepository.update(prescription)
+      if (updatePrescription) {
+        return PrescriptionRepository.update(prescription)
+      }
+      return prescription
     })
   }
 
@@ -85,18 +88,21 @@ class StateMachine {
     await this.validateNorm(prescription, states.INCOMPLETE.id)
   }
 
-  toReceive(prescription) {
+  toReceive(prescription, updatePrescription = true) {
     prescription.setSoldDate(moment())
     if (prescription.items.every(item => item.received.quantity !== null)) {
-      return this.toReceived(prescription)
+      return this.toReceived(prescription, updatePrescription)
     }
-    return this.toPartiallyReceived(prescription)
+    return this.toPartiallyReceived(prescription, updatePrescription)
   }
 
-  toReceived(prescription) {
+  toReceived(prescription, updatePrescription = true) {
     return this.validateToReceived(prescription).then(() => {
       prescription.status = states.RECEIVED.id
-      return PrescriptionRepository.update(prescription)
+      if (updatePrescription) {
+        return PrescriptionRepository.update(prescription)
+      }
+      return prescription
     })
   }
 
@@ -105,10 +111,13 @@ class StateMachine {
     await this.validateNorm(prescription, states.RECEIVED.id)
   }
 
-  toPartiallyReceived(prescription) {
+  toPartiallyReceived(prescription, updatePrescription = true) {
     return this.validateToPartiallyReceived(prescription).then(() => {
       prescription.status = states.PARTIALLY_RECEIVED.id
-      return PrescriptionRepository.update(prescription)
+      if (updatePrescription) {
+        return PrescriptionRepository.update(prescription)
+      }
+      return prescription
     })
   }
 
@@ -117,23 +126,26 @@ class StateMachine {
     await this.validateNorm(prescription, states.PARTIALLY_RECEIVED.id)
   }
 
-  toAudit(prescription) {
+  toAudit(prescription, updatePrescription = true) {
     prescription.setAuditedDate(moment())
     const itemsReceived = prescription.items.filter(item => !!item.received.quantity)
     if (itemsReceived.every(item => item.audited.quantity === item.received.quantity && item.audited.medicine.id === item.received.medicine.id)) {
-      return this.toAudited(prescription)
+      return this.toAudited(prescription, updatePrescription)
     }
     if (itemsReceived.every(item => item.received.quantity !== item.audited.quantity || item.received.medicine.id !== item.audited.medicine.id)) {
-      return this.toRejected(prescription)
+      return this.toRejected(prescription, updatePrescription)
     }
-    return this.toPartiallyRejected(prescription)
+    return this.toPartiallyRejected(prescription, updatePrescription)
   }
 
-  toAudited(prescription) {
+  toAudited(prescription, updatePrescription = true) {
     return this.validateToAudited(prescription)
       .then(() => {
         prescription.status = states.AUDITED.id
-        return PrescriptionRepository.update(prescription)
+        if (updatePrescription) {
+          return PrescriptionRepository.update(prescription)
+        }
+        return prescription
       })
   }
 
@@ -142,11 +154,14 @@ class StateMachine {
     await this.validateNorm(prescription, states.AUDITED.id)
   }
 
-  toRejected(prescription) {
+  toRejected(prescription, updatePrescription = true) {
     return this.validateToRejected(prescription)
       .then(() => {
         prescription.status = states.REJECTED.id
-        return PrescriptionRepository.update(prescription)
+        if (updatePrescription) {
+          return PrescriptionRepository.update(prescription)
+        }
+        return prescription
       })
   }
 
@@ -155,11 +170,14 @@ class StateMachine {
     await this.validateNorm(prescription, states.REJECTED.id)
   }
 
-  toPartiallyRejected(prescription) {
+  toPartiallyRejected(prescription, updatePrescription = true) {
     return this.validateToPartiallyRejected(prescription)
       .then(() => {
         prescription.status = states.PARTIALLY_REJECTED.id
-        return PrescriptionRepository.update(prescription)
+        if (updatePrescription) {
+          return PrescriptionRepository.update(prescription)
+        }
+        return prescription
       })
   }
 

@@ -205,6 +205,31 @@ class SessionRepository {
     return authentication
   }
 
+  async getUserDefaultAuthentication(userType, id) {
+    const authenticationObject = getAuthenticationObject(userType)
+    const entity = await knex
+      .select()
+      .from(authenticationObject.tableName)
+      .where({
+        id
+      })
+      .first()
+
+    if (!entity) {
+      throw newNotFoundError('User not found')
+    }
+    const defaultAuthentication = {
+      default: authenticationTypes.USR_PASS
+    }
+    if (entity.defaultAuthenticationMethod === authenticationTypes.TWO_FACTOR) {
+      defaultAuthentication.default = authenticationTypes.TWO_FACTOR
+    }
+    if (entity.defaultAuthenticationMethod === authenticationTypes.DNI) {
+      defaultAuthentication.default = authenticationTypes.DNI
+    }
+    return defaultAuthentication
+  }
+
   async updateUserConfiguration(userType, id, data) {
     const authenticationObject = getAuthenticationObject(userType)
     const userConfiguration = await this.getUserConfiguration(userType, id)

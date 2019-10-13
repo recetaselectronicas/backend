@@ -40,6 +40,22 @@ class AuthorizationVerifier {
       throw e
     }
   }
+
+  async viewPrescription(authorizationToken, prescription, identifiedUser) {
+    try {
+      const savedPrescription = await PrescriptionRepository.getById(prescription.id)
+      const authorization = jwt.verify(authorizationToken, privateKey, { subject: utils.getAffiliateSubject(savedPrescription.affiliate), audience: utils.getPharmacistAudience(identifiedUser) })
+      if (prescription.id !== authorization.prescription.id) {
+        throw newForbiddenResourceException('prescription data has change')
+      }
+    } catch (e) {
+      if (!isBusinessError(e)) {
+        logger.error(e)
+        throw newForbiddenResourceException('invalid authorization given')
+      }
+      throw e
+    }
+  }
 }
 
 module.exports = { AuthorizationVerifier: new AuthorizationVerifier() }

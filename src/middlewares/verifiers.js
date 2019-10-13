@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 const lang = require('lodash/lang')
 const { AuthorizationVerifier } = require('../authorization/authorizationVerifier')
+const { PrescriptionRepository } = require('../repositories/prescriptions-repository')
 
 const issueVerifier = async (req, res, next) => {
   const { logger } = req.app.locals
@@ -37,7 +38,33 @@ const receiveVerifier = async (req, res, next) => {
   }
 }
 
+const viewVerifier = async (req, res, next) => {
+  const { identifiedUser } = req
+  const authorizationToken = req.header('x-authorization-token')
+  let savedPrescription
+  try {
+    savedPrescription = await PrescriptionRepository.getById(req.params.id)
+  } catch (e) {
+    return next(e)
+  }
+  try {
+    identifiedUser.checkForbiden(savedPrescription)
+  } catch (e) {
+    const prescription = {
+      id: savedPrescription.id
+    }
+    try {
+      await AuthorizationVerifier.viewPrescription(authorizationToken, prescription, identifiedUser)
+    } catch (_) {
+      return next(e)
+    }
+  }
+  req.prescription = savedPrescription
+  return next()
+}
+
 module.exports = {
   issueVerifier,
-  receiveVerifier
+  receiveVerifier,
+  viewVerifier
 }

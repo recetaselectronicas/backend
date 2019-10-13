@@ -70,15 +70,11 @@ router.get('/', async (req, res, next) => {
   }
 })
 
-router.get('/:id', (req, res, next) => {
-  const { identifiedUser, query } = req
-  return PrescriptionRepository.getById(req.params.id, query)
-    .then((prescription) => {
-      // identifiedUser.checkForbiden(prescription)
-      const actions = identifiedUser.getActions(prescription)
-      return res.json({ result: prescription.toPlainObject(), actions })
-    })
-    .catch(next)
+router.get('/:id', verifiers.viewVerifier, (req, res, next) => {
+  const { identifiedUser } = req
+  const { prescription } = req
+  const actions = identifiedUser.getActions(prescription)
+  return res.json({ result: prescription.toPlainObject(), actions })
 })
 
 router.put('/:id', verifiers.receiveVerifier, (req, res, next) => {
@@ -86,8 +82,24 @@ router.put('/:id', verifiers.receiveVerifier, (req, res, next) => {
   const { body } = req
   const { id } = req.params
   return PrescriptionRepository.getById(id)
-    .then(prescription => toState[body.status].change(prescription, { ...body.data, identifiedUser }))
+    .then(prescription => toState[body.status].change(prescription, { ...body.data, identifiedUser, updatePrescription: true }))
     .then(() => PrescriptionRepository.getById(id))
+    .then(updatePrescription => res.status(200).json(updatePrescription.toPlainObject()))
+    .catch((err) => {
+      if (isBusinessError(err)) {
+        return next(newBadRequestError('Invalid prescription payload', err, 400))
+      }
+      // TODO:Definir catcheo para no perder errores
+      return next(err)
+    })
+})
+
+router.put('/:id/verify', (req, res, next) => {
+  const { identifiedUser } = req
+  const { body } = req
+  const { id } = req.params
+  return PrescriptionRepository.getById(id)
+    .then(prescription => toState[body.status].change(prescription, { ...body.data, identifiedUser, updatePrescription: false }))
     .then(updatePrescription => res.status(200).json(updatePrescription.toPlainObject()))
     .catch((err) => {
       if (isBusinessError(err)) {
@@ -106,7 +118,7 @@ const toState = {
       if (!data.identifiedUser.canCancel()) {
         throw errors.newForbiddenResourceException('No puede cancelar la receta')
       }
-      return StateMachine.toCancelled(prescription)
+      return StateMachine.toCancelled(prescription, data.updatePrescription)
     }
   },
   RECEIVE: {
@@ -125,7 +137,7 @@ const toState = {
         itemToReceive.receive(item.quantity, moment(), item.medicine, { id: data.identifiedUser.id })
       })
 
-      return PrescriptionRepository.fillPrescriptionItemsData(prescription).then(_prescription => StateMachine.toReceive(_prescription))
+      return PrescriptionRepository.fillPrescriptionItemsData(prescription).then(_prescription => StateMachine.toReceive(_prescription, data.updatePrescription))
     }
   },
   AUDIT: {
@@ -138,7 +150,7 @@ const toState = {
         itemToAudit.audit(item.quantity, item.medicine)
       })
 
-      return PrescriptionRepository.fillPrescriptionItemsData(prescription).then(_prescription => StateMachine.toAudit(_prescription))
+      return PrescriptionRepository.fillPrescriptionItemsData(prescription).then(_prescription => StateMachine.toAudit(_prescription, data.updatePrescription))
     }
   }
 }
