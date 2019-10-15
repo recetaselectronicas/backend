@@ -1,57 +1,55 @@
 # Backend
 
-### Desarrollo
+### Sencillito
 
-#### Knex (base de datos)
-
-- Para agregar una tabla o realizar modificaciones en ella, tenemos que crear una `migration` de esta manera
-
-```
-knex migrate:make [NOMBRE DE LA MIGRACION]
+Antes que nada
+```bash
+$ npm install
 ```
 
-Y luego modificamos las funciones up y down
-
-- Para correrla
-
-```
-knex migrate:latest
+Para iniciar el servidor
+```bash
+$ npm start
 ```
 
-- Para hacer rollback
-
+Para correr los tests (se..)
+```bash
+$ npm run test
 ```
 
-knex migrate:rollback
+Existe un archivo de configuraciones (src/config/config.js) que se puede cambiar dependiendo las necesidades 
+```javascript
+const config = {
+  executeBootstrap: {
+    mongo: false, // ejecuta o no el bootstrap de Mongo
+    mysql: false // ejecuta o no el bootstrap de MySql
+  },
+  executeDaemon: {
+    issued: true, // corre o no el demonio que confirma las recetas
+    expired: false // corre o no el demonio que vence las recetas
+  },
+  conections: {
+    mongo: {
+      host: 'localhost',
+      port: 27017
+    }
+  }
+}
 
+module.exports = { config }
 ```
 
-- Correr los archivos seeds (para popular la base) (por ejemplo los estados)
+## Troubleshooting
 
-```
-knex seed:run
-```
-
-#### MongoDB
-
-- Para poder levantar la app sin problemas hay que tener una instancia de mongod levantada en el puerto 27017
-
-Si pudo conectarse correctamente verás el siguiente mensaje:
-
-```log
-info 2019-06-17 01:07:21: MongoDB initialized OK
-info 2019-06-17 01:07:21: All mock data generated ok
-info 2019-06-17 01:07:21: Server up & running on 8080
-info ...
+Revisar que el servicio de Mongo esté corriendo. Ejecutando el siguiente comando se deberían poder conectar, sino algo no está bien
+```bash
+$ mongo
 ```
 
-Sino, verás un mensaje como el siguiente:
-
-```log
-error 2019-06-17 01:17:45: Error while connecting to Mongodb server.failed to connect to server [localhost:2701] on first connect [MongoNetworkError: connect ECONNREFUSED 127.0.0.1:27017]
-error 2019-06-17 01:17:45: If you make any call to NormRepository it will crash. Please resolve this.
-info 2019-06-17 01:17:45: All mock data generated ok
-info 2019-06-17 01:17:45: Server up & running on 8080
+Revisar que el servicio de MySql esté corriendo. Ejecutando el siguiente comando se deberían poder conectar, sino algo no está bin
+```bash
+$ mysql -u root -p 
+#Con password 1234
 ```
 
-Notar que la aplicación va a seguir andando pero cualquier llamada a la base documental de mongo va a fallar.
+Cualquier otra cosa, cnsultar a su developer amigo
