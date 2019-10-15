@@ -159,6 +159,13 @@ const getArrayDoesntMatchError = (array, path, isValidValue, entity, field, null
   return errors
 }
 
+const getValueDoesntMatchExpressionError = (value, expression, entity, field, message) => {
+  if (!value || !value.match || !value.match(expression)) {
+    return newInvalidValueError(message || `${entity} ${field} does not match ${expression}`, generateFieldCause(entity, field, value))
+  }
+  return null
+}
+
 module.exports = {
   _errors: errors,
   newUnexpectedError,
@@ -186,5 +193,6 @@ module.exports = {
   getBeNullError,
   getObjectDoesntMatchError,
   getArrayDoesntMatchError,
+  getValueDoesntMatchExpressionError,
   isBusinessError
 }

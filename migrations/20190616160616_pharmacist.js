@@ -10,6 +10,7 @@ exports.up = knex => knex.schema.withSchema('recetas').createTable(PHARMACIST, (
   table.string('last_name', 255).notNullable()
   table.string('user_name', 255).notNullable()
   table.string('password', 255).notNullable()
+  table.boolean('confirmed').notNullable().defaultTo(false)
   table.string('contact_number', 255)
   table.string('nationality', 255)
   table.string('address', 255)

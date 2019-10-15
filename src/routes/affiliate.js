@@ -2,6 +2,8 @@ const express = require('express')
 
 const router = express.Router()
 const { AffiliateRepository } = require('../repositories/affiliateRepository')
+const { SessionRepository } = require('../repositories/sessionRepository')
+const { userTypes } = require('../permissions/identifiedUser')
 
 router.get('/', async (req, res, next) => {
   const { query } = req
@@ -18,6 +20,17 @@ router.get('/:id', async (req, res, next) => {
   try {
     const affiliate = await AffiliateRepository.getById(id)
     return res.json(affiliate.toPlainObject())
+  } catch (e) {
+    return next(e)
+  }
+})
+
+router.get('/:id/authentication/default', async (req, res, next) => {
+  const { id } = req.params
+  try {
+    const affiliate = await AffiliateRepository.getById(id)
+    const defaultAuthentication = await SessionRepository.getUserDefaultAuthentication(userTypes.AFFILIATE, affiliate.idPatient)
+    return res.json(defaultAuthentication)
   } catch (e) {
     return next(e)
   }

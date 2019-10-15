@@ -3,7 +3,7 @@ const moment = require('moment')
 const initKnex = require('knex')
 const { snakeCase } = require('lodash')
 const addKnexHooks = require('./knexHooks')
-const { dateFormat, dateTimeFormat, formats } = require('../utils/utils')
+const { formats } = require('../utils/utils')
 
 const toCamel = s => s.replace(/([-_][a-z])/gi, $1 => $1
   .toUpperCase()

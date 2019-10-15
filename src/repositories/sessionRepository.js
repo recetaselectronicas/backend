@@ -103,7 +103,7 @@ class SessionRepository {
       .andWhere(`${authenticationObject.tableName}.password`, password)
       .first()
 
-    if (!entity) {
+    if (!entity || !entity.confirmed) {
       throw newInvalidUsernameOrPasswordError(invalidUserOrPassError)
     }
     return entity
@@ -117,10 +117,10 @@ class SessionRepository {
       .where(`${authenticationObject.tableName}.id`, id)
       .first()
 
-    if (!entity) {
+    if (!entity || !entity.confirmed) {
       throw newInvalidUsernameOrPasswordError(ivalidTokenError)
     }
-    const { twoFactorKey } = entity // 'GRMC6JTBO5TVGLCFKJEEQR3EFRDDO6SQPBSGKV3VJFOXKP2MERGQ'
+    const { twoFactorKey } = entity
     const verfified = speakeasy.totp.verify({
       secret: twoFactorKey,
       encoding: 'base32',
@@ -188,7 +188,7 @@ class SessionRepository {
     const twoFactor = {
       keyGenerated: !!entity.twoFactorKey,
       verified: entity.twoFactorVerified,
-      isDefault: entity.defaultAuthenticationMethod === authenticationTypes.TWO_FACTOR // TODO: Agregar el defaultAuthenticationMethod a la base y crear un endpoint para setear el default
+      isDefault: entity.defaultAuthenticationMethod === authenticationTypes.TWO_FACTOR
     }
     const dniPhoto = {
       verified: !!entity.nicData,
@@ -203,6 +203,31 @@ class SessionRepository {
     //   authentication.dniPhoto = dniPhoto
     // }
     return authentication
+  }
+
+  async getUserDefaultAuthentication(userType, id) {
+    const authenticationObject = getAuthenticationObject(userType)
+    const entity = await knex
+      .select()
+      .from(authenticationObject.tableName)
+      .where({
+        id
+      })
+      .first()
+
+    if (!entity) {
+      throw newNotFoundError('User not found')
+    }
+    const defaultAuthentication = {
+      default: authenticationTypes.USR_PASS
+    }
+    if (entity.defaultAuthenticationMethod === authenticationTypes.TWO_FACTOR) {
+      defaultAuthentication.default = authenticationTypes.TWO_FACTOR
+    }
+    if (entity.defaultAuthenticationMethod === authenticationTypes.DNI) {
+      defaultAuthentication.default = authenticationTypes.DNI
+    }
+    return defaultAuthentication
   }
 
   async updateUserConfiguration(userType, id, data) {

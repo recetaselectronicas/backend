@@ -6,8 +6,9 @@ exports.seed = knex => knex(MEDICAL_INSURANCE)
     {
       description: 'OSDE',
       contact_number: '1520202020',
-      user_name: 'osde_1234',
+      user_name: 'osde',
       password: '1234',
+      confirmed: true,
       corporate_name: 'OSDE S.R.L.',
       address: 'Calle falsa 123',
       email: 'osde@osde.com'
@@ -15,8 +16,9 @@ exports.seed = knex => knex(MEDICAL_INSURANCE)
     {
       description: 'Hospital Italiano',
       contact_number: '1520202020',
-      user_name: 'Swiss_2312_2',
+      user_name: 'italiano',
       password: '1234',
+      confirmed: true,
       corporate_name: 'HospitalItaliano S.A',
       address: 'Joaquin V Gonzales 1',
       email: 'hospitalItaliano@hi.com'
@@ -24,8 +26,9 @@ exports.seed = knex => knex(MEDICAL_INSURANCE)
     {
       description: 'OSTEL',
       contact_number: '1520202020',
-      user_name: 'ostel_med',
+      user_name: 'ostel',
       password: '1234',
+      confirmed: true,
       corporate_name: 'OSTEL S.A.',
       address: 'Beiro 1232',
       email: 'ostel@ostel.com'

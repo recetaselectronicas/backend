@@ -56,7 +56,7 @@ class NormRepository {
   }
 
   async getCurrentTTL(medicalInsuranceId) {
-    const [norm] = await knex()
+    const [norm] = await knex
       .select()
       .table(NORM)
       .where(`${NORM}.id_medical_insurance`, Number.parseInt(medicalInsuranceId, 10))

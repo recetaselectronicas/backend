@@ -1,9 +1,10 @@
 const jwt = require('jsonwebtoken')
-const { authorizationActionTypes, userTypes, authenticationTypes } = require('../permissions/identifiedUser')
+const { authorizationActionTypes, userTypes } = require('../permissions/identifiedUser')
 const { SessionRepository } = require('../repositories/sessionRepository')
-const { newBadRequestError, isBusinessError, newForbiddenResourceException } = require('../utils/errors')
+const { newForbiddenResourceException } = require('../utils/errors')
+const utils = require('./utils')
 
-const privateKey = 'authorization_provider'
+const privateKey = utils.getPrivateKey()
 
 const authorizationsMap = {
   [authorizationActionTypes.ISSUE_PRESCRIPTION]: {
@@ -38,7 +39,7 @@ class AuthorizationProvider {
       doctor,
       prescription
     }
-    return jwt.sign(authorization, privateKey, { expiresIn: authorizationsMap[authorization.type].ttl * 60, subject: doctor.username, audience: doctor.username })
+    return jwt.sign(authorization, privateKey, { expiresIn: authorizationsMap[authorization.type].ttl * 60, subject: utils.getDoctorSubject(doctor), audience: utils.getDoctorAudience(doctor) })
   }
 
   async allowIssuePrescription(authorizerUser, authorizedUser, authentication, prescription) {
@@ -63,15 +64,49 @@ class AuthorizationProvider {
       doctor,
       prescription
     }
-    return jwt.sign(authorization, privateKey, { expiresIn: authorizationsMap[authorization.type].ttl * 60, subject: affiliate.username, audience: doctor.username })
+    return jwt.sign(authorization, privateKey, { expiresIn: authorizationsMap[authorization.type].ttl * 60, subject: utils.getAffiliateSubject(affiliate), audience: utils.getDoctorAudience(doctor) })
   }
 
-  async receivePrescription() {
-
+  async receivePrescription(user, authentication, prescription) {
+    if (!user.canReceive()) {
+      throw newForbiddenResourceException()
+    }
+    const userEntity = await SessionRepository.checkAndGetAuthentication(authentication.type, userTypes.PHARMACIST, authentication)
+    if (userEntity.id !== user.id || user.type !== userTypes.PHARMACIST) {
+      throw newForbiddenResourceException('The authenticated user does`t match with the authorization requester')
+    }
+    const pharmacist = {
+      id: user.id,
+      username: user.username
+    }
+    const authorization = {
+      type: authorizationActionTypes.RECEIVE_PRESCRIPTION,
+      pharmacist,
+      prescription
+    }
+    return jwt.sign(authorization, privateKey, { expiresIn: authorizationsMap[authorization.type].ttl * 60, subject: utils.getPharmacistSubject(pharmacist), audience: utils.getPharmacistAudience(pharmacist) })
   }
 
-  async allowReceivePrescription() {
-
+  async allowReceivePrescription(authorizerUser, authorizedUser, authentication, prescription) {
+    const authorizerEntity = await SessionRepository.checkAndGetAuthentication(authentication.type, userTypes.AFFILIATE, authentication)
+    if (authorizerEntity.id !== authorizerUser.id) {
+      throw newForbiddenResourceException('The authorizer user doesn`t match with the authorization requester')
+    }
+    const affiliate = {
+      id: authorizerUser.id,
+      username: authorizerUser.userName
+    }
+    const pharmacist = {
+      id: authorizedUser.id,
+      username: authorizedUser.username
+    }
+    const authorization = {
+      type: authorizationActionTypes.AUTHORIZE_RECEIVE_PRESCRIPTION,
+      affiliate,
+      pharmacist,
+      prescription
+    }
+    return jwt.sign(authorization, privateKey, { expiresIn: authorizationsMap[authorization.type].ttl * 60, subject: utils.getAffiliateSubject(affiliate), audience: utils.getPharmacistAudience(pharmacist) })
   }
 }
 
