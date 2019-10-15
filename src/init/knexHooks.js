@@ -5,7 +5,7 @@ const { dateTimeFormat } = require('../utils/utils')
 const updateDates = (rows) => {
   rows.forEach((row) => {
     Object.keys(row).forEach((key) => {
-      if (key.match(/_date$/)) {
+      if (key.match(/_date$/) || key.match(/Date$/)) {
         const date = dateTimeFormat.toDate(row[key])
         // eslint-disable-next-line no-param-reassign
         row[key] = date && date.toDate()

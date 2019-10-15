@@ -65,6 +65,23 @@ const codes = {
       },
     },
   },
+  PATIENT: {
+    name: 'patient',
+    fields: {
+      name: 'name',
+      surname: 'surname',
+      userName: 'userName',
+      birthDate: 'birthDate',
+      gender: 'gender',
+      contactNumber: 'contactNumber',
+      email: 'email',
+      address: 'address',
+      nationality: 'nationality',
+      nicNumber: 'nicNumber',
+      nicType: 'nicType',
+      nicPhoto: 'nicPhoto'
+    }
+  }
 }
 
 module.exports = { codes }
