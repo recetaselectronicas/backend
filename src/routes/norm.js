@@ -5,19 +5,7 @@ const { NormRepository } = require('../repositories/normRepository')
 const { validateNorm, normalizeNorm } = require('../norms/norm')
 const errors = require('../utils/errors')
 const { RULE_METADATA } = require('../norms/metadata/generate/generateMetadata')
-const permissions = require('../permissions/identifiedUser')
 
-// Falta el middleware de seguridad para saber de que obra social
-// es la norma que se quiere ver o crear
-
-
-// const secureMiddleware = (req, res, next) => {
-//   req.identifiedUser = permissions.getIdentifiedMedicalInsurance(1)
-//   return next()
-// }
-
-// Agregar la validacion de integridad de la norma
-// Probar un armado con una receta dummy
 router.post('/', async (req, res, next) => {
   const norm = req.body
   const { identifiedUser } = req
@@ -29,7 +17,6 @@ router.post('/', async (req, res, next) => {
     return res.json(createdNorm)
   } catch (e) {
     if (!errors.isBusinessError(e) || !e.status) {
-      console.log(e)
       return next(errors.newBadRequestError('Error while saving norm.', { error: e.toString() }))
     }
     return next(e)
@@ -46,7 +33,7 @@ router.get('/actual', async (req, res, next) => {
   }
 })
 
-router.get('/definition', (req, res, next) => res.json(RULE_METADATA))
+router.get('/definition', (req, res) => res.json(RULE_METADATA))
 
 // Este endpoint seguro va a cambiar. Habría que pensar como es mejor
 // para el metodo rest la consulta de la norma vigente de la obra social

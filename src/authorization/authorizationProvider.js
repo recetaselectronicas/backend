@@ -3,21 +3,22 @@ const { authorizationActionTypes, userTypes } = require('../permissions/identifi
 const { SessionRepository } = require('../repositories/sessionRepository')
 const { newForbiddenResourceException } = require('../utils/errors')
 const utils = require('./utils')
+const { defaults } = require('../config/defaults')
 
-const privateKey = utils.getPrivateKey()
+const { privateKey } = defaults.authorizations
 
 const authorizationsMap = {
   [authorizationActionTypes.ISSUE_PRESCRIPTION]: {
-    ttl: 4
+    ttl: defaults.authorizations.issue.ttl
   },
   [authorizationActionTypes.AUTHORIZE_ISSUE_PRESCRIPTION]: {
-    ttl: 2
+    ttl: defaults.authorizations.authorizeIssue.ttl
   },
   [authorizationActionTypes.RECEIVE_PRESCRIPTION]: {
-    ttl: 2
+    ttl: defaults.authorizations.receive.ttl
   },
   [authorizationActionTypes.AUTHORIZE_RECEIVE_PRESCRIPTION]: {
-    ttl: 10
+    ttl: defaults.authorizations.authorizeReceive.ttl
   }
 }
 
@@ -39,7 +40,7 @@ class AuthorizationProvider {
       doctor,
       prescription
     }
-    return jwt.sign(authorization, privateKey, { expiresIn: authorizationsMap[authorization.type].ttl * 60, subject: utils.getDoctorSubject(doctor), audience: utils.getDoctorAudience(doctor) })
+    return jwt.sign(authorization, privateKey, { expiresIn: authorizationsMap[authorization.type].ttl, subject: utils.getDoctorSubject(doctor), audience: utils.getDoctorAudience(doctor) })
   }
 
   async allowIssuePrescription(authorizerUser, authorizedUser, authentication, prescription) {
@@ -64,7 +65,7 @@ class AuthorizationProvider {
       doctor,
       prescription
     }
-    return jwt.sign(authorization, privateKey, { expiresIn: authorizationsMap[authorization.type].ttl * 60, subject: utils.getAffiliateSubject(affiliate), audience: utils.getDoctorAudience(doctor) })
+    return jwt.sign(authorization, privateKey, { expiresIn: authorizationsMap[authorization.type].ttl, subject: utils.getAffiliateSubject(affiliate), audience: utils.getDoctorAudience(doctor) })
   }
 
   async receivePrescription(user, authentication, prescription) {
@@ -84,7 +85,7 @@ class AuthorizationProvider {
       pharmacist,
       prescription
     }
-    return jwt.sign(authorization, privateKey, { expiresIn: authorizationsMap[authorization.type].ttl * 60, subject: utils.getPharmacistSubject(pharmacist), audience: utils.getPharmacistAudience(pharmacist) })
+    return jwt.sign(authorization, privateKey, { expiresIn: authorizationsMap[authorization.type].ttl, subject: utils.getPharmacistSubject(pharmacist), audience: utils.getPharmacistAudience(pharmacist) })
   }
 
   async allowReceivePrescription(authorizerUser, authorizedUser, authentication, prescription) {
@@ -106,7 +107,7 @@ class AuthorizationProvider {
       pharmacist,
       prescription
     }
-    return jwt.sign(authorization, privateKey, { expiresIn: authorizationsMap[authorization.type].ttl * 60, subject: utils.getAffiliateSubject(affiliate), audience: utils.getPharmacistAudience(pharmacist) })
+    return jwt.sign(authorization, privateKey, { expiresIn: authorizationsMap[authorization.type].ttl, subject: utils.getAffiliateSubject(affiliate), audience: utils.getPharmacistAudience(pharmacist) })
   }
 }
 

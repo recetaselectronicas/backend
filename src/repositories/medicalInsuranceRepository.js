@@ -1,14 +1,11 @@
 /* eslint-disable class-methods-use-this */
 const { MedicalInsurance } = require('../domain/medicalInsurance')
-const { newNotFoundError, newEntityAlreadyCreated, newInvalidUsernameOrPasswordError } = require('../utils/errors')
+const { newNotFoundError, newEntityAlreadyCreated } = require('../utils/errors')
 const knex = require('../init/knexConnection')
 const { MEDICAL_INSURANCE, MEDICAL_BOOKLET } = require('./tablesNames')
+const { logger } = require('../utils/utils')
 
 class MedicalInsuranceRepository {
-  constructor() {
-    this.medicalInsurances = []
-  }
-
   create(_medicalInsurance) {
     const medicalInsurance = MedicalInsurance.fromObject(_medicalInsurance)
     if (medicalInsurance.id) {
@@ -43,7 +40,7 @@ class MedicalInsuranceRepository {
       .first()
       .then(res => MedicalInsurance.fromObject(res))
       .catch((error) => {
-        console.log('error getting by id medical insurance', error)
+        logger.info('error getting by id medical insurance', error)
         throw newNotFoundError(`No medicalInsurance was found with id ${id}`)
       })
   }

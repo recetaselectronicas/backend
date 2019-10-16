@@ -27,7 +27,6 @@ router.get('/:id', async (req, res, next) => {
     const doctor = await DoctorRepository.getById(id)
     return res.json(doctor.toPlainObject())
   } catch (e) {
-    console.error(e)
     return next(e)
   }
 })

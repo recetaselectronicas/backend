@@ -1,16 +1,12 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable class-methods-use-this */
 const { Doctor } = require('../domain/doctor')
-const { newNotFoundError, newEntityAlreadyCreated, newInvalidUsernameOrPasswordError } = require('../utils/errors')
+const { newNotFoundError, newEntityAlreadyCreated } = require('../utils/errors')
 
 const knex = require('../init/knexConnection')
 const { DOCTOR, SPECIALITY, ATTENTION } = require('./tablesNames')
 
 class DoctorRepository {
-  constructor() {
-    this.doctors = []
-  }
-
   create(_doctor) {
     const doctor = Doctor.fromObject(_doctor)
     if (doctor.id) {
@@ -30,10 +26,6 @@ class DoctorRepository {
     return knex(DOCTOR)
       .insert(insertableDoctor)
       .then(([id]) => id)
-  }
-
-  getAll() {
-    return new Promise((resolve, reject) => resolve([...this.doctors]))
   }
 
   async getById(id) {

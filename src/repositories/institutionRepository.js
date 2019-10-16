@@ -5,10 +5,6 @@ const knex = require('../init/knexConnection')
 const { INSTITUTION } = require('./tablesNames')
 
 class InstitutionRepository {
-  constructor() {
-    this.institutions = []
-  }
-
   create(_institution) {
     const institution = Institution.fromObject(_institution)
     if (institution.id) {

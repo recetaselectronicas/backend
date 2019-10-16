@@ -1,5 +1,5 @@
 const { Pharmacist } = require('../domain/pharmacist')
-const { newNotFoundError, newEntityAlreadyCreated, newInvalidUsernameOrPasswordError } = require('../utils/errors')
+const { newNotFoundError, newEntityAlreadyCreated } = require('../utils/errors')
 const { generateNewSequencer } = require('../utils/utils')
 const { PHARMACIST } = require('./tablesNames')
 const knex = require('../init/knexConnection')
@@ -7,10 +7,6 @@ const knex = require('../init/knexConnection')
 const sequencer = generateNewSequencer()
 
 class PharmacistRepository {
-  constructor() {
-    this.pharmacists = []
-  }
-
   create(_pharmacist) {
     return new Promise((resolve, reject) => {
       const pharmacist = Pharmacist.fromObject(_pharmacist)
@@ -21,10 +17,6 @@ class PharmacistRepository {
       this.pharmacists.push(pharmacist)
       return resolve(pharmacist)
     })
-  }
-
-  getAll() {
-    return new Promise((resolve, reject) => resolve([...this.pharmacists]))
   }
 
   async getById(id) {

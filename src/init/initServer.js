@@ -1,8 +1,7 @@
+const express = require('express')
 const { logger } = require('../utils/utils')
 
 const init = () => {
-  const express = require('express')
-  const bodyParser = require('body-parser')
   const app = express()
   const port = 8080
 

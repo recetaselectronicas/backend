@@ -11,24 +11,14 @@ const {
   ITEM, PRESCRIPTION, INSTITUTION, STATE, MEDICINE, AFFILIATE, PATIENT, MEDICAL_INSURANCE, DOCTOR
 } = require('./tablesNames')
 const knex = require('../init/knexConnection')
-const Promise = require('bluebird')
-const { dateTimeFormat } = require('../utils/utils')
 const { states } = require('./../state-machine/state')
-const lang = require('lodash/lang')
+const { defaults } = require('../config/defaults')
 
 class PrescriptionRepository {
   constructor() {
-    this.prescriptions = []
     this.getItems = this.getItems.bind(this)
     this.getDomainPrescription = this.getDomainPrescription.bind(this)
     this.getByQuery = this.getByQuery.bind(this)
-  }
-
-  reset() {
-    return new Promise((resolve, reject) => {
-      this.prescriptions = []
-      return resolve()
-    })
   }
 
   async create(_prescription) {
@@ -89,7 +79,7 @@ class PrescriptionRepository {
     }
     const prescriptionId = plainPrescription.id
     try {
-      await knex.transaction(async (trx) => {
+      const res = await knex.transaction(async (trx) => {
         await trx(PRESCRIPTION)
           .where('id', prescriptionId)
           .update(updatetablePrescription)
@@ -115,27 +105,11 @@ class PrescriptionRepository {
           })
         )
       })
+      return res
     } catch (e) {
       console.log('error', e)
       throw e
     }
-  }
-
-  // updateTo(_prescription, newStatus) {
-  //   const prescription = Prescription.fromObject(_prescription)
-  //   return knex(PRESCRIPTION)
-  //     .where('id', prescription.id)
-  //     .update({
-  //       id_state: newStatus
-  //     })
-  // }
-
-  count() {
-    return new Promise((resolve, reject) => resolve(this.prescriptions.length))
-  }
-
-  getAll() {
-    return new Promise((resolve, reject) => resolve([...this.prescriptions]))
   }
 
   async getById(id, query = {}) {
@@ -195,17 +169,15 @@ class PrescriptionRepository {
       .select(`${PRESCRIPTION}.id`)
       .table(PRESCRIPTION)
       .where(`${PRESCRIPTION}.id_state`, states.ISSUED.id)
-      .andWhereRaw(`${PRESCRIPTION}.issued_date < SUBTIME(SYSDATE(), "00:01:00")`)
+      .andWhereRaw(`${PRESCRIPTION}.issued_date < SUBTIME(SYSDATE(), "${defaults.daemons.issued.ttl}")`)
   }
 
   getPrescriptionsToExpirate() {
     return knex
       .select(`${PRESCRIPTION}.id`)
       .table(PRESCRIPTION)
-      .where(builder => builder.where(`${PRESCRIPTION}.id_state`, states.CONFIRMED.id).orWhere(`${PRESCRIPTION}.id_state`, states.PARTIALLY_RECEIVED.id))
-      .andWhere(function () {
-        this.andWhereRaw(`SYSDATE() > ADDDATE(${PRESCRIPTION}.issued_date, INTERVAL ( (${PRESCRIPTION}.ttl) - 20) MINUTE)`)
-      })
+      .whereIn(`${PRESCRIPTION}.id_state`, [states.CONFIRMED.id, states.PARTIALLY_RECEIVED.id])
+      .andWhereRaw(`${PRESCRIPTION}.issued_date < SUBTIME(SYSDATE(), "${defaults.daemons.expired.ttl}")`)
   }
 
   async getByQuery(query) {

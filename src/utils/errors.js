@@ -1,7 +1,8 @@
 const _object = require('lodash/object')
 const _array = require('lodash/array')
+const { codes } = require('../codes/commonCodes')
 
-const ERRORS_TYPE = 'UNIFY'
+const ERRORS_TYPE = codes.COMPANY.NAME
 
 const error = {
   type: ERRORS_TYPE, // codigo para reconocer nuestros errores

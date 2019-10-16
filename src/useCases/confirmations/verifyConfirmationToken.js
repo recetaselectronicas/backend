@@ -2,8 +2,9 @@ const jwt = require('jsonwebtoken')
 const { codes } = require('../../codes/commonCodes')
 const errors = require('../../utils/errors')
 const { logger } = require('../../utils/utils')
+const { defaults } = require('../../config/defaults')
 
-const privateKey = `${codes.COMPANY.NAME}_confirmation_module`
+const { privateKey } = defaults.confirmations
 
 const verifyConfirmationToken = (token, type) => {
   try {

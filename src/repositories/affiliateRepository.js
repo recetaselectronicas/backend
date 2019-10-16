@@ -1,16 +1,12 @@
 /* eslint-disable class-methods-use-this */
 const { Affiliate } = require('../domain/affiliate')
 const { Plan } = require('../domain/plan')
-const { newNotFoundError, newEntityAlreadyCreated, newInvalidUsernameOrPasswordError } = require('../utils/errors')
+const { newNotFoundError, newEntityAlreadyCreated } = require('../utils/errors')
 const { AFFILIATE, PATIENT, PLAN } = require('./tablesNames')
 const knex = require('../init/knexConnection')
 const { logger } = require('../utils/utils')
 
 class AffiliateRepository {
-  constructor() {
-    this.affiliates = []
-  }
-
   create(_affiliate) {
     const affiliate = Affiliate.fromObject(_affiliate)
     if (affiliate.id) {
@@ -31,10 +27,6 @@ class AffiliateRepository {
     return knex(AFFILIATE)
       .insert(insertableAffiliate)
       .then(([id]) => id)
-  }
-
-  getAll() {
-    return new Promise((resolve, reject) => resolve([...this.affiliates]))
   }
 
   getByQuery(query) {

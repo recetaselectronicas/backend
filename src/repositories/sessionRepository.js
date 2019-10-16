@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 const speakeasy = require('speakeasy')
-const { userTypes, authenticationTypes, authorizationActionTypes } = require('../permissions/identifiedUser')
+const { userTypes, authenticationTypes } = require('../permissions/identifiedUser')
 const { PATIENT, DOCTOR, PHARMACIST, MEDICAL_INSURANCE } = require('./tablesNames')
 const knex = require('../init/knexConnection')
 const { newInvalidUsernameOrPasswordError, newNotFoundError, newSessionExpiredError, newBadRequestError } = require('../utils/errors')

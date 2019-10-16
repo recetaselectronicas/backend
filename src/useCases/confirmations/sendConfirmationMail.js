@@ -1,9 +1,10 @@
 const nodemailer = require('nodemailer')
 const { codes } = require('../../codes/commonCodes')
 const { generateMailTemplate } = require('./generateMailTemplate')
+const { defaults } = require('../../config/defaults')
 
-const companyEmail = 'unify.prescriptions@gmail.com'
-const companyPassword = 'unify_94825'
+const companyEmail = defaults.emails.corporative.email
+const companyPassword = defaults.emails.corporative.pass
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',

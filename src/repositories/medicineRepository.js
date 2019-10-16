@@ -24,10 +24,6 @@ class MedicineRepository {
       .then(([id]) => id)
   }
 
-  getAll() {
-    return new Promise((resolve, reject) => resolve([...this.medicines]))
-  }
-
   getByQuery(query) {
     const { description } = query
     return knex(MEDICINE)

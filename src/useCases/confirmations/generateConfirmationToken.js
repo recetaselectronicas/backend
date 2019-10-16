@@ -1,8 +1,9 @@
 const jwt = require('jsonwebtoken')
 const { codes } = require('../../codes/commonCodes')
+const { defaults } = require('../../config/defaults')
 
-const privateKey = `${codes.COMPANY.NAME}_confirmation_module`
-const expirationTime = 60
+const { privateKey } = defaults.confirmations
+const expirationTime = defaults.confirmations.token.ttl
 
 const generateConfirmationToken = (id, userName, type) => {
   const payload = {
@@ -10,7 +11,7 @@ const generateConfirmationToken = (id, userName, type) => {
     userName,
     type
   }
-  return jwt.sign(payload, privateKey, { expiresIn: expirationTime * 60, subject: codes.COMPANY.NAME, audience: type })
+  return jwt.sign(payload, privateKey, { expiresIn: expirationTime, subject: codes.COMPANY.NAME, audience: type })
 }
 
 module.exports = { generateConfirmationToken }

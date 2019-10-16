@@ -4,8 +4,9 @@ const utils = require('./utils')
 const { isBusinessError, newForbiddenResourceException } = require('../utils/errors')
 const { logger } = require('../utils/utils')
 const { PrescriptionRepository } = require('../repositories/prescriptions-repository')
+const { defaults } = require('../config/defaults')
 
-const privateKey = utils.getPrivateKey()
+const { privateKey } = defaults.authorizations
 
 class AuthorizationVerifier {
   async issuePrescription(authorizationToken, verificationToken, prescription, identifiedUser) {
