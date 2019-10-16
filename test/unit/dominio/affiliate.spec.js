@@ -26,8 +26,8 @@ const nicIssueDate = '15/06/1995'
 const nicType = 'DNI'
 const nicExemplary = 'B'
 const nicPhoto = '/photoPedro.jpg'
-const fromDate = '16/07/1996'
-const toDate = '17/08/1997'
+const fromDate = '16/07/1996 00:00'
+const toDate = '17/08/1997 00:00'
 const code = '800006 0980565'
 const category = '01'
 const imageCredential = '/credentialPedro.jpg'
@@ -192,13 +192,13 @@ describe('Affiliate', () => {
   })
 
   it('when you get the from date from a affiliate that has an  from date it returns a string representation', () => {
-    const fromDate = '21/01/1998'
+    const fromDate = '21/01/1998 00:00'
     affiliate.setFromDate(fromDate)
     expect(affiliate.getFromDate()).toEqual(fromDate)
   })
 
   it('when you get the to date from a affiliate that has an  to date it returns a string representation', () => {
-    const toDate = '21/01/1998'
+    const toDate = '21/01/1998 00:00'
     affiliate.setToDate(toDate)
     expect(affiliate.getToDate()).toEqual(toDate)
   })
