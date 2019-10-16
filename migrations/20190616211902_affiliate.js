@@ -5,7 +5,7 @@ exports.up = knex => knex.schema.withSchema('recetas').createTable(AFFILIATE, (t
   table.increments('id')
   table.integer('id_patient').unsigned()
   table.integer('id_plan').unsigned()
-  table.datetime('from_date').notNullable()
+  table.timestamp('from_date').notNullable().defaultTo(knex.fn.now())
   table.datetime('to_date')
   table.string('category', 50)
   table.string('code', 255).notNullable()

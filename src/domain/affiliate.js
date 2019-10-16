@@ -1,4 +1,4 @@
-const { dateFormat } = require('../utils/utils')
+const { dateFormat, dateTimeFormat } = require('../utils/utils')
 const { Plan } = require('./plan')
 
 class Affiliate {
@@ -28,19 +28,19 @@ class Affiliate {
   }
 
   setFromDate(date) {
-    this.fromDate = dateFormat.toDate(date)
+    this.fromDate = dateTimeFormat.toDate(date)
   }
 
   getFromDate() {
-    return dateFormat.toString(this.fromDate)
+    return dateTimeFormat.toString(this.fromDate)
   }
 
   setToDate(date) {
-    this.toDate = dateFormat.toDate(date)
+    this.toDate = dateTimeFormat.toDate(date)
   }
 
   getToDate() {
-    return dateFormat.toString(this.toDate)
+    return dateTimeFormat.toString(this.toDate)
   }
 
   setBirthDate(date) {

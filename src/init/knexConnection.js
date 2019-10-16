@@ -46,7 +46,7 @@ const knex = initKnex({
       if (field.type === 'TINY' && field.length === 1) {
         return (field.string() === '1')
       }
-      if (field.type === 'DATETIME') {
+      if (field.type === 'DATETIME' || field.type === 'TIMESTAMP') {
         return moment(field.string()).format(formats.dateTimeFormat)
       }
       if (field.type === 'DATE') {
