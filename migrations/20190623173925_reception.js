@@ -12,11 +12,3 @@ exports.up = knex => knex.schema.withSchema('recetas').createTable(RECEPTION, (t
 })
 
 exports.down = knex => knex.schema.withSchema('recetas').dropTable(RECEPTION)
-
-/*
-Recepcion: (fecha_desde,id_farmaceutico, id_obra_social, fecha_hasta)
-Recepcion.id_farmaceutico debe existir en Farmaceutico.ID
-Recepcion.id_obra_social debe existir en Obra_Social.ID
-Farmaceutico.ID y Obra_Social.ID pueden no existir en Recepcion.id_farmaceutico Recepcion.id_obra_social
-
-*/

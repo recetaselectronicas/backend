@@ -31,7 +31,7 @@ const initMongoDB = () => new Promise((resolve, reject) => {
     mongoClient.sessionsCollection = mongoClient.prescriptionDB.collection(sessionsCollection)
     mongoClient.client = cli
     const promises = []
-    promises.push(mongoClient.sessionsCollection.deleteMany({}))
+    // promises.push(mongoClient.sessionsCollection.deleteMany({}))
     if (config.executeBootstrap.mongo) {
       promises.push(mongoClient.normsCollection.deleteMany({}))
     }

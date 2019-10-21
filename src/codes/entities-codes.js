@@ -31,6 +31,12 @@ const codes = {
       id: 'id',
     },
   },
+  PLAN: {
+    name: 'plan',
+    fields: {
+      id: 'id'
+    }
+  },
   DOCTOR: {
     name: 'doctor',
     fields: {

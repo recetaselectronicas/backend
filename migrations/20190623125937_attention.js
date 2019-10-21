@@ -12,12 +12,3 @@ exports.up = knex => knex.schema.withSchema('recetas').createTable(ATTENTION, (t
 })
 
 exports.down = knex => knex.schema.withSchema('recetas').dropTable(ATTENTION)
-
-/*
-Atencion: (fecha_desde,id_medico,id_especialidad, fecha_hasta)
-Atencion.id_medico debe existir en Medico.ID
-Atencion.id_especialidad debe existir en Especialidad.ID
-Especialidad.ID Medico.ID pueden no estar en Atencion.id_especialidad Atencion.id_medico
-
-
-*/

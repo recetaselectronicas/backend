@@ -4,6 +4,7 @@ const filters = require('../filters/prescriptions/prescriptionFilters')
 const { newForbiddenResourceException } = require('../utils/errors')
 const { InstitutionRepository } = require('../repositories/institutionRepository')
 const { AffiliateRepository } = require('../repositories/affiliateRepository')
+const { PatientRepository } = require('../repositories/patientRepository')
 const { DoctorRepository } = require('../repositories/doctorRepository')
 const { MedicalInsuranceRepository } = require('../repositories/medicalInsuranceRepository')
 const { PharmacistRepository } = require('../repositories/pharmacistRepository')
@@ -71,7 +72,7 @@ const identifiedAffiliate = {
   getActions: prescription => [],
   getMenu: () => [{ label: 'Ver recetas', url: '/recetas' }],
   getData() {
-    return AffiliateRepository.getById(this.id)
+    return PatientRepository.getById(this.id)
   },
   canIssue: () => false,
   canReceive: () => false,

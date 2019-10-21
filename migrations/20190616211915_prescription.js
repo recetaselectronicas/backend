@@ -26,19 +26,3 @@ exports.up = knex => knex.schema.withSchema('recetas').createTable(PRESCRIPTION,
 })
 
 exports.down = knex => knex.schema.withSchema('recetas').dropTable(PRESCRIPTION)
-/*
-Receta:
-(ID, fecha_emision, fecha_venta,fecha_auditado, diagnostico, tp,
-  id_obra_social, id_afiliado, id_medico, id_estado, id_norma, id_institucion, TTL)
-
-Receta.fecha_emision no puede ser nulo
-Receta.Estado.ID no puede ser nulo
-Receta.id_afiliado debe existir en Afiliado.ID
-Receta.id_medico debe existir en Medico.Id
-Receta.id_obra_social debe existir en Obra_Social.ID
-Receta.id_norma debe existir en Norma.ID
-Receta.id_institucion debe existir en Institucion.ID
-Receta.TTL no puede ser nulo
-
-
-*/

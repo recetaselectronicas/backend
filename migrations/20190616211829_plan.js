@@ -12,6 +12,3 @@ exports.up = knex => knex.schema.withSchema('recetas').createTable(PLAN, (table)
 })
 
 exports.down = knex => knex.schema.withSchema('recetas').dropTable(PLAN)
-/* Plan : (ID, descripcion,fecha_alta,fecha_baja,porcentaje,id_obra_social)
-Plan.id_obra_social debe existir en Obra_Social.ID
- */

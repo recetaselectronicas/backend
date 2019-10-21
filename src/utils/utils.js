@@ -17,23 +17,25 @@ const formats = {
   dateTimeFormat: 'DD/MM/YYYY HH:mm',
   dateFormat: 'DD/MM/YYYY',
   timeFormat: 'HH:mm',
+  mysqlDateFormat: 'YYYY-MM-DD',
+  mysqlDateTimeFormat: 'YYYY-MM-DD HH:mm:ss',
 }
 
 const formatter = {
-  toString: (date, formatter) => {
+  toString: (date, format) => {
     if (moment.isMoment(date)) {
       if (date.isValid()) {
-        return date.format(formatter)
+        return date.format(format)
       }
       return null
     }
     return null
   },
-  toDate: (date, formatter) => {
+  toDate: (date, format) => {
     if (moment.isMoment(date)) {
       return date
     }
-    date = moment(date, formatter)
+    date = moment(date, format)
     if (!date.isValid()) {
       date = null
     }
@@ -44,10 +46,12 @@ const formatter = {
 const dateTimeFormat = {
   toString: date => formatter.toString(date, formats.dateTimeFormat),
   toDate: date => formatter.toDate(date, formats.dateTimeFormat),
+  toMysqlString: date => formatter.toString(date, formats.mysqlDateTimeFormat)
 }
 const dateFormat = {
   toString: date => formatter.toString(date, formats.dateFormat),
   toDate: date => formatter.toDate(date, formats.dateFormat),
+  toMysqlString: date => formatter.toString(date, formats.mysqlDateFormat)
 }
 
 

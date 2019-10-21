@@ -2,6 +2,9 @@ const express = require('express')
 
 const router = express.Router()
 const { SessionRepository } = require('../repositories/sessionRepository')
+const { linkUpUsers } = require('../useCases/linkUps/linkUpUsers')
+const { getUserLinkUpRequests } = require('../useCases/linkUps/getUserLinkUpRequests')
+const { updateUserLinkUpRequest } = require('../useCases/linkUps/updateUserLinkUpRequest')
 
 router.get('/menu', async (req, res) => {
   const { identifiedUser } = req
@@ -77,6 +80,38 @@ router.get('/data', async (req, res, next) => {
   try {
     const user = await identifiedUser.getData()
     return res.status(200).json(user.toPlainObject())
+  } catch (e) {
+    return next(e)
+  }
+})
+
+router.post('/link-up', async (req, res, next) => {
+  const { identifiedUser } = req
+  try {
+    await linkUpUsers(identifiedUser, req.body)
+    return res.json()
+  } catch (e) {
+    return next(e)
+  }
+})
+
+router.get('/link-up/requests', async (req, res, next) => {
+  const { identifiedUser } = req
+  try {
+    const linkUpRequests = await getUserLinkUpRequests(identifiedUser)
+    return res.json(linkUpRequests)
+  } catch (e) {
+    return next(e)
+  }
+})
+
+router.put('/link-up/requests/:id', async (req, res, next) => {
+  const { identifiedUser } = req
+  const { body } = req
+  body.id = req.params.id
+  try {
+    await updateUserLinkUpRequest(identifiedUser, body)
+    return res.json()
   } catch (e) {
     return next(e)
   }

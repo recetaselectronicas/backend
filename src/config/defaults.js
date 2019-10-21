@@ -12,7 +12,7 @@ const defaults = {
     },
     expired: {
       name: 'Expired Daemon',
-      interval: getTimeInMilliseconds({ seconds: 1 }),
+      interval: getTimeInMilliseconds({ minutes: 1 }),
       ttl: getTimeInSeconds({ minutes: 5 })
     }
   },

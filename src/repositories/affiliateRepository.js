@@ -1,31 +1,16 @@
 /* eslint-disable class-methods-use-this */
 const { Affiliate } = require('../domain/affiliate')
 const { Plan } = require('../domain/plan')
-const { newNotFoundError, newEntityAlreadyCreated } = require('../utils/errors')
+const { newNotFoundError } = require('../utils/errors')
 const { AFFILIATE, PATIENT, PLAN } = require('./tablesNames')
 const knex = require('../init/knexConnection')
 const { logger } = require('../utils/utils')
 
 class AffiliateRepository {
-  create(_affiliate) {
-    const affiliate = Affiliate.fromObject(_affiliate)
-    if (affiliate.id) {
-      throw newEntityAlreadyCreated('Affiliate allready created')
-    }
-    const plainAffiliate = affiliate.toPlainObject()
-
-    const insertableAffiliate = {
-      id_patient: plainAffiliate.idPatient,
-      id_plan: plainAffiliate.plan.id,
-      from_date: plainAffiliate.fromDate,
-      to_date: plainAffiliate.toDate,
-      code: plainAffiliate.code,
-      category: plainAffiliate.category,
-      image_credential: plainAffiliate.imageCredential
-    }
-
-    return knex(AFFILIATE)
-      .insert(insertableAffiliate)
+  create(affiliate) {
+    return knex
+      .insert(affiliate)
+      .into(AFFILIATE)
       .then(([id]) => id)
   }
 

@@ -22,17 +22,3 @@ exports.up = knex => knex.schema.withSchema('recetas').createTable(PHARMACIST, (
 })
 
 exports.down = knex => knex.schema.withSchema('recetas').dropTable(PHARMACIST)
-
-/*
-(ID, fecha_alta, telefono, fecha_baja, fecha_nacimiento, usuario, password,
-     nombre, apellido, nacionalidad, email, domicilio, nro_matricula)
-Farmaceutico.d Farmaceutico.fecha_alta
-Farmaceutico.fecha_nac
- Farmaceutico.usuario
- Farmaceutico.password
-  Farmaceutico.nombre
-  Farmaceutico.apellido
- Farmaceutico.email
- Farmaceutico.nro_matricula no pueden ser nulos
-
-*/

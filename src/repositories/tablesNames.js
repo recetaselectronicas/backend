@@ -23,5 +23,6 @@ module.exports = {
   DRUG: 'drug',
   LABORATORY: 'laboratory',
   POTENCY: 'potency',
-  RECEPTION: 'reception'
+  RECEPTION: 'reception',
+  AFFILIATE_REQUEST: 'affiliate_request'
 }

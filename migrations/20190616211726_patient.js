@@ -26,11 +26,3 @@ exports.up = knex => knex.schema.withSchema('recetas').createTable(PATIENT, (tab
 })
 
 exports.down = knex => knex.schema.withSchema('recetas').dropTable(PATIENT)
-
-/*
-Paciente:
-(ID,usuario,password,nombre,apellido,telefono,fecha_nacimiento,sexo,
-    nro_documento,email,nacionalidad,fecha_emision,tipo_doc,ejemplar,domicilio,foto_dni)
-Paciente.usuario, Paciente.password, Paciente.nombre Paciente.apellido, Paciente.fecha_nacimiento Paciente.sexo Paciente.nro_documento,
- Paciente.nacionalidad, Paciente.email, Paciente.domicilio, no pueden ser nulos
-*/
