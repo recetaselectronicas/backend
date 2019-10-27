@@ -21,7 +21,7 @@
     "express": "^4.17.1",
     "express-bearer-token": "^2.4.0",
     "jsonwebtoken": "^8.5.1",
-    "knex": "^0.17.6",
+    "knex": ">=0.19.5",
     "knex-hooks": "0.0.6",
     "lodash": "^4.17.14",
     "moment": "^2.24.0",
