@@ -120,6 +120,19 @@ class AffiliateRepository {
         id: affiliateId
       })
   }
+
+  credentialExists(code, category) {
+    return knex
+      .select('id')
+      .from(AFFILIATE)
+      .where({
+        code,
+        category
+      })
+      .limit(1)
+      .first()
+      .then(id => !!id)
+  }
 }
 
 module.exports = {

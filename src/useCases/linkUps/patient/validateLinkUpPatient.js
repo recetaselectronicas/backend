@@ -3,6 +3,7 @@ const array = require('lodash/array')
 const errors = require('../../../utils/errors')
 const { codes } = require('../../../codes/entities-codes')
 const { validateMedicalInsuranceAndPlan } = require('../../validations/validateMedicalInsuranceAndPlan')
+const { validateAffiliateCredential } = require('../validateAffiliateCredential')
 const { validatePatientIsAbleToAffiliate } = require('../validatePatientIsAbleToAffiliate')
 const { validatePatientLinkUpRequests } = require('../validatePatientLinkUpRequests.js')
 
@@ -23,6 +24,7 @@ const validateLinkUpPatient = async (patientId, body) => {
     throw errors.newBadRequestError('error while linking-up patient', bodyErrors)
   }
   await validateMedicalInsuranceAndPlan(body.medicalInsurance.id, body.medicalInsurance.plan.id)
+  await validateAffiliateCredential(body.code, body.category)
   await validatePatientIsAbleToAffiliate(patientId)
   await validatePatientLinkUpRequests(patientId)
 }
