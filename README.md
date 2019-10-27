@@ -21,8 +21,8 @@ Existe un archivo de configuraciones (src/config/config.js) que se puede cambiar
 ```javascript
 const config = {
   executeBootstrap: {
-    mongo: false, // ejecuta o no el bootstrap de Mongo
-    mysql: false // ejecuta o no el bootstrap de MySql
+    mongo: false, // ejecuta o no el bootstrap de Mongo (borra todo lo que haya y regenera)
+    mysql: false // ejecuta o no el bootstrap de MySql (borra todo lo que haya y regenera)
   },
   executeDaemon: {
     issued: true, // corre o no el demonio que confirma las recetas
@@ -46,10 +46,10 @@ Revisar que el servicio de Mongo esté corriendo. Ejecutando el siguiente comand
 $ mongo
 ```
 
-Revisar que el servicio de MySql esté corriendo. Ejecutando el siguiente comando se deberían poder conectar, sino algo no está bin
+Revisar que el servicio de MySql esté corriendo. Ejecutando el siguiente comando se deberían poder conectar, sino algo no está bien
 ```bash
 $ mysql -u root -p 
 #Con password 1234
 ```
 
-Cualquier otra cosa, cnsultar a su developer amigo
+Cualquier otra cosa, consultar a su developer amigo
