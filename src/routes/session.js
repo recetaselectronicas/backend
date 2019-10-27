@@ -80,7 +80,7 @@ router.get('/data', async (req, res, next) => {
   const { identifiedUser } = req
   try {
     const user = await identifiedUser.getData()
-    return res.status(200).json(user.toPlainObject())
+    return res.status(200).json(user)
   } catch (e) {
     return next(e)
   }

@@ -71,8 +71,14 @@ const identifiedAffiliate = {
   },
   getActions: prescription => [],
   getMenu: () => [{ label: 'Ver recetas', url: '/recetas' }],
-  getData() {
-    return PatientRepository.getById(this.id)
+  async getData() {
+    const patient = await PatientRepository.getById(this.id)
+    const affiliations = await AffiliateRepository.getAffiliations(this.id)
+    const data = {
+      data: patient.toPlainObject(),
+      affiliations: affiliations.map(affiliation => affiliation.toPlainObject())
+    }
+    return data
   },
   canIssue: () => false,
   canReceive: () => false,

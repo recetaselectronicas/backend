@@ -11,7 +11,7 @@ router.get('/', async (req, res, next) => {
   query.datetime = moment()
   try {
     const affiliates = await AffiliateRepository.getByQuery(query)
-    return res.status(200).send(affiliates.map(affiliate => affiliate.toRecudeObject()))
+    return res.status(200).send(affiliates.map(affiliate => affiliate.toReduceObject()))
   } catch (error) {
     return next(error)
   }

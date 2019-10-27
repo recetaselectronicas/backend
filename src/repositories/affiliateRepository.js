@@ -133,6 +133,36 @@ class AffiliateRepository {
       .first()
       .then(id => !!id)
   }
+
+  getAffiliations(patientId) {
+    return knex
+      .select(
+        `${AFFILIATE}.id`,
+        `${AFFILIATE}.id_patient`,
+        `${AFFILIATE}.code`,
+        `${AFFILIATE}.category `,
+        `${AFFILIATE}.from_date `,
+        `${AFFILIATE}.to_date `,
+        `${PLAN}.id as id_plan`,
+        `${PLAN}.id_medical_insurance`,
+        `${PLAN}.percentage`,
+      )
+      .from(AFFILIATE)
+      .leftJoin(PLAN, `${AFFILIATE}.id_plan`, `${PLAN}.id`)
+      .where({
+        idPatient: patientId
+      })
+      .orderBy('from_date', 'asc')
+      .then(affiliates => affiliates.map((affiliate) => {
+        affiliate.plan = {
+          id: affiliate.idPlan,
+          idMedicalInsurance: affiliate.idMedicalInsurance,
+          percentage: affiliate.percentage
+        }
+        return affiliate
+      }))
+      .then(affiliates => affiliates.map(affiliate => Affiliate.fromObject(affiliate)))
+  }
 }
 
 module.exports = {

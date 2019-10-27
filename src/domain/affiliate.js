@@ -137,7 +137,7 @@ class Affiliate {
     return JSON.parse(this.toJson())
   }
 
-  toRecudeObject() {
+  toReduceObject() {
     return JSON.parse(this.toReduceJson())
   }
 
