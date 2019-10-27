@@ -1,10 +1,10 @@
 const lang = require('lodash/lang')
 const array = require('lodash/array')
-const errors = require('../../utils/errors')
-const { codes } = require('../../codes/entities-codes')
-const { validateMedicalInsuranceAndPlan } = require('./validateMedicalInsuranceAndPlan')
-const { validatePatientIsAbleToAffiliate } = require('./validatePatientIsAbleToAffiliate')
-const { validatePatientLinkUpRequests } = require('./validatePatientLinkUpRequests.js')
+const errors = require('../../../utils/errors')
+const { codes } = require('../../../codes/entities-codes')
+const { validateMedicalInsuranceAndPlan } = require('../../validations/validateMedicalInsuranceAndPlan')
+const { validatePatientIsAbleToAffiliate } = require('../validatePatientIsAbleToAffiliate')
+const { validatePatientLinkUpRequests } = require('../validatePatientLinkUpRequests.js')
 
 const AFFILIATE = codes.AFFILIATE.name
 const MEDICAL_INSURANCE = codes.MEDICAL_INSURANCE.name

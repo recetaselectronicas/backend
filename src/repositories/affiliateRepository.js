@@ -5,6 +5,7 @@ const { newNotFoundError } = require('../utils/errors')
 const { AFFILIATE, PATIENT, PLAN } = require('./tablesNames')
 const knex = require('../init/knexConnection')
 const { logger } = require('../utils/utils')
+const { dateTimeFormat } = require('../utils/utils')
 
 class AffiliateRepository {
   create(affiliate) {
@@ -79,6 +80,30 @@ class AffiliateRepository {
       .catch((error) => {
         logger.error('error getting by id affiliate', error)
         throw newNotFoundError(`No affiliate was found with id ${id}`)
+      })
+  }
+
+  getCurrentAffiliation(patientId, datetime) {
+    return knex
+      .select('id')
+      .from(AFFILIATE)
+      .where({
+        idPatient: patientId
+      })
+      .whereRaw('(? between from_date and IFNULL(to_date, ?))', [dateTimeFormat.toMysqlString(datetime), dateTimeFormat.toMysqlString(datetime)])
+      .limit(1)
+      .first()
+      .then(res => (res && res.id && this.getById(res.id)) || null)
+  }
+
+  unAffiliate(affiliateId, datetime) {
+    return knex
+      .table(AFFILIATE)
+      .update({
+        toDate: datetime
+      })
+      .where({
+        id: affiliateId
       })
   }
 }

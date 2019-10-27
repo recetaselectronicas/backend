@@ -1,8 +1,8 @@
-const { requestStatus } = require('../../repositories/defaults')
-const errors = require('../../utils/errors')
-const { AffiliateRequestRepository } = require('../../repositories/affiliateRequestRepository')
-const { AffiliateRepository } = require('../../repositories/affiliateRepository')
-const { PlanRepository } = require('../../repositories/planRepository')
+const { requestStatus } = require('../../../repositories/defaults')
+const errors = require('../../../utils/errors')
+const { AffiliateRequestRepository } = require('../../../repositories/affiliateRequestRepository')
+const { AffiliateRepository } = require('../../../repositories/affiliateRepository')
+const { PlanRepository } = require('../../../repositories/planRepository')
 
 const updateMedicalInsuranceLinkUpAffiliateRequest = async (user, body) => {
   const request = await AffiliateRequestRepository.getRequest(body.id)

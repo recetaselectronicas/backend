@@ -1,6 +1,6 @@
-const { requestStatus } = require('../../repositories/defaults')
-const errors = require('../../utils/errors')
-const { AffiliateRequestRepository } = require('../../repositories/affiliateRequestRepository')
+const { requestStatus } = require('../../../repositories/defaults')
+const errors = require('../../../utils/errors')
+const { AffiliateRequestRepository } = require('../../../repositories/affiliateRequestRepository')
 
 const updatePatientLinkUpRequest = async (patient, body) => {
   if (body.status !== requestStatus.CANCELLED) {

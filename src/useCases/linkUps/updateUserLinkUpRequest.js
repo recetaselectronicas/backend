@@ -1,6 +1,6 @@
 const { userTypes } = require('../../permissions/identifiedUser')
-const { updatePatientLinkUpRequest } = require('./updatePatientLinkUpRequest')
-const { updateMedicalInsuranceLinkUpRequest } = require('./updateMedicalInsuranceLinkUpRequest')
+const { updatePatientLinkUpRequest } = require('./patient/updatePatientLinkUpRequest')
+const { updateMedicalInsuranceLinkUpRequest } = require('./medicalInsurance/updateMedicalInsuranceLinkUpRequest')
 const errors = require('../../utils/errors')
 
 const linkUpRequestMap = {

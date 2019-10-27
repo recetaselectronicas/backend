@@ -1,5 +1,5 @@
 const { userTypes } = require('../../permissions/identifiedUser')
-const { linkUpPatient } = require('./linkUpPatient')
+const { linkUpPatient } = require('./patient/linkUpPatient')
 const { linkUpMedicalInsurance } = require('./medicalInsurance/linkUpMedicalInsurance')
 const errors = require('../../utils/errors')
 

@@ -1,4 +1,4 @@
-const { AffiliateRequestRepository } = require('../../repositories/affiliateRequestRepository')
+const { AffiliateRequestRepository } = require('../../../repositories/affiliateRequestRepository')
 
 const createLinkUpPatientRequest = async (patientId, body) => {
   const affiliateRequest = {

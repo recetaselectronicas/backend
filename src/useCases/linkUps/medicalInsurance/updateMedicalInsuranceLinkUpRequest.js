@@ -1,6 +1,6 @@
-const { requestStatus } = require('../../repositories/defaults')
-const { userTypes } = require('../../permissions/identifiedUser')
-const errors = require('../../utils/errors')
+const { requestStatus } = require('../../../repositories/defaults')
+const { userTypes } = require('../../../permissions/identifiedUser')
+const errors = require('../../../utils/errors')
 const { updateMedicalInsuranceLinkUpAffiliateRequest } = require('./updateMedicalInsuranceLinkUpAffiliateRequest')
 
 const availableStatus = [requestStatus.ACCEPTED, requestStatus.DECLINED]
