@@ -1,6 +1,6 @@
-const { userTypes } = require('../permissions/identifiedUser')
+const { userTypes } = require('../../permissions/identifiedUser')
 const { verifyPatient } = require('./verifyPatient')
-const errors = require('../utils/errors')
+const errors = require('../../utils/errors')
 
 const verificationMap = {
   [userTypes.AFFILIATE]: verifyPatient

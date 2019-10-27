@@ -1,4 +1,5 @@
 const express = require('express')
+const moment = require('moment')
 
 const router = express.Router()
 const { AffiliateRepository } = require('../repositories/affiliateRepository')
@@ -7,9 +8,10 @@ const { userTypes } = require('../permissions/identifiedUser')
 
 router.get('/', async (req, res, next) => {
   const { query } = req
+  query.datetime = moment()
   try {
     const affiliates = await AffiliateRepository.getByQuery(query)
-    return res.status(200).send(affiliates.map(affiliate => affiliate.toPlainObject()))
+    return res.status(200).send(affiliates.map(affiliate => affiliate.toRecudeObject()))
   } catch (error) {
     return next(error)
   }

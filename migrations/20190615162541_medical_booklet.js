@@ -39,13 +39,13 @@ exports.up = knex => knex.schema
   })
   .createTable(MEDICAL_BOOKLET, (table) => {
     table.integer('id_doctor').unsigned()
-    table.foreign('id_doctor').references(`${DOCTOR}.id`)
     table.integer('id_medical_insurance').unsigned()
-    table.foreign('id_medical_insurance').references(`${MEDICAL_INSURANCE}.id`)
+    table.datetime('from_date').notNullable()
+    table.datetime('to_date')
 
-    table.datetime('entry_date').notNullable()
-    table.datetime('leaving_date')
-    table.primary(['id_doctor', 'id_medical_insurance', 'entry_date'])
+    table.primary(['id_doctor', 'id_medical_insurance', 'from_date'])
+    table.foreign('id_doctor').references(`${DOCTOR}.id`)
+    table.foreign('id_medical_insurance').references(`${MEDICAL_INSURANCE}.id`)
     return table
   })
 

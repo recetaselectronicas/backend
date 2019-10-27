@@ -1,4 +1,5 @@
 const express = require('express')
+const moment = require('moment')
 
 const router = express.Router()
 const { MedicalInsuranceRepository } = require('../repositories/medicalInsuranceRepository')
@@ -8,7 +9,7 @@ router.get('/medical-insurances', async (req, res, next) => {
   const { identifiedUser } = req
   const doctorId = identifiedUser.id
   try {
-    const medicalInsurances = await MedicalInsuranceRepository.getMedicalInsuranceByMedic(doctorId)
+    const medicalInsurances = await MedicalInsuranceRepository.getMedicalInsuranceByMedic(doctorId, moment())
     return res.status(200).send(medicalInsurances.map(medicalInsurance => medicalInsurance.toPlainObject()))
   } catch (error) {
     return next(error)

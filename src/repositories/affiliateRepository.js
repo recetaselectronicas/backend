@@ -16,11 +16,25 @@ class AffiliateRepository {
   }
 
   getByQuery(query) {
-    const { medicalInsurance, code } = query
+    const { medicalInsurance, code, datetime } = query
     return knex
-      .select(`${AFFILIATE}.id`, `${AFFILIATE}.code`, `${AFFILIATE}.category `, `${PATIENT}.name`, `${PATIENT}.nic_number`, `${PATIENT}.surname`, `${PLAN}.id_medical_insurance`)
-      .table(AFFILIATE)
+      .select(
+        `${AFFILIATE}.id`,
+        `${AFFILIATE}.code`,
+        `${AFFILIATE}.category `,
+        `${AFFILIATE}.from_date `,
+        `${AFFILIATE}.to_date `,
+        `${PATIENT}.id as id_patient`,
+        `${PATIENT}.name`,
+        `${PATIENT}.surname`,
+        `${PATIENT}.userName`,
+        `${PATIENT}.birthDate`,
+        `${PATIENT}.gender`,
+        `${PATIENT}.nic_number`,
+        `${PLAN}.id_medical_insurance`
+      ).table(AFFILIATE)
       .where('code', 'like', `%${code}%`)
+      .andWhereRaw(`? between ${AFFILIATE}.from_date and IFNULL(${AFFILIATE}.to_date, ?)`, [dateTimeFormat.toMysqlString(datetime), dateTimeFormat.toMysqlString(datetime)])
       .leftJoin(PATIENT, `${AFFILIATE}.id_patient`, `${PATIENT}.id`)
       .leftJoin(PLAN, `${AFFILIATE}.id_plan`, `${PLAN}.id`)
       .where(`${PLAN}.id_medical_insurance`, medicalInsurance)

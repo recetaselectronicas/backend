@@ -86,6 +86,22 @@ class Affiliate {
     })
   }
 
+  toReduceJson() {
+    return JSON.stringify({
+      id: this.id,
+      idPatient: this.idPatient,
+      name: this.name,
+      surname: this.surname,
+      userName: this.userName,
+      birthDate: this.getBirthDate(),
+      gender: this.gender,
+      fromDate: this.getFromDate(),
+      toDate: this.getToDate(),
+      code: this.code,
+      category: this.category
+    })
+  }
+
   static fromJson(json = '{}') {
     if (!json) {
       return new Affiliate()
@@ -119,6 +135,10 @@ class Affiliate {
 
   toPlainObject() {
     return JSON.parse(this.toJson())
+  }
+
+  toRecudeObject() {
+    return JSON.parse(this.toReduceJson())
   }
 
   static fromObject(object) {

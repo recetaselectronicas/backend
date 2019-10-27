@@ -4,6 +4,7 @@ const { newNotFoundError, newEntityAlreadyCreated } = require('../utils/errors')
 const knex = require('../init/knexConnection')
 const { MEDICAL_INSURANCE, MEDICAL_BOOKLET } = require('./tablesNames')
 const { logger } = require('../utils/utils')
+const { dateTimeFormat } = require('../utils/utils')
 
 class MedicalInsuranceRepository {
   create(_medicalInsurance) {
@@ -23,11 +24,12 @@ class MedicalInsuranceRepository {
       .then(response => response.map(medicalInsurance => MedicalInsurance.fromObject(medicalInsurance)))
   }
 
-  getMedicalInsuranceByMedic(doctorId) {
+  getMedicalInsuranceByMedic(doctorId, datetime) {
     return knex
       .select()
       .table(MEDICAL_BOOKLET)
       .where(`${MEDICAL_BOOKLET}.id_doctor`, Number.parseInt(doctorId, 10))
+      .andWhereRaw(`? between ${MEDICAL_BOOKLET}.from_date and IFNULL(${MEDICAL_BOOKLET}.to_date, ?)`, [dateTimeFormat.toMysqlString(datetime), dateTimeFormat.toMysqlString(datetime)])
       .leftJoin(MEDICAL_INSURANCE, `${MEDICAL_BOOKLET}.id_medical_insurance`, `${MEDICAL_INSURANCE}.id`)
       .then(response => response.map(medicalInsurance => MedicalInsurance.fromObject(medicalInsurance)))
   }

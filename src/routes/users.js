@@ -1,8 +1,8 @@
 const express = require('express')
 
 const router = express.Router()
-const { createUser } = require('../useCases/createUser')
-const { verifyUser } = require('../useCases/verifyUser')
+const { createUser } = require('../useCases/creations/createUser')
+const { verifyUser } = require('../useCases/creations/verifyUser')
 
 router.post('/:type', async (req, res, next) => {
   const { type } = req.params
