@@ -12,17 +12,12 @@ class DoctorRepository {
     if (doctor.id) {
       throw newEntityAlreadyCreated('Doctor allready created')
     }
-    const plainDoctor = doctor.toPlainObject()
-    const insertableDoctor = {
-      name: plainDoctor.name,
-      last_name: plainDoctor.lastName,
-      contact_number: plainDoctor.contactNumber,
-      nationality: plainDoctor.nationality,
-      address: plainDoctor.address,
-      email: plainDoctor.email,
-      national_matriculation: plainDoctor.nationalMatriculation,
-      provincial_matriculation: plainDoctor.provincialMatriculation
-    }
+    const insertableDoctor = doctor.toPlainObject()
+    insertableDoctor.password = doctor.password
+    delete insertableDoctor.specialty
+    delete insertableDoctor.entryDate
+    delete insertableDoctor.leavingDate
+
     return knex(DOCTOR)
       .insert(insertableDoctor)
       .then(([id]) => id)
@@ -54,6 +49,46 @@ class DoctorRepository {
     if (specialty) {
       doctor.specialty = specialty
     }
+  }
+
+  userNameExists(userName) {
+    return knex
+      .select('id')
+      .from(DOCTOR)
+      .where({ userName })
+      .limit(1)
+      .first()
+      .then(obj => !!(obj && obj.id))
+  }
+
+  specialtyExists(specialtyId) {
+    return knex
+      .select('id')
+      .from(SPECIALITY)
+      .where({
+        id: specialtyId
+      })
+      .limit(1)
+      .first()
+      .then(obj => !!(obj && obj.id))
+  }
+
+  registerSpecialty(doctorId, specialtyId) {
+    return knex
+      .into(ATTENTION)
+      .insert({
+        idSpecialty: specialtyId,
+        idDoctor: doctorId
+      })
+      .then(([id]) => id)
+  }
+
+  confirm(id) {
+    return knex
+      .table(DOCTOR)
+      .update({ confirmed: true })
+      .where({ id })
+      .then(updates => !!updates)
   }
 }
 

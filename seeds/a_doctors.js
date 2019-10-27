@@ -17,7 +17,9 @@ exports.seed = knex => addKnexHooks(knex)(DOCTOR)
       address: 'Lo loca 412',
       email: 'pepe@medic.com',
       national_matriculation: '12837123',
-      provincial_matriculation: '992831'
+      provincial_matriculation: '992831',
+      nic_number: '123123',
+      gender: 'M'
     },
     {
       user_name: 'enrrico',
@@ -32,7 +34,9 @@ exports.seed = knex => addKnexHooks(knex)(DOCTOR)
       address: 'Calle falsa 123',
       email: 'enrrique@medic.com',
       national_matriculation: '12837213',
-      provincial_matriculation: '992123'
+      provincial_matriculation: '992123',
+      nic_number: '123123',
+      gender: 'M'
     },
     {
       user_name: 'rosco',
@@ -47,6 +51,8 @@ exports.seed = knex => addKnexHooks(knex)(DOCTOR)
       address: 'Menro 932',
       email: 'rosco@medic.com',
       national_matriculation: '1283712345',
-      provincial_matriculation: '99283153'
+      provincial_matriculation: '99283153',
+      nic_number: '123123',
+      gender: 'M'
     }
   ]))

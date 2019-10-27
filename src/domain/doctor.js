@@ -6,6 +6,7 @@ class Doctor {
     this.name = null
     this.lastName = null
     this.userName = null
+    this.password = null
     this.birthDate = null
     this.entryDate = null
     this.leavingDate = null
@@ -16,6 +17,10 @@ class Doctor {
     this.nationalMatriculation = null
     this.provincialMatriculation = null
     this.specialty = null
+    this.nicNumber = null
+    this.nicType = null
+    this.nicPhoto = null
+    this.gender = null
   }
 
   setBirthDate(date) {
@@ -58,6 +63,9 @@ class Doctor {
       nationalMatriculation: this.nationalMatriculation,
       provincialMatriculation: this.provincialMatriculation,
       specialty: this.specialty,
+      nicType: this.nicType,
+      nicNumber: this.nicNumber,
+      gender: this.gender
     })
   }
 
@@ -85,6 +93,11 @@ class Doctor {
     doctor.nationalMatriculation = object.nationalMatriculation || doctor.nationalMatriculation
     doctor.provincialMatriculation = object.provincialMatriculation || doctor.provincialMatriculation
     doctor.specialty = object.specialty || doctor.specialty
+    doctor.nicNumber = object.nicNumber || doctor.nicNumber
+    doctor.nicType = object.nicType || doctor.nicType
+    doctor.nicPhoto = object.nicPhoto || doctor.nicPhoto
+    doctor.gender = object.gender || doctor.gender
+    doctor.password = object.password || doctor.password
     return doctor
   }
 

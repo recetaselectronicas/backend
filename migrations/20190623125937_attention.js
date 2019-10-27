@@ -1,8 +1,8 @@
 const { ATTENTION, SPECIALITY, DOCTOR } = require('../src/repositories/tablesNames')
 
 exports.up = knex => knex.schema.withSchema('recetas').createTable(ATTENTION, (table) => {
-  table.datetime('entry_date').notNullable()
-  table.datetime('leaving_date')
+  table.timestamp('entry_date').notNullable().defaultTo(knex.fn.now())
+  table.timestamp('leaving_date')
   table.integer('id_specialty').unsigned()
   table.integer('id_doctor').unsigned()
 

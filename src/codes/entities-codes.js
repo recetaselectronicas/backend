@@ -87,6 +87,9 @@ const codes = {
       nicType: 'nicType',
       nicPhoto: 'nicPhoto'
     }
+  },
+  SPECIALTY: {
+    name: 'specialty'
   }
 }
 

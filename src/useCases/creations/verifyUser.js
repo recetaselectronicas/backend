@@ -1,9 +1,11 @@
 const { userTypes } = require('../../permissions/identifiedUser')
 const { verifyPatient } = require('./verifyPatient')
+const { verifyDoctor } = require('./verifyDoctor')
 const errors = require('../../utils/errors')
 
 const verificationMap = {
-  [userTypes.AFFILIATE]: verifyPatient
+  [userTypes.AFFILIATE]: verifyPatient,
+  [userTypes.DOCTOR]: verifyDoctor,
 }
 const verifyUser = async (type, token) => {
   if (verificationMap[type]) {
