@@ -25,7 +25,7 @@ const secureMiddleware = require('../middlewares/secure')
 
 appRouter.use(cors())
 appRouter.use('/ping', pingRouter)
-appRouter.use(bodyParser.json())
+appRouter.use(bodyParser.json({ limit: '50mb', extended: true }))
 appRouter.use(loggerMiddleware)
 appRouter.use('/login', loginRouter)
 appRouter.use('/users', usersRouter)

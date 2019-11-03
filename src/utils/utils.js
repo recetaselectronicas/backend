@@ -35,11 +35,14 @@ const formatter = {
     if (moment.isMoment(date)) {
       return date
     }
-    date = moment(date, format)
-    if (!date.isValid()) {
-      date = null
+    let newDate = moment(date, format)
+    if (!newDate.isValid()) {
+      newDate = moment(date)
+      if (!newDate.isValid()) {
+        newDate = null
+      }
     }
-    return date
+    return newDate
   },
 }
 

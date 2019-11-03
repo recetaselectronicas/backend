@@ -1,5 +1,6 @@
 const _object = require('lodash/object')
 const _array = require('lodash/array')
+const _lang = require('lodash/lang')
 const { codes } = require('../codes/commonCodes')
 
 const ERRORS_TYPE = codes.COMPANY.NAME
@@ -39,7 +40,7 @@ const newError = (type, message, cause, status) => {
   return anError
 }
 
-const isBusinessError = error => error && (error.type === ERRORS_TYPE || (error.length && error.find(err => err.type === ERRORS_TYPE)))
+const isBusinessError = error => error && (error.type === ERRORS_TYPE || (error.length && _lang.isArray(error) && error.find(err => err.type === ERRORS_TYPE)))
 
 const newUnexpectedError = (message, cause, status) => newError('UNEXPECTED_ERROR', message, cause, status)
 const newGenericError = (message, cause, status) => newError('GENERIC_ERROR', message, cause, status)

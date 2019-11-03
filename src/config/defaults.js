@@ -34,7 +34,7 @@ const defaults = {
   confirmations: {
     privateKey: `${codes.COMPANY.NAME}_confirmation_module`,
     url: {
-      host: 'http://localhost:8080'
+      host: 'http://localhost:3000'
     },
     token: {
       ttl: getTimeInSeconds({ days: 3 })
