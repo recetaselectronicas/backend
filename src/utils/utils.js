@@ -23,6 +23,9 @@ const formats = {
 
 const formatter = {
   toString: (date, format) => {
+    if (!date) {
+      return null
+    }
     if (moment.isMoment(date)) {
       if (date.isValid()) {
         return date.format(format)
@@ -32,6 +35,9 @@ const formatter = {
     return null
   },
   toDate: (date, format) => {
+    if (!date) {
+      return null
+    }
     if (moment.isMoment(date)) {
       return date
     }

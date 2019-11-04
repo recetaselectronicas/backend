@@ -98,7 +98,8 @@ class Affiliate {
       fromDate: this.getFromDate(),
       toDate: this.getToDate(),
       code: this.code,
-      category: this.category
+      category: this.category,
+      nicNumber: this.nicNumber
     })
   }
 
