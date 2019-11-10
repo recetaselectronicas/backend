@@ -19,6 +19,7 @@ const formats = {
   timeFormat: 'HH:mm',
   mysqlDateFormat: 'YYYY-MM-DD',
   mysqlDateTimeFormat: 'YYYY-MM-DD HH:mm:ss',
+  isoDateFormat: 'YYYY-MM-DD[T]HH:mm:ss.SSS[Z]'
 }
 
 const formatter = {
@@ -43,7 +44,7 @@ const formatter = {
     }
     let newDate = moment(date, format)
     if (!newDate.isValid()) {
-      newDate = moment(date)
+      newDate = moment(date, formats.isoDateFormat)
       if (!newDate.isValid()) {
         newDate = null
       }
