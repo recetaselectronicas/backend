@@ -70,7 +70,7 @@ const identifiedAffiliate = {
     }
   },
   getActions: prescription => [],
-  getMenu: () => [{ label: 'Ver recetas', url: '/recetas' }],
+  getMenu: () => [{ label: 'Ver recetas', url: '/recetas' }, { label: 'Obra sociales', url: '/obras-sociales' }],
   async getData() {
     const patient = await PatientRepository.getById(this.id)
     const affiliations = await AffiliateRepository.getAffiliations(this.id)
@@ -165,7 +165,7 @@ const identifiedMedicalInsurance = {
       }
     ]
   },
-  getMenu: () => [{ label: 'Normas', url: '/normas' }, { label: 'Ver recetas', url: '/recetas' }],
+  getMenu: () => [{ label: 'Normas', url: '/normas' }, { label: 'Ver recetas', url: '/recetas' }, { label: 'Solicitudes', url: '/solicitudes' }],
   getData() {
     return MedicalInsuranceRepository.getById(this.id)
   },

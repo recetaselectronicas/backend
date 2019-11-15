@@ -7,6 +7,7 @@ class MedicalInsurance {
     this.email = null
     this.address = null
     this.contactNumber = null
+    this.plans = []
   }
 
   toJson() {
@@ -18,6 +19,7 @@ class MedicalInsurance {
       email: this.email,
       address: this.address,
       contactNumber: this.contactNumber,
+      plans: this.plans,
     })
   }
 
@@ -38,6 +40,7 @@ class MedicalInsurance {
     medicalInsurance.email = object.email || medicalInsurance.email
     medicalInsurance.address = object.address || medicalInsurance.address
     medicalInsurance.contactNumber = object.contactNumber || medicalInsurance.contactNumber
+    medicalInsurance.plans = object.plans || medicalInsurance.plans
     return medicalInsurance
   }
 
