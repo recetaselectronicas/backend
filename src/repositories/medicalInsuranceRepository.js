@@ -1,8 +1,9 @@
 /* eslint-disable class-methods-use-this */
 const { MedicalInsurance } = require('../domain/medicalInsurance')
+const { Plan } = require('../domain/plan')
 const { newNotFoundError, newEntityAlreadyCreated } = require('../utils/errors')
 const knex = require('../init/knexConnection')
-const { MEDICAL_INSURANCE, MEDICAL_BOOKLET } = require('./tablesNames')
+const { MEDICAL_INSURANCE, PLAN, MEDICAL_BOOKLET } = require('./tablesNames')
 const { logger } = require('../utils/utils')
 const { dateTimeFormat } = require('../utils/utils')
 
@@ -22,6 +23,17 @@ class MedicalInsuranceRepository {
       .select()
       .table(MEDICAL_INSURANCE)
       .then(response => response.map(medicalInsurance => MedicalInsurance.fromObject(medicalInsurance)))
+  }
+
+  async getAllWithPlans() {
+    const medicalInsurances = await this.getAll()
+    return Promise.all(medicalInsurances.map(async (medicalInsurance) => {
+      const plans = await knex.select()
+        .table(PLAN)
+        .where(`${PLAN}.id_medical_insurance`, Number.parseInt(medicalInsurance.id, 10))
+      medicalInsurance.plans = plans.map(plan => Plan.fromJson(plan))
+      return medicalInsurance
+    }))
   }
 
   getMedicalInsuranceByMedic(doctorId, datetime) {
