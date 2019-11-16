@@ -1,6 +1,7 @@
 const { requestStatus } = require('../../../repositories/defaults')
 const errors = require('../../../utils/errors')
 const { AffiliateRequestRepository } = require('../../../repositories/affiliateRequestRepository')
+const { buildUpdateRequest } = require('../buildUpdateRequest')
 
 const updatePatientLinkUpRequest = async (patient, body) => {
   if (body.status !== requestStatus.CANCELLED) {
@@ -13,11 +14,7 @@ const updatePatientLinkUpRequest = async (patient, body) => {
   if (request.status !== requestStatus.PENDING) {
     throw errors.newInvalidValueError('invalid request status')
   }
-  const update = {
-    status: body.status,
-    reason: body.reason
-  }
-  return AffiliateRequestRepository.updateStatus(body.id, update)
+  return AffiliateRequestRepository.updateStatus(body.id, buildUpdateRequest(body))
 }
 
 module.exports = { updatePatientLinkUpRequest }

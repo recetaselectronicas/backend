@@ -3,6 +3,7 @@ const errors = require('../../../utils/errors')
 const { AffiliateRequestRepository } = require('../../../repositories/affiliateRequestRepository')
 const { AffiliateRepository } = require('../../../repositories/affiliateRepository')
 const { PlanRepository } = require('../../../repositories/planRepository')
+const { buildUpdateRequest } = require('../buildUpdateRequest')
 
 const updateMedicalInsuranceLinkUpAffiliateRequest = async (user, body) => {
   const request = await AffiliateRequestRepository.getRequest(body.id)
@@ -13,7 +14,7 @@ const updateMedicalInsuranceLinkUpAffiliateRequest = async (user, body) => {
   if (!planExists) {
     throw errors.newForbiddenResourceException()
   }
-  await AffiliateRequestRepository.updateStatus(request.id, { status: body.status })
+  await AffiliateRequestRepository.updateStatus(request.id, buildUpdateRequest(body))
   if (body.status === requestStatus.ACCEPTED) {
     const affiliate = {
       idPatient: request.idPatient,
