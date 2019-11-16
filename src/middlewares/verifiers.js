@@ -2,6 +2,7 @@
 const lang = require('lodash/lang')
 const { AuthorizationVerifier } = require('../authorization/authorizationVerifier')
 const { PrescriptionRepository } = require('../repositories/prescriptions-repository')
+const { newNotFoundError } = require('../utils/errors')
 
 const issueVerifier = async (req, res, next) => {
   const { logger } = req.app.locals
@@ -56,7 +57,16 @@ const viewVerifier = async (req, res, next) => {
     try {
       await AuthorizationVerifier.viewPrescription(authorizationToken, prescription, identifiedUser)
     } catch (_) {
-      return next(e)
+      const { query } = req
+      if (query && query.affiliate && query.medicalInsurance) {
+        if (savedPrescription.affiliate.id === +query.affiliate && savedPrescription.medicalInsurance.id === +query.medicalInsurance) {
+          savedPrescription = prescription
+        } else {
+          return next(newNotFoundError(`No prescription was found with id ${req.params.id}`))
+        }
+      } else {
+        return next(newNotFoundError(`No prescription was found with id ${req.params.id}`))
+      }
     }
   }
   req.prescription = savedPrescription

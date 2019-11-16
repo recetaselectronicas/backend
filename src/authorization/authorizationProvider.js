@@ -28,6 +28,9 @@ class AuthorizationProvider {
       throw newForbiddenResourceException()
     }
     const userEntity = await SessionRepository.checkAndGetAuthentication(authentication.type, userTypes.DOCTOR, authentication)
+    if (userEntity.defaultAuthenticationMethod !== authentication.type) {
+      throw newForbiddenResourceException('The authentication type given is not the default')
+    }
     if (userEntity.id !== user.id || user.type !== userTypes.DOCTOR) {
       throw newForbiddenResourceException('The authenticated user does`t match with the authorization requester')
     }
@@ -48,6 +51,9 @@ class AuthorizationProvider {
       throw newForbiddenResourceException('The authorizer user doesn`t match with the prescription`s affiliate')
     }
     const authorizerEntity = await SessionRepository.checkAndGetAuthentication(authentication.type, userTypes.AFFILIATE, authentication)
+    if (authorizerEntity.defaultAuthenticationMethod !== authentication.type) {
+      throw newForbiddenResourceException('The authentication type given is not the default')
+    }
     if (authorizerEntity.id !== authorizerUser.id) {
       throw newForbiddenResourceException('The authorizer user doesn`t match with the authorization requester')
     }
@@ -73,6 +79,9 @@ class AuthorizationProvider {
       throw newForbiddenResourceException()
     }
     const userEntity = await SessionRepository.checkAndGetAuthentication(authentication.type, userTypes.PHARMACIST, authentication)
+    if (userEntity.defaultAuthenticationMethod !== authentication.type) {
+      throw newForbiddenResourceException('The authentication type given is not the default')
+    }
     if (userEntity.id !== user.id || user.type !== userTypes.PHARMACIST) {
       throw newForbiddenResourceException('The authenticated user does`t match with the authorization requester')
     }
@@ -90,6 +99,9 @@ class AuthorizationProvider {
 
   async allowReceivePrescription(authorizerUser, authorizedUser, authentication, prescription) {
     const authorizerEntity = await SessionRepository.checkAndGetAuthentication(authentication.type, userTypes.AFFILIATE, authentication)
+    if (authorizerEntity.defaultAuthenticationMethod !== authentication.type) {
+      throw newForbiddenResourceException('The authentication type given is not the default')
+    }
     if (authorizerEntity.id !== authorizerUser.id) {
       throw newForbiddenResourceException('The authorizer user doesn`t match with the authorization requester')
     }

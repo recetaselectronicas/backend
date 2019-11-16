@@ -18,7 +18,7 @@ exports.up = knex => knex.schema
     table.string('address', 255).notNullable()
     table.string('email', 255).notNullable()
     table.string('national_matriculation', 255).notNullable()
-    table.string('provincial_matriculation', 255).notNullable()
+    table.string('provincial_matriculation', 255)
     table.string('gender', 255).notNullable()
     table.string('nic_number', 255).notNullable()
     table.string('nic_type', 255)

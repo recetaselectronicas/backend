@@ -74,7 +74,7 @@ router.get('/:id', verifiers.viewVerifier, (req, res, next) => {
   const { identifiedUser } = req
   const { prescription } = req
   const actions = identifiedUser.getActions(prescription)
-  return res.json({ result: prescription.toPlainObject(), actions })
+  return res.json({ result: (prescription.toPlainObject && prescription.toPlainObject()) || prescription, actions })
 })
 
 router.put('/:id', verifiers.receiveVerifier, (req, res, next) => {

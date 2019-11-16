@@ -30,7 +30,7 @@ class AuthorizationVerifier {
       const savedPrescription = await PrescriptionRepository.getById(prescription.id)
       const authorization = jwt.verify(authorizationToken, privateKey, { subject: utils.getAffiliateSubject(savedPrescription.affiliate), audience: utils.getPharmacistAudience(identifiedUser) })
       const verification = jwt.verify(verificationToken, privateKey, { subject: utils.getPharmacistAudience(identifiedUser), audience: utils.getPharmacistAudience(identifiedUser) })
-      if (prescription.id !== authorization.prescription.id || !lang.isEqual(prescription, verification.prescription)) {
+      if (+prescription.id !== +authorization.prescription.id || !lang.isEqual(prescription, verification.prescription)) {
         throw newForbiddenResourceException('prescription data has change')
       }
     } catch (e) {
@@ -46,7 +46,7 @@ class AuthorizationVerifier {
     try {
       const savedPrescription = await PrescriptionRepository.getById(prescription.id)
       const authorization = jwt.verify(authorizationToken, privateKey, { subject: utils.getAffiliateSubject(savedPrescription.affiliate), audience: utils.getPharmacistAudience(identifiedUser) })
-      if (prescription.id !== authorization.prescription.id) {
+      if (+prescription.id !== +authorization.prescription.id) {
         throw newForbiddenResourceException('prescription data has change')
       }
     } catch (e) {

@@ -33,8 +33,8 @@ exports.seed = knex => addKnexHooks(knex)(DOCTOR)
       nationality: 'ARGENTINO',
       address: 'Calle falsa 123',
       email: 'enrrique@medic.com',
-      national_matriculation: '12837213',
-      provincial_matriculation: '992123',
+      national_matriculation: '24371233',
+      provincial_matriculation: null,
       nic_number: '123123',
       gender: 'M'
     },
@@ -50,8 +50,8 @@ exports.seed = knex => addKnexHooks(knex)(DOCTOR)
       nationality: 'VENEZOLANO',
       address: 'Menro 932',
       email: 'rosco@medic.com',
-      national_matriculation: '1283712345',
-      provincial_matriculation: '99283153',
+      national_matriculation: '65812639',
+      provincial_matriculation: null,
       nic_number: '123123',
       gender: 'M'
     }

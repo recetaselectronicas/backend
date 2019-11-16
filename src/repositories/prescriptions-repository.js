@@ -169,7 +169,7 @@ class PrescriptionRepository {
       .select(`${PRESCRIPTION}.id`)
       .table(PRESCRIPTION)
       .where(`${PRESCRIPTION}.id_state`, states.ISSUED.id)
-      .andWhereRaw(`${PRESCRIPTION}.issued_date < SUBTIME(SYSDATE(), "${defaults.daemons.issued.ttl}")`)
+      .andWhereRaw(`${PRESCRIPTION}.issued_date < DATE_SUB(SYSDATE(), INTERVAL "${defaults.daemons.issued.ttl}" SECOND)`)
   }
 
   getPrescriptionsToExpirate() {
@@ -177,7 +177,7 @@ class PrescriptionRepository {
       .select(`${PRESCRIPTION}.id`)
       .table(PRESCRIPTION)
       .whereIn(`${PRESCRIPTION}.id_state`, [states.CONFIRMED.id, states.PARTIALLY_RECEIVED.id])
-      .andWhereRaw(`${PRESCRIPTION}.issued_date < SUBTIME(SYSDATE(), "${defaults.daemons.expired.ttl}")`)
+      .andWhereRaw(`${PRESCRIPTION}.issued_date < DATE_SUB(SYSDATE(), INTERVAL "${defaults.daemons.expired.ttl}" SECOND)`)
   }
 
   async getByQuery(query) {
