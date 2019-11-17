@@ -2,11 +2,13 @@ const { requestStatus } = require('../../../repositories/defaults')
 const { userTypes } = require('../../../permissions/identifiedUser')
 const errors = require('../../../utils/errors')
 const { updateMedicalInsuranceLinkUpAffiliateRequest } = require('./updateMedicalInsuranceLinkUpAffiliateRequest')
+const { updateMedicalInsuranceLinkUpDoctorRequest } = require('./updateMedicalInsuranceLinkUpDoctorRequest')
 
 const availableStatus = [requestStatus.ACCEPTED, requestStatus.DECLINED]
 
 const updateMedicalInsuranceLinkUpMap = {
   [userTypes.AFFILIATE]: updateMedicalInsuranceLinkUpAffiliateRequest,
+  [userTypes.DOCTOR]: updateMedicalInsuranceLinkUpDoctorRequest,
 }
 
 const updateMedicalInsuranceLinkUpRequest = async (user, body) => {
