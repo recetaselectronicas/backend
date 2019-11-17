@@ -18,6 +18,7 @@ exports.seed = knex => addKnexHooks(knex)(DOCTOR)
       email: 'pepe@medic.com',
       national_matriculation: '12837123',
       provincial_matriculation: '992831',
+      nic_type: 'DNI',
       nic_number: '123123',
       gender: 'M'
     },
@@ -35,6 +36,7 @@ exports.seed = knex => addKnexHooks(knex)(DOCTOR)
       email: 'enrrique@medic.com',
       national_matriculation: '24371233',
       provincial_matriculation: null,
+      nic_type: 'DNI',
       nic_number: '123123',
       gender: 'M'
     },
@@ -52,6 +54,7 @@ exports.seed = knex => addKnexHooks(knex)(DOCTOR)
       email: 'rosco@medic.com',
       national_matriculation: '65812639',
       provincial_matriculation: null,
+      nic_type: 'DNI',
       nic_number: '123123',
       gender: 'M'
     }

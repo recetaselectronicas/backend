@@ -14,6 +14,10 @@ class Pharmacist {
     this.address = null
     this.email = null
     this.matriculation = null
+    this.nicNumber = null
+    this.nicType = null
+    this.nicPhoto = null
+    this.gender = null
   }
 
   setBirthDate(date) {
@@ -54,6 +58,9 @@ class Pharmacist {
       address: this.address,
       email: this.email,
       matriculation: this.matriculation,
+      nicType: this.nicType,
+      nicNumber: this.nicNumber,
+      gender: this.gender
     })
   }
 
@@ -63,7 +70,7 @@ class Pharmacist {
 
   static fromJson(json = '{}') {
     if (!json) {
-      return new Doctor()
+      return new Pharmacist()
     }
     const object = typeof json === 'object' ? json : JSON.parse(json)
     const pharmacist = new Pharmacist()
@@ -79,6 +86,11 @@ class Pharmacist {
     pharmacist.address = object.address || pharmacist.address
     pharmacist.email = object.email || pharmacist.email
     pharmacist.matriculation = object.matriculation || pharmacist.matriculation
+    pharmacist.nicNumber = object.nicNumber || pharmacist.nicNumber
+    pharmacist.nicType = object.nicType || pharmacist.nicType
+    pharmacist.nicPhoto = object.nicPhoto || pharmacist.nicPhoto
+    pharmacist.gender = object.gender || pharmacist.gender
+    pharmacist.password = object.password || pharmacist.password
     return pharmacist
   }
 
