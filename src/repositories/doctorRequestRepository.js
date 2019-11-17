@@ -30,6 +30,15 @@ class DoctorRequestRepository {
       .first()
       .then(ret => !!ret)
   }
+
+  getRequestsByMedicalInsurance(idMedicalInsurance) {
+    return knex
+      .select()
+      .from(DOCTOR_REQUEST)
+      .where({
+        idMedicalInsurance,
+      })
+  }
 }
 
 module.exports = {
