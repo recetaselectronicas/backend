@@ -5,6 +5,7 @@ const { validateEmail } = require('./validateEmail')
 const { validateNationality } = require('./validateNationality')
 const { validateNicType } = require('./validateNicType')
 const { PharmacistRepository } = require('../../repositories/pharmacistRepository')
+const { UserRepository } = require('../../repositories/userRepository')
 const { codes } = require('../../codes/entities-codes')
 
 const PHARMACIST = codes.PHARMACIST.name
@@ -32,6 +33,10 @@ const validateCreatePharmacist = async (pharmacist) => {
   const exists = await PharmacistRepository.userNameExists(pharmacist.userName)
   if (exists) {
     throw errors.newDuplicatedValueError('userName allready in use', errors.generateFieldCause(PHARMACIST, 'userName', pharmacist.userName))
+  }
+  const nicTypeAndNumberExists = await UserRepository.nicNumberAndTypeExists(pharmacist.nicNumber, pharmacist.nicType)
+  if (nicTypeAndNumberExists) {
+    throw errors.newDuplicatedValueError('nicNumber allready registered', errors.generateFieldCause(PHARMACIST, 'nicNumber', pharmacist.nicNumber))
   }
   const matriculationExists = await PharmacistRepository.matriculationExists(pharmacist.matriculation)
   if (matriculationExists) {
