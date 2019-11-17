@@ -63,6 +63,16 @@ class DoctorRepository {
       .then(obj => !!(obj && obj.id))
   }
 
+  nationalMatriculationExists(nationalMatriculation) {
+    return knex
+      .select('id')
+      .from(DOCTOR)
+      .where({ nationalMatriculation })
+      .limit(1)
+      .first()
+      .then(obj => !!(obj && obj.id))
+  }
+
   specialtyExists(specialtyId) {
     return knex
       .select('id')
@@ -91,6 +101,12 @@ class DoctorRepository {
       .update({ confirmed: true })
       .where({ id })
       .then(updates => !!updates)
+  }
+
+  getAllSpecialties() {
+    return knex
+      .select()
+      .table(SPECIALITY)
   }
 
   isAbleToLink(idDoctor, idMedicalInsurance, datetime) {

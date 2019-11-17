@@ -43,6 +43,12 @@ const codes = {
       id: 'id',
     },
   },
+  PHARMACIST: {
+    name: 'pharmacist',
+    fields: {
+      id: 'id',
+    },
+  },
   ITEM: {
     name: 'items',
     fields: {

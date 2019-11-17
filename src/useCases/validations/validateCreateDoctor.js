@@ -26,7 +26,6 @@ const validateCreateDoctor = async (doctor) => {
     errors.getNotNullError(doctor.address, DOCTOR, 'address'),
     errors.getNotNullError(doctor.nicNumber, DOCTOR, 'nicNumber'),
     errors.getNotNullError(doctor.nationalMatriculation, DOCTOR, 'nationalMatriculation'),
-    errors.getNotNullError(doctor.provincialMatriculation, DOCTOR, 'provincialMatriculation'),
     errors.getObjectDoesntMatchError(doctor, 'specialty.id', id => lang.isNumber(id) && id > 0, SPECIALTY, 'id'),
   ]
   errorsArray = array.compact(errorsArray)
@@ -36,6 +35,10 @@ const validateCreateDoctor = async (doctor) => {
   const exists = await DoctorRepository.userNameExists(doctor.userName)
   if (exists) {
     throw errors.newDuplicatedValueError('userName allready in use', errors.generateFieldCause(DOCTOR, 'userName', doctor.userName))
+  }
+  const matriculationsExists = await DoctorRepository.nationalMatriculationExists(doctor.nationalMatriculation, doctor.provincialMatriculation)
+  if (matriculationsExists) {
+    throw errors.newDuplicatedValueError('national matriculation allready registered', errors.generateFieldCause(DOCTOR, 'nationalMatriculation', doctor.nationalMatriculation))
   }
   const specialtyExists = await DoctorRepository.specialtyExists(doctor.specialty.id)
   if (!specialtyExists) {
