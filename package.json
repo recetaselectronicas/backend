@@ -10,7 +10,8 @@
     "lint:fix": "eslint ./src/** ./test/** --fix",
     "test:watch": "NODE_ENV=test jest --watch --verbose",
     "test:coverage": "NODE_ENV=test jest --coverage",
-    "test:verbose": "NODE_ENV=test jest --verbose"
+    "test:verbose": "NODE_ENV=test jest --verbose",
+    "knex:run:migration": "knex migrate:latest"
   },
   "keywords": [],
   "author": "",

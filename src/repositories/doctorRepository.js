@@ -4,7 +4,9 @@ const { Doctor } = require('../domain/doctor')
 const { newNotFoundError, newEntityAlreadyCreated } = require('../utils/errors')
 
 const knex = require('../init/knexConnection')
-const { DOCTOR, SPECIALITY, ATTENTION } = require('./tablesNames')
+const { DOCTOR, SPECIALITY, ATTENTION, MEDICAL_BOOKLET } = require('./tablesNames')
+const { dateTimeFormat } = require('../utils/utils')
+
 
 class DoctorRepository {
   create(_doctor) {
@@ -105,6 +107,19 @@ class DoctorRepository {
     return knex
       .select()
       .table(SPECIALITY)
+  }
+
+  isAbleToLink(idDoctor, idMedicalInsurance, datetime) {
+    return knex
+      .select()
+      .from(MEDICAL_BOOKLET)
+      .where({
+        idDoctor, idMedicalInsurance
+      })
+      .whereRaw('(to_date is null or from_date >= ?)', [dateTimeFormat.toMysqlString(datetime)])
+      .limit(1)
+      .first()
+      .then(obj => !obj)
   }
 }
 

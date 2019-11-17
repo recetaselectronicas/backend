@@ -112,7 +112,7 @@ const identifiedDoctor = {
       throw newForbiddenResourceException("Can't access this prescription")
     }
   },
-  getMenu: () => [routes.PROFILE, routes.EMIT, routes.RECIPES],
+  getMenu: () => [routes.PROFILE, routes.EMIT, routes.RECIPES, routes.MEDICAL_INSURANCE],
   getData() {
     return DoctorRepository.getById(this.id)
   },
