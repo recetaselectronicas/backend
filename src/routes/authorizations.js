@@ -29,6 +29,11 @@ const authorizationHandler = {
     authentication.id = affiliate.idPatient
     prescription = { id: prescription.id }
     return AuthorizationProvider.allowReceivePrescription(affiliate, identifiedUser, authentication, prescription)
+  },
+  [authorizationActionTypes.CANCEL_PRESCRIPTION]: async (identifiedUser, authentication, prescription) => {
+    authentication.id = identifiedUser.id
+    prescription = { id: prescription.id }
+    return AuthorizationProvider.cancelPrescription(identifiedUser, authentication, prescription)
   }
 }
 

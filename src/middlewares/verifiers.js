@@ -39,6 +39,24 @@ const receiveVerifier = async (req, res, next) => {
   }
 }
 
+const cancelVerifier = async (req, res, next) => {
+  const { logger } = req.app.locals
+  const { identifiedUser } = req
+  const { body } = req
+  const verificationToken = req.header('x-verification-token')
+  try {
+    if (body.status === 'CANCELLED') {
+      const prescription = {
+        id: +req.params.id
+      }
+      await AuthorizationVerifier.cancelPrescription(verificationToken, prescription, identifiedUser)
+    }
+    return next()
+  } catch (e) {
+    return next(e)
+  }
+}
+
 const viewVerifier = async (req, res, next) => {
   const { identifiedUser } = req
   const authorizationToken = req.header('x-authorization-token')
@@ -76,5 +94,6 @@ const viewVerifier = async (req, res, next) => {
 module.exports = {
   issueVerifier,
   receiveVerifier,
+  cancelVerifier,
   viewVerifier
 }

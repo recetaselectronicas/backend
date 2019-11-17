@@ -28,7 +28,7 @@ const authorizationActionTypes = {
   AUTHORIZE_RECEIVE_PRESCRIPTION: 'authorize_receive',
   ISSUE_PRESCRIPTION: 'issue',
   AUTHORIZE_ISSUE_PRESCRIPTION: 'authorize_issue',
-  CANCEL_PRESCRIPTION: 'cancel_prescription'
+  CANCEL_PRESCRIPTION: 'cancel'
 }
 
 const availableActions = {

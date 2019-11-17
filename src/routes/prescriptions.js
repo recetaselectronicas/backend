@@ -77,7 +77,7 @@ router.get('/:id', verifiers.viewVerifier, (req, res, next) => {
   return res.json({ result: (prescription.toPlainObject && prescription.toPlainObject()) || prescription, actions })
 })
 
-router.put('/:id', verifiers.receiveVerifier, (req, res, next) => {
+router.put('/:id', verifiers.receiveVerifier, verifiers.cancelVerifier, (req, res, next) => {
   const { identifiedUser } = req
   const { body } = req
   const { id } = req.params

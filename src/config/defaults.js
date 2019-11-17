@@ -29,6 +29,9 @@ const defaults = {
     },
     authorizeReceive: {
       ttl: getTimeInSeconds({ minutes: 10 })
+    },
+    cancel: {
+      ttl: getTimeInSeconds({ minutes: 1 })
     }
   },
   confirmations: {

@@ -5,7 +5,7 @@ const config = {
   },
   executeDaemon: {
     issued: true,
-    expired: true
+    expired: false
   },
   conections: {
     mongo: {

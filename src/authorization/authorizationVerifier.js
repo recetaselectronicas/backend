@@ -42,6 +42,21 @@ class AuthorizationVerifier {
     }
   }
 
+  async cancelPrescription(verificationToken, prescription, identifiedUser) {
+    try {
+      const verification = jwt.verify(verificationToken, privateKey, { subject: utils.getDoctorSubject(identifiedUser), audience: utils.getDoctorAudience(identifiedUser) })
+      if (!lang.isEqual(prescription, verification.prescription)) {
+        throw newForbiddenResourceException('prescription data has change')
+      }
+    } catch (e) {
+      if (!isBusinessError(e)) {
+        logger.error(e)
+        throw newForbiddenResourceException('invalid authorization given')
+      }
+      throw e
+    }
+  }
+
   async viewPrescription(authorizationToken, prescription, identifiedUser) {
     try {
       const savedPrescription = await PrescriptionRepository.getById(prescription.id)

@@ -19,6 +19,9 @@ const authorizationsMap = {
   },
   [authorizationActionTypes.AUTHORIZE_RECEIVE_PRESCRIPTION]: {
     ttl: defaults.authorizations.authorizeReceive.ttl
+  },
+  [authorizationActionTypes.CANCEL_PRESCRIPTION]: {
+    ttl: defaults.authorizations.cancel.ttl
   }
 }
 
@@ -120,6 +123,29 @@ class AuthorizationProvider {
       prescription
     }
     return jwt.sign(authorization, privateKey, { expiresIn: authorizationsMap[authorization.type].ttl, subject: utils.getAffiliateSubject(affiliate), audience: utils.getPharmacistAudience(pharmacist) })
+  }
+
+  async cancelPrescription(user, authentication, prescription) {
+    if (!user.canCancel()) {
+      throw newForbiddenResourceException()
+    }
+    const userEntity = await SessionRepository.checkAndGetAuthentication(authentication.type, userTypes.DOCTOR, authentication)
+    if (userEntity.defaultAuthenticationMethod !== authentication.type) {
+      throw newForbiddenResourceException('The authentication type given is not the default')
+    }
+    if (userEntity.id !== user.id || user.type !== userTypes.DOCTOR) {
+      throw newForbiddenResourceException('The authenticated user does`t match with the authorization requester')
+    }
+    const doctor = {
+      id: user.id,
+      username: user.username
+    }
+    const authorization = {
+      type: authorizationActionTypes.CANCEL_PRESCRIPTION,
+      doctor,
+      prescription
+    }
+    return jwt.sign(authorization, privateKey, { expiresIn: authorizationsMap[authorization.type].ttl, subject: utils.getDoctorSubject(doctor), audience: utils.getDoctorAudience(doctor) })
   }
 }
 
