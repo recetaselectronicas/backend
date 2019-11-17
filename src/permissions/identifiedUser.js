@@ -53,6 +53,16 @@ const identifiedUser = {
   getData: null
 }
 
+const routes = {
+  NORMS: { label: 'Normas', url: '/normas' },
+  RECIPES: { label: 'Ver recetas', url: '/recetas' },
+  EMIT: { label: 'Emitir', url: '/emitir' },
+  RECEIVE: { label: 'Recepcionar', url: '/recepcionar' },
+  PROFILE: { label: 'Perfil', url: '/perfil' },
+  LINKUPS: { label: 'Solicitudes', url: '/solicitudes' },
+  MEDICAL_INSURANCE: { label: 'Obra sociales', url: '/obras-sociales' }
+}
+
 const identifiedAffiliate = {
   ...identifiedUser,
   type: userTypes.AFFILIATE,
@@ -70,12 +80,12 @@ const identifiedAffiliate = {
     }
   },
   getActions: prescription => [],
-  getMenu: () => [{ label: 'Ver recetas', url: '/recetas' }, { label: 'Obra sociales', url: '/obras-sociales' }],
+  getMenu: () => [routes.PROFILE, routes.RECIPES, routes.MEDICAL_INSURANCE],
   async getData() {
     const patient = await PatientRepository.getById(this.id)
     const affiliations = await AffiliateRepository.getAffiliations(this.id)
     const data = {
-      data: patient.toPlainObject(),
+      ...patient.toPlainObject(),
       affiliations: affiliations.map(affiliation => affiliation.toPlainObject())
     }
     return data
@@ -102,7 +112,7 @@ const identifiedDoctor = {
       throw newForbiddenResourceException("Can't access this prescription")
     }
   },
-  getMenu: () => [{ label: 'Emitir', url: '/emitir' }, { label: 'Ver recetas', url: '/recetas' }],
+  getMenu: () => [routes.PROFILE, routes.EMIT, routes.RECIPES],
   getData() {
     return DoctorRepository.getById(this.id)
   },
@@ -129,7 +139,7 @@ const identifiedPharmacist = {
       throw newForbiddenResourceException("Can't access this prescription")
     }
   },
-  getMenu: () => [{ label: 'Ver recetas', url: '/recetas' }, { label: 'Recepcionar', url: '/recepcionar' }],
+  getMenu: () => [routes.PROFILE, routes.RECIPES, routes.RECEIVE],
   getData() {
     return PharmacistRepository.getById(this.id)
   },
@@ -165,7 +175,7 @@ const identifiedMedicalInsurance = {
       }
     ]
   },
-  getMenu: () => [{ label: 'Normas', url: '/normas' }, { label: 'Ver recetas', url: '/recetas' }, { label: 'Solicitudes', url: '/solicitudes' }],
+  getMenu: () => [routes.PROFILE, routes.NORMS, routes.RECIPES, routes.LINKUPS],
   getData() {
     return MedicalInsuranceRepository.getById(this.id)
   },
