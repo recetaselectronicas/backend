@@ -139,7 +139,7 @@ const identifiedPharmacist = {
       throw newForbiddenResourceException("Can't access this prescription")
     }
   },
-  getMenu: () => [routes.PROFILE, routes.RECIPES, routes.RECEIVE],
+  getMenu: () => [routes.PROFILE, routes.RECIPES, routes.RECEIVE, routes.MEDICAL_INSURANCE],
   getData() {
     return PharmacistRepository.getById(this.id)
   },
