@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this */
-const { DOCTOR_REQUEST } = require('./tablesNames')
+const { DOCTOR_REQUEST, MEDICAL_INSURANCE } = require('./tablesNames')
 const knex = require('../init/knexConnection')
 const { requestStatus } = require('./defaults')
 
@@ -15,6 +15,7 @@ class DoctorRequestRepository {
       .select('*')
       .from(DOCTOR_REQUEST)
       .where({ idDoctor })
+      .leftJoin(MEDICAL_INSURANCE, `${DOCTOR_REQUEST}.id_medical_insurance`, `${MEDICAL_INSURANCE}.id`)
   }
 
   hasPendingRequest(idDoctor, idMedicalInsurance) {

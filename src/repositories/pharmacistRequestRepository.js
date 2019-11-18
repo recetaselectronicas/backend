@@ -1,7 +1,7 @@
 
 
 /* eslint-disable class-methods-use-this */
-const { PHARMACIST_REQUEST } = require('./tablesNames')
+const { PHARMACIST_REQUEST, MEDICAL_INSURANCE } = require('./tablesNames')
 const knex = require('../init/knexConnection')
 const { requestStatus } = require('./defaults')
 
@@ -17,6 +17,7 @@ class PharmacistRequestRepository {
       .select('*')
       .from(PHARMACIST_REQUEST)
       .where({ idPharmacist })
+      .leftJoin(MEDICAL_INSURANCE, `${PHARMACIST_REQUEST}.id_medical_insurance`, `${MEDICAL_INSURANCE}.id`)
   }
 
   getRequest(requestId) {

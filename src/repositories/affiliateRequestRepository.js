@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this */
-const { AFFILIATE_REQUEST, PATIENT, PLAN } = require('./tablesNames')
+const { AFFILIATE_REQUEST, MEDICAL_INSURANCE, PLAN } = require('./tablesNames')
 const knex = require('../init/knexConnection')
 const { requestStatus } = require('./defaults')
 
@@ -28,6 +28,8 @@ class AffiliateRequestRepository {
       .select('*')
       .from(AFFILIATE_REQUEST)
       .where({ idPatient: patientId })
+      .leftJoin(PLAN, `${AFFILIATE_REQUEST}.id_plan`, `${PLAN}.id`)
+      .leftJoin(MEDICAL_INSURANCE, `${PLAN}.id_medical_insurance`, `${MEDICAL_INSURANCE}.id`)
   }
 
   getRequestsByMedicalInsurance(medicalInsuranceId) {
