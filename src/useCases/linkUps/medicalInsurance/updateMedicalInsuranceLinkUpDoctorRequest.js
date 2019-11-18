@@ -2,7 +2,7 @@ const moment = require('moment')
 const { requestStatus } = require('../../../repositories/defaults')
 const errors = require('../../../utils/errors')
 const { DoctorRequestRepository } = require('../../../repositories/doctorRequestRepository')
-const { MedicalInsuranceRepository } = require('../../../repositories/medicalInsuranceRepository')
+const { MedicalBookletRepository } = require('../../../repositories/medicalBookletRepository')
 const { buildUpdateRequest } = require('../buildUpdateRequest')
 
 
@@ -17,7 +17,7 @@ const updateMedicalInsuranceLinkUpDoctorRequest = async (user, body) => {
       idMedicalInsurance: request.idMedicalInsurance,
       idDoctor: request.idDoctor
     }
-    await MedicalInsuranceRepository.linkDoctor(medicalBooklet, moment())
+    await MedicalBookletRepository.link(medicalBooklet, moment())
   }
 }
 

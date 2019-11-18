@@ -34,6 +34,11 @@ class MedicalBookletRepository {
         idDoctor, idMedicalInsurance
       })
   }
+
+  link(link, fromDate) {
+    return knex(MEDICAL_BOOKLET)
+      .insert({ ...link, fromDate })
+  }
 }
 
 module.exports = {

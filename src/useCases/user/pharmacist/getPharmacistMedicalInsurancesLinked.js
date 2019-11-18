@@ -1,5 +1,5 @@
-const { PharmacistRepository } = require('../../../repositories/pharmacistRepository')
+const { ReceptionRepository } = require('../../../repositories/receptionRepository')
 
-const getPharmacistMedicalInsurancesLinked = pharmacist => PharmacistRepository.getMedicalInsurancesFrom(pharmacist.id)
+const getPharmacistMedicalInsurancesLinked = pharmacist => ReceptionRepository.getMedicalInsurancesFrom(pharmacist.id)
 
 module.exports = { getPharmacistMedicalInsurancesLinked }

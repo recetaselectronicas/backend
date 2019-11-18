@@ -58,11 +58,6 @@ class MedicalInsuranceRepository {
         throw newNotFoundError(`No medicalInsurance was found with id ${id}`)
       })
   }
-
-  linkDoctor(link, fromDate) {
-    return knex(MEDICAL_BOOKLET)
-      .insert({ ...link, fromDate })
-  }
 }
 
 module.exports = {
