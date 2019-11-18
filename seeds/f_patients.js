@@ -15,6 +15,7 @@ exports.seed = knex => knex(PATIENT)
       email: 'gonzalo-kapo@gmail.com',
       address: 'colombia 5454',
       nationality: 'ARGENTINA',
+      nic_type: 'DNI',
       nic_number: '40390213'
     },
     {
@@ -29,6 +30,7 @@ exports.seed = knex => knex(PATIENT)
       email: 'leandro-kapo@gmail.com',
       address: 'colombia 5454',
       nationality: 'ARGENTINA',
+      nic_type: 'DNI',
       nic_number: '40590213'
     },
     {
@@ -43,6 +45,7 @@ exports.seed = knex => knex(PATIENT)
       email: 'leo-kapo@gmail.com',
       address: 'brasil 3333',
       nationality: 'VENEZUELA',
+      nic_type: 'DNI',
       nic_number: '40590213'
     },
     {
@@ -57,6 +60,7 @@ exports.seed = knex => knex(PATIENT)
       email: 'javier@gmail.com',
       address: 'Jase 12',
       nationality: 'CHILE',
+      nic_type: 'DNI',
       nic_number: '1234712'
     },
     {
@@ -71,6 +75,7 @@ exports.seed = knex => knex(PATIENT)
       email: 'marina@mail.com',
       address: 'brasil 3333',
       nationality: 'ARGENTINA',
+      nic_type: 'DNI',
       nic_number: '3424352'
     },
     {
@@ -85,6 +90,7 @@ exports.seed = knex => knex(PATIENT)
       email: 'gasti.mastri@gmail.com',
       address: 'pepe 54',
       nationality: 'BRASIL',
+      nic_type: 'DNI',
       nic_number: '40590213'
     },
     {
@@ -99,6 +105,7 @@ exports.seed = knex => knex(PATIENT)
       email: 'ldevoto@gmail.com',
       address: 'pepe 54',
       nationality: 'ARGENTINA',
+      nic_type: 'DNI',
       nic_number: '37277876'
     }
   ]))
