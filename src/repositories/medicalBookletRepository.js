@@ -20,7 +20,7 @@ class MedicalBookletRepository {
       .select()
       .table(MEDICAL_BOOKLET)
       .where({ idDoctor, idMedicalInsurance })
-      .whereRaw('(to_date is null or from_date <= ?)', [dateTimeFormat.toMysqlString(datetime)])
+      .whereNull('to_date')
       .first()
   }
 
