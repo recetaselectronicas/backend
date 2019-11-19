@@ -35,11 +35,11 @@ router.get('/affiliates', async (req, res, next) => {
   }
 })
 
-router.get('/pharmacits', async (req, res, next) => {
+router.get('/pharmacists', async (req, res, next) => {
   const { identifiedUser } = req
   try {
-    const pharmacits = await PharmacistRepository.getByMedicalInsurance(identifiedUser.id)
-    return res.status(200).send(pharmacits.map(pharmacit => pharmacit.toPlainObject()))
+    const pharmacists = await PharmacistRepository.getByMedicalInsurance(identifiedUser.id)
+    return res.status(200).send(pharmacists.map(pharmacist => pharmacist.toPlainObject()))
   } catch (error) {
     return next(error)
   }

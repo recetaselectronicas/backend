@@ -67,7 +67,7 @@ class PharmacistRepository {
       .where({ idMedicalInsurance })
       .whereNull(`${RECEPTION}.leaving_date`)
       .leftJoin(PHARMACIST, `${RECEPTION}.id_pharmacist`, `${PHARMACIST}.id`)
-      .then(response => response.map(pharmacit => Pharmacist.fromObject(pharmacit)))
+      .then(response => response.map(pharmacist => Pharmacist.fromObject(pharmacist)))
   }
 }
 
