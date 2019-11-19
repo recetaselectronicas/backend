@@ -1,6 +1,6 @@
 /* eslint-disable class-methods-use-this */
 const { Patient } = require('../domain/patient')
-const { newEntityAlreadyCreated } = require('../utils/errors')
+const { newEntityAlreadyCreated, newNotFoundError } = require('../utils/errors')
 const { PATIENT, AFFILIATE } = require('./tablesNames')
 const knex = require('../init/knexConnection')
 const { dateTimeFormat } = require('../utils/utils')
@@ -61,8 +61,16 @@ class PatientRepository {
         if (patient) {
           return Patient.fromObject(patient)
         }
-        return patient
+        throw newNotFoundError('Patient not found')
       })
+  }
+
+  update(patientId, patientData) {
+    return knex
+      .table(PATIENT)
+      .update(patientData)
+      .where({ id: patientId })
+      .then(updates => !!updates)
   }
 }
 

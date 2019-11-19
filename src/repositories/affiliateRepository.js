@@ -168,6 +168,7 @@ class AffiliateRepository {
       })
       .orderBy('from_date', 'asc')
       .then(affiliates => affiliates.map((affiliate) => {
+        // eslint-disable-next-line no-param-reassign
         affiliate.plan = {
           id: affiliate.idPlan,
           idMedicalInsurance: affiliate.idMedicalInsurance,
@@ -178,6 +179,16 @@ class AffiliateRepository {
       .then(affiliates => affiliates.map(affiliate => Affiliate.fromObject(affiliate)))
   }
 
+  hasOrHadAnyAffiliation(patientId) {
+    return knex
+      .select('id')
+      .from(AFFILIATE)
+      .where({ idPatient: patientId })
+      .limit(1)
+      .first()
+      .then(id => !!id)
+  }
+
   getByMedicalInsurance(idMedicalInsurance) {
     return knex
       .select()
@@ -186,8 +197,9 @@ class AffiliateRepository {
       .whereNull('to_date')
       .leftJoin(AFFILIATE, `${AFFILIATE}.id_plan`, `${PLAN}.id`)
       .leftJoin(PATIENT, `${PATIENT}.id`, `${AFFILIATE}.id_patient`)
-      .then(affiliates => affiliates.map(affiliate => {
+      .then(affiliates => affiliates.map((affiliate) => {
         console.debug(affiliate)
+        // eslint-disable-next-line no-param-reassign
         affiliate.plan = {
           id: affiliate.idPlan,
         }
