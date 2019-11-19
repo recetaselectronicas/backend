@@ -6,6 +6,8 @@ const { linkUpUsers } = require('../useCases/linkUps/linkUpUsers')
 const { unlinkUsers } = require('../useCases/unliks/unlinkUsers')
 const { getUserLinkUpRequests } = require('../useCases/linkUps/getUserLinkUpRequests')
 const { updateUserLinkUpRequest } = require('../useCases/linkUps/updateUserLinkUpRequest')
+const { getUserDataFields } = require('../useCases/userData/getUserDataFields')
+const { updateUserDataFields } = require('../useCases/userData/updateUserDataFields')
 
 router.get('/menu', async (req, res) => {
   const { identifiedUser } = req
@@ -81,6 +83,30 @@ router.get('/data', async (req, res, next) => {
   try {
     const user = await identifiedUser.getData()
     return res.status(200).json(user)
+  } catch (e) {
+    return next(e)
+  }
+})
+
+router.get('/data/fields', async (req, res, next) => {
+  const { identifiedUser } = req
+  try {
+    const userData = await getUserDataFields(identifiedUser)
+    return res.status(200).json(userData)
+  } catch (e) {
+    return next(e)
+  }
+})
+
+router.put('/data/fields', async (req, res, next) => {
+  const { identifiedUser } = req
+  const { body } = req
+  try {
+    const userData = await updateUserDataFields(identifiedUser, body)
+    if (userData.hasErrors) {
+      return res.status(400).json(userData.fields)
+    }
+    return res.status(200).json(userData.fields)
   } catch (e) {
     return next(e)
   }

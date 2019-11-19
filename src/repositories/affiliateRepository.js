@@ -163,6 +163,16 @@ class AffiliateRepository {
       }))
       .then(affiliates => affiliates.map(affiliate => Affiliate.fromObject(affiliate)))
   }
+
+  hasOrHadAnyAffiliation(patientId) {
+    return knex
+      .select('id')
+      .from(AFFILIATE)
+      .where({ idPatient: patientId })
+      .limit(1)
+      .first()
+      .then(id => !!id)
+  }
 }
 
 module.exports = {
