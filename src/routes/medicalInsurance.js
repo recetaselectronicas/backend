@@ -2,11 +2,44 @@ const express = require('express')
 
 const router = express.Router()
 const { MedicalInsuranceRepository } = require('../repositories/medicalInsuranceRepository')
+const { MedicalBookletRepository } = require('../repositories/medicalBookletRepository')
+const { AffiliateRepository } = require('../repositories/affiliateRepository')
+const { PharmacistRepository } = require('../repositories/pharmacistRepository')
 
 router.get('/', async (req, res, next) => {
   try {
     const medicalInsurances = await MedicalInsuranceRepository.getAllWithPlans()
     return res.status(200).send(medicalInsurances.map(medicalInsurance => medicalInsurance.toPlainObject()))
+  } catch (error) {
+    return next(error)
+  }
+})
+
+router.get('/doctors', async (req, res, next) => {
+  const { identifiedUser } = req
+  try {
+    const doctors = await MedicalBookletRepository.getDoctorsFrom(identifiedUser.id)
+    return res.status(200).send(doctors.map(doctor => doctor.toPlainObject()))
+  } catch (error) {
+    return next(error)
+  }
+})
+
+router.get('/affiliates', async (req, res, next) => {
+  const { identifiedUser } = req
+  try {
+    const affiliates = await AffiliateRepository.getByMedicalInsurance(identifiedUser.id)
+    return res.status(200).send(affiliates.map(affiliate => affiliate.toPlainObject()))
+  } catch (error) {
+    return next(error)
+  }
+})
+
+router.get('/pharmacits', async (req, res, next) => {
+  const { identifiedUser } = req
+  try {
+    const pharmacits = await PharmacistRepository.getByMedicalInsurance(identifiedUser.id)
+    return res.status(200).send(pharmacits.map(pharmacit => pharmacit.toPlainObject()))
   } catch (error) {
     return next(error)
   }

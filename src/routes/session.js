@@ -8,6 +8,7 @@ const { getUserLinkUpRequests } = require('../useCases/linkUps/getUserLinkUpRequ
 const { updateUserLinkUpRequest } = require('../useCases/linkUps/updateUserLinkUpRequest')
 const { getUserDataFields } = require('../useCases/userData/getUserDataFields')
 const { updateUserDataFields } = require('../useCases/userData/updateUserDataFields')
+const { getMedicalInsuranceslinked } = require('../useCases/user/getMedicalInsuranceslinked')
 
 router.get('/menu', async (req, res) => {
   const { identifiedUser } = req
@@ -107,6 +108,17 @@ router.put('/data/fields', async (req, res, next) => {
       return res.status(400).json(userData.fields)
     }
     return res.status(200).json(userData.fields)
+  } catch (e) {
+    return next(e)
+  }
+})
+
+// Las obras sociales a las que un usuario esta vinculado
+router.get('/medical-insurances', async (req, res, next) => {
+  const { identifiedUser } = req
+  try {
+    const medicalInsurances = await getMedicalInsuranceslinked(identifiedUser)
+    return res.status(200).json(medicalInsurances.map(medicalInsurance => medicalInsurance.toPlainObject()))
   } catch (e) {
     return next(e)
   }

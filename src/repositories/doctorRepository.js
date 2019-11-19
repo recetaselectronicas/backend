@@ -108,19 +108,6 @@ class DoctorRepository {
       .select()
       .table(SPECIALITY)
   }
-
-  isAbleToLink(idDoctor, idMedicalInsurance, datetime) {
-    return knex
-      .select()
-      .from(MEDICAL_BOOKLET)
-      .where({
-        idDoctor, idMedicalInsurance
-      })
-      .whereRaw('(to_date is null or from_date >= ?)', [dateTimeFormat.toMysqlString(datetime)])
-      .limit(1)
-      .first()
-      .then(obj => !obj)
-  }
 }
 
 module.exports = {

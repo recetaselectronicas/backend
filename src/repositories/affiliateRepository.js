@@ -2,7 +2,7 @@
 const { Affiliate } = require('../domain/affiliate')
 const { Plan } = require('../domain/plan')
 const { newNotFoundError } = require('../utils/errors')
-const { AFFILIATE, PATIENT, PLAN } = require('./tablesNames')
+const { AFFILIATE, PATIENT, PLAN, MEDICAL_INSURANCE } = require('./tablesNames')
 const knex = require('../init/knexConnection')
 const { logger } = require('../utils/utils')
 const { dateTimeFormat } = require('../utils/utils')
@@ -110,6 +110,20 @@ class AffiliateRepository {
       .then(res => (res && res.id && this.getById(res.id)) || null)
   }
 
+  getCurrentAffiliationWithAllData(patientId, datetime) {
+    return knex
+      .select()
+      .from(AFFILIATE)
+      .where({
+        idPatient: patientId
+      })
+      .whereRaw('(? between from_date and IFNULL(to_date, ?))', [dateTimeFormat.toMysqlString(datetime), dateTimeFormat.toMysqlString(datetime)])
+      .leftJoin(PLAN, `${AFFILIATE}.id_plan`, `${PLAN}.id`)
+      .leftJoin(MEDICAL_INSURANCE, `${PLAN}.id_medical_insurance`, `${MEDICAL_INSURANCE}.id`)
+      .limit(1)
+      .first()
+  }
+
   unAffiliate(affiliateId, datetime) {
     return knex
       .table(AFFILIATE)
@@ -154,6 +168,7 @@ class AffiliateRepository {
       })
       .orderBy('from_date', 'asc')
       .then(affiliates => affiliates.map((affiliate) => {
+        // eslint-disable-next-line no-param-reassign
         affiliate.plan = {
           id: affiliate.idPlan,
           idMedicalInsurance: affiliate.idMedicalInsurance,
@@ -172,6 +187,24 @@ class AffiliateRepository {
       .limit(1)
       .first()
       .then(id => !!id)
+  }
+
+  getByMedicalInsurance(idMedicalInsurance) {
+    return knex
+      .select()
+      .from(PLAN)
+      .where({ idMedicalInsurance })
+      .whereNull('to_date')
+      .leftJoin(AFFILIATE, `${AFFILIATE}.id_plan`, `${PLAN}.id`)
+      .leftJoin(PATIENT, `${PATIENT}.id`, `${AFFILIATE}.id_patient`)
+      .then(affiliates => affiliates.map((affiliate) => {
+        console.debug(affiliate)
+        // eslint-disable-next-line no-param-reassign
+        affiliate.plan = {
+          id: affiliate.idPlan,
+        }
+        return Affiliate.fromObject(affiliate)
+      }))
   }
 }
 

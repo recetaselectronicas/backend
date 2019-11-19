@@ -1,6 +1,6 @@
 const { Pharmacist } = require('../domain/pharmacist')
 const { newNotFoundError, newEntityAlreadyCreated } = require('../utils/errors')
-const { PHARMACIST } = require('./tablesNames')
+const { PHARMACIST, RECEPTION } = require('./tablesNames')
 const knex = require('../init/knexConnection')
 
 class PharmacistRepository {
@@ -58,6 +58,16 @@ class PharmacistRepository {
       .update({ confirmed: true })
       .where({ id })
       .then(updates => !!updates)
+  }
+
+  getByMedicalInsurance(idMedicalInsurance) {
+    return knex
+      .select(`${PHARMACIST}.*`)
+      .from(RECEPTION)
+      .where({ idMedicalInsurance })
+      .whereNull(`${RECEPTION}.leaving_date`)
+      .leftJoin(PHARMACIST, `${RECEPTION}.id_pharmacist`, `${PHARMACIST}.id`)
+      .then(response => response.map(pharmacit => Pharmacist.fromObject(pharmacit)))
   }
 }
 
