@@ -1,7 +1,8 @@
 /* eslint-disable class-methods-use-this */
 const knex = require('../init/knexConnection')
-const { MEDICAL_BOOKLET, MEDICAL_INSURANCE } = require('./tablesNames')
+const { MEDICAL_BOOKLET, MEDICAL_INSURANCE, DOCTOR } = require('./tablesNames')
 const { MedicalInsurance } = require('../domain/medicalInsurance')
+const { Doctor } = require('../domain/doctor')
 const { dateTimeFormat } = require('../utils/utils')
 
 class MedicalBookletRepository {
@@ -13,6 +14,16 @@ class MedicalBookletRepository {
       .whereNull('to_date')
       .leftJoin(MEDICAL_INSURANCE, `${MEDICAL_BOOKLET}.id_medical_insurance`, `${MEDICAL_INSURANCE}.id`)
       .then(response => response.map(medicalInsurance => MedicalInsurance.fromObject(medicalInsurance)))
+  }
+
+  getDoctorsFrom(idMedicalInsurance) {
+    return knex
+      .select()
+      .table(MEDICAL_BOOKLET)
+      .where({ idMedicalInsurance })
+      .whereNull('to_date')
+      .leftJoin(DOCTOR, `${MEDICAL_BOOKLET}.id_doctor`, `${DOCTOR}.id`)
+      .then(response => response.map(doctor => Doctor.fromObject(doctor)))
   }
 
   getLink(idDoctor, idMedicalInsurance, datetime) {

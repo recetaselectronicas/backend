@@ -177,6 +177,23 @@ class AffiliateRepository {
       }))
       .then(affiliates => affiliates.map(affiliate => Affiliate.fromObject(affiliate)))
   }
+
+  getByMedicalInsurance(idMedicalInsurance) {
+    return knex
+      .select()
+      .from(PLAN)
+      .where({ idMedicalInsurance })
+      .whereNull('to_date')
+      .leftJoin(AFFILIATE, `${AFFILIATE}.id_plan`, `${PLAN}.id`)
+      .leftJoin(PATIENT, `${PATIENT}.id`, `${AFFILIATE}.id_patient`)
+      .then(affiliates => affiliates.map(affiliate => {
+        console.debug(affiliate)
+        affiliate.plan = {
+          id: affiliate.idPlan,
+        }
+        return Affiliate.fromObject(affiliate)
+      }))
+  }
 }
 
 module.exports = {

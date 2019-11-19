@@ -60,7 +60,10 @@ const routes = {
   RECEIVE: { label: 'Recepcionar', url: '/recepcionar' },
   PROFILE: { label: 'Perfil', url: '/perfil' },
   LINKUPS: { label: 'Solicitudes', url: '/solicitudes' },
-  MEDICAL_INSURANCE: { label: 'Obra sociales', url: '/obras-sociales' }
+  MEDICAL_INSURANCE: { label: 'Obra sociales', url: '/obras-sociales' },
+  PHARMACISTS: { label: 'Farmaceuticos', url: '/farmaceuticos' },
+  AFFILIATES: { label: 'Afiliados', url: '/afiliados' },
+  DOCTORS: { label: 'Doctores', url: '/doctores' }
 }
 
 const identifiedAffiliate = {
@@ -175,7 +178,7 @@ const identifiedMedicalInsurance = {
       }
     ]
   },
-  getMenu: () => [routes.PROFILE, routes.NORMS, routes.RECIPES, routes.LINKUPS],
+  getMenu: () => [routes.PROFILE, routes.NORMS, routes.RECIPES, routes.LINKUPS, routes.AFFILIATES, routes.DOCTORS, routes.PHARMACISTS],
   getData() {
     return MedicalInsuranceRepository.getById(this.id)
   },
