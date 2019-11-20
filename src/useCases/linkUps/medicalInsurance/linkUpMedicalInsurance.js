@@ -1,7 +1,9 @@
 const { validateLinkUpMedicalInsuranceAffiliate } = require('./validateLinkUpMedicalInsuranceAffiliate')
 const { createLinkUpMedicalInsuranceAffiliate } = require('./createLinkUpMedicalInsuranceAffiliate')
 const { validateLinkUpDoctor } = require('../doctor/validations/validateLinkUpDoctor')
+const { validateLinkUpPharmacist } = require('../pharmacist/validations/validateLinkUpPharmacist')
 const { MedicalBookletRepository } = require('../../../repositories/medicalBookletRepository')
+const { ReceptionRepository } = require('../../../repositories/receptionRepository')
 const moment = require('moment')
 
 const linkUpMedicalInsurance = async (idMedicalInsurance, body) => {
@@ -15,6 +17,15 @@ const linkUpMedicalInsurance = async (idMedicalInsurance, body) => {
     await MedicalBookletRepository.link({
       idMedicalInsurance,
       idDoctor
+    }, moment())
+  }
+
+  if (body.pharmacist) {
+    const idPharmacist = body.pharmacist.id
+    await validateLinkUpPharmacist(idPharmacist, { medicalInsurance: { id: idMedicalInsurance } })
+    await ReceptionRepository.link({
+      idMedicalInsurance,
+      idPharmacist
     }, moment())
   }
 }
