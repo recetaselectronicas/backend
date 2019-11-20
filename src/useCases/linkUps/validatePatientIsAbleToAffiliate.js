@@ -9,7 +9,7 @@ const validatePatientIsAbleToAffiliate = async (patientId) => {
   }
   const isAbleToAffiliate = await PatientRepository.isAbleToAffiliate(patientId, moment())
   if (!isAbleToAffiliate) {
-    throw errors.newBadRequestError('patient allready affiliated')
+    throw errors.newBadRequestError('El paciente ya esta afiliado')
   }
 }
 

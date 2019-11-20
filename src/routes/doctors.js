@@ -4,6 +4,7 @@ const moment = require('moment')
 const router = express.Router()
 const { MedicalInsuranceRepository } = require('../repositories/medicalInsuranceRepository')
 const { DoctorRepository } = require('../repositories/doctorRepository')
+const { searchByQuery } = require('../useCases/searchs/doctors/searchByQuery')
 
 router.get('/medical-insurances', async (req, res, next) => {
   const { identifiedUser } = req
@@ -13,6 +14,15 @@ router.get('/medical-insurances', async (req, res, next) => {
     return res.status(200).send(medicalInsurances.map(medicalInsurance => medicalInsurance.toPlainObject()))
   } catch (error) {
     return next(error)
+  }
+})
+
+router.get('/search', async (req, res, next) => {
+  try {
+    const doctors = await searchByQuery(req.query)
+    return res.json(doctors.map(doctor => doctor.toPlainObject()))
+  } catch (e) {
+    return next(e)
   }
 })
 

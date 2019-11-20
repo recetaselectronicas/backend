@@ -75,7 +75,23 @@ class PharmacistRepository {
       .where({ idMedicalInsurance })
       .whereNull(`${RECEPTION}.leaving_date`)
       .leftJoin(PHARMACIST, `${RECEPTION}.id_pharmacist`, `${PHARMACIST}.id`)
-      .then(response => response.map(pharmacit => Pharmacist.fromObject(pharmacit)))
+      .then(response => response.map(pharmacist => Pharmacist.fromObject(pharmacist)))
+  }
+
+  getByNicNumberAndGender(nicNumber, gender) {
+    return knex
+      .select()
+      .from(PHARMACIST)
+      .where({ nicNumber, gender })
+      .then(pharmacists => pharmacists.map(pharmacist => Pharmacist.fromJson(pharmacist)))
+  }
+
+  getByMatriculation(matriculation) {
+    return knex
+      .select()
+      .from(PHARMACIST)
+      .where({ matriculation })
+      .then(pharmacists => pharmacists.map(pharmacist => Pharmacist.fromJson(pharmacist)))
   }
 }
 
