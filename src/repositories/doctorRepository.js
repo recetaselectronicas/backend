@@ -108,6 +108,22 @@ class DoctorRepository {
       .select()
       .table(SPECIALITY)
   }
+
+  getByNicNumberAndGender(nicNumber, gender) {
+    return knex
+      .select()
+      .from(DOCTOR)
+      .where({ nicNumber, gender })
+      .then(doctors => doctors.map(doctor => Doctor.fromJson(doctor)))
+  }
+
+  getByNationalMatriculation(nationalMatriculation) {
+    return knex
+      .select()
+      .from(DOCTOR)
+      .where({ nationalMatriculation })
+      .then(doctors => doctors.map(doctor => Doctor.fromJson(doctor)))
+  }
 }
 
 module.exports = {

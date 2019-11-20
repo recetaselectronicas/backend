@@ -72,6 +72,14 @@ class PatientRepository {
       .where({ id: patientId })
       .then(updates => !!updates)
   }
+
+  getByNicNumberAndGender(nicNumber, gender) {
+    return knex
+      .select()
+      .from(PATIENT)
+      .where({ nicNumber, gender })
+      .then(patients => patients.map(patient => Patient.fromJson(patient)))
+  }
 }
 
 module.exports = {

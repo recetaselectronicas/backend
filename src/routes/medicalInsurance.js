@@ -5,6 +5,7 @@ const { MedicalInsuranceRepository } = require('../repositories/medicalInsurance
 const { MedicalBookletRepository } = require('../repositories/medicalBookletRepository')
 const { AffiliateRepository } = require('../repositories/affiliateRepository')
 const { PharmacistRepository } = require('../repositories/pharmacistRepository')
+const { PlanRepository } = require('../repositories/planRepository')
 
 router.get('/', async (req, res, next) => {
   try {
@@ -40,6 +41,16 @@ router.get('/pharmacists', async (req, res, next) => {
   try {
     const pharmacists = await PharmacistRepository.getByMedicalInsurance(identifiedUser.id)
     return res.status(200).send(pharmacists.map(pharmacist => pharmacist.toPlainObject()))
+  } catch (error) {
+    return next(error)
+  }
+})
+
+router.get('/plans', async (req, res, next) => {
+  const { identifiedUser } = req
+  try {
+    const plans = await PlanRepository.getAllPlansFor(identifiedUser.id)
+    return res.status(200).send(plans.map(plan => plan.toPlainObject()))
   } catch (error) {
     return next(error)
   }

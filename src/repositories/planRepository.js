@@ -1,4 +1,5 @@
 const { PLAN } = require('./tablesNames')
+const { Plan } = require('../domain/plan')
 const knex = require('../init/knexConnection')
 
 class PlanRepository {
@@ -13,6 +14,16 @@ class PlanRepository {
       .limit(1)
       .first()
       .then(obj => !!(obj && obj.id))
+  }
+
+  getAllPlansFor(idMedicalInsurance) {
+    return knex
+      .select()
+      .from(PLAN)
+      .where({
+        idMedicalInsurance
+      })
+      .then(plans => plans.map(plan => Plan.fromJson(plan)))
   }
 }
 
