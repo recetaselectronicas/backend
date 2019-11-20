@@ -19,6 +19,14 @@ class PharmacistRepository {
       .then(([id]) => id)
   }
 
+  update(pharmacistId, pharmacistData) {
+    return knex
+      .table(PHARMACIST)
+      .update(pharmacistData)
+      .where({ id: pharmacistId })
+      .then(updates => !!updates)
+  }
+
   async getById(id) {
     const res = await knex
       .select()

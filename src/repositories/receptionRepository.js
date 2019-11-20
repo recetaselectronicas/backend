@@ -43,6 +43,16 @@ class ReceptionRepository {
     return knex(RECEPTION)
       .insert({ ...link, entryDate })
   }
+
+  hasOrHadAnyLinkUp(idPharmacist) {
+    return knex
+      .select('id_pharmacist')
+      .table(RECEPTION)
+      .where({ idPharmacist })
+      .limit(1)
+      .first()
+      .then(id => !!id)
+  }
 }
 
 module.exports = {

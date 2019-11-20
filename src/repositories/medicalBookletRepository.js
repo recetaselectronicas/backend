@@ -50,6 +50,16 @@ class MedicalBookletRepository {
     return knex(MEDICAL_BOOKLET)
       .insert({ ...link, fromDate })
   }
+
+  hasOrHadAnyLinkUp(idDoctor) {
+    return knex
+      .select('id_doctor')
+      .table(MEDICAL_BOOKLET)
+      .where({ idDoctor })
+      .limit(1)
+      .first()
+      .then(id => !!id)
+  }
 }
 
 module.exports = {
