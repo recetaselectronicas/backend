@@ -21,6 +21,7 @@ class Doctor {
     this.nicType = null
     this.nicPhoto = null
     this.gender = null
+    this.profileImage = null
   }
 
   setBirthDate(date) {
@@ -98,6 +99,7 @@ class Doctor {
     doctor.nicPhoto = object.nicPhoto || doctor.nicPhoto
     doctor.gender = object.gender || doctor.gender
     doctor.password = object.password || doctor.password
+    doctor.profileImage = object.profileImage || doctor.profileImage
     return doctor
   }
 

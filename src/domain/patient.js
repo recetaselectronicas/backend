@@ -19,6 +19,7 @@ class Patient {
     this.nicExemplary = null
     this.nicPhoto = null
     this.confirmed = null
+    this.profileImage = null
   }
 
   setBirthDate(date) {
@@ -80,6 +81,7 @@ class Patient {
     patient.nicExemplary = object.nicExemplary || patient.nicExemplary
     patient.nicPhoto = object.nicPhoto || patient.nicPhoto
     patient.confirmed = object.confirmed || patient.confirmed
+    patient.profileImage = object.profileImage || patient.profileImage
     return patient
   }
 
