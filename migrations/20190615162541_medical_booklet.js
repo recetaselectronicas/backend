@@ -23,6 +23,7 @@ exports.up = knex => knex.schema
     table.string('nic_number', 255).notNullable()
     table.string('nic_type', 255)
     table.text('nic_photo', 'longtext')
+    table.text('profile_image', 'longtext')
     table.string('two_factor_key', 255)
     table.boolean('two_factor_verified').defaultTo(false)
     table.string('default_authentication_method', 255).defaultTo(authenticationTypes.USR_PASS)

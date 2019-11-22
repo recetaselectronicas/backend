@@ -25,6 +25,23 @@ class DoctorRepository {
       .then(([id]) => id)
   }
 
+  update(doctorId, doctorData) {
+    return knex
+      .table(DOCTOR)
+      .update(doctorData)
+      .where({ id: doctorId })
+      .then(updates => !!updates)
+  }
+
+  async updateSpecialty(doctorId, specialtyId) {
+    await knex
+      .table(ATTENTION)
+      .update({ leavingDate: new Date() })
+      .where({ idDoctor: doctorId })
+      .then(updates => !!updates)
+    return this.registerSpecialty(doctorId, specialtyId)
+  }
+
   async getById(id) {
     const res = await knex
       .select()
@@ -45,7 +62,8 @@ class DoctorRepository {
       .table(SPECIALITY)
       .innerJoin(ATTENTION, `${ATTENTION}.id_specialty`, `${SPECIALITY}.id`)
       .where({
-        [`${ATTENTION}.id_doctor`]: doctor.id
+        [`${ATTENTION}.id_doctor`]: doctor.id,
+        [`${ATTENTION}.leaving_date`]: null
       })
       .first()
     if (specialty) {
@@ -106,7 +124,7 @@ class DoctorRepository {
   getAllSpecialties() {
     return knex
       .select()
-      .table(SPECIALITY)
+      .from(SPECIALITY)
   }
 
   getByNicNumberAndGender(nicNumber, gender) {

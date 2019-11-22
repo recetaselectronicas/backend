@@ -18,6 +18,7 @@ class Pharmacist {
     this.nicType = null
     this.nicPhoto = null
     this.gender = null
+    this.profileImage = null
   }
 
   setBirthDate(date) {
@@ -91,6 +92,7 @@ class Pharmacist {
     pharmacist.nicPhoto = object.nicPhoto || pharmacist.nicPhoto
     pharmacist.gender = object.gender || pharmacist.gender
     pharmacist.password = object.password || pharmacist.password
+    pharmacist.profileImage = object.profileImage || pharmacist.profileImage
     return pharmacist
   }
 

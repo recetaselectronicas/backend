@@ -19,6 +19,7 @@ exports.up = knex => knex.schema.withSchema('recetas').createTable(PATIENT, (tab
   table.string('nic_type', 255)
   table.string('nic_exemplary', 255)
   table.text('nic_photo', 'longtext')
+  table.text('profile_image', 'longtext')
   table.string('nic_data', 255)
   table.string('two_factor_key', 255)
   table.boolean('two_factor_verified').defaultTo(false)

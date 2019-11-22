@@ -1,7 +1,6 @@
 
-
 const getValidGenders = () => ([
-  'M',
-  'F'
+  { id: 'M', description: 'Masculino' },
+  { id: 'F', description: 'Femenino' }
 ])
 module.exports = { getValidGenders }
