@@ -1,7 +1,8 @@
 /* eslint-disable class-methods-use-this */
-const { DOCTOR_REQUEST, MEDICAL_INSURANCE } = require('./tablesNames')
+const { DOCTOR_REQUEST, MEDICAL_INSURANCE, DOCTOR } = require('./tablesNames')
 const knex = require('../init/knexConnection')
 const { requestStatus } = require('./defaults')
+const { Doctor } = require('../domain/doctor')
 
 class DoctorRequestRepository {
   create(linkRequest) {
@@ -12,10 +13,13 @@ class DoctorRequestRepository {
 
   getRequests(idDoctor) {
     return knex
-      .select('*')
+      .select(`${DOCTOR_REQUEST}.id as idRequest`)
+      .select(`${DOCTOR_REQUEST}.*`)
+      .select(`${MEDICAL_INSURANCE}.*`)
       .from(DOCTOR_REQUEST)
       .where({ idDoctor })
       .leftJoin(MEDICAL_INSURANCE, `${DOCTOR_REQUEST}.id_medical_insurance`, `${MEDICAL_INSURANCE}.id`)
+
   }
 
   hasPendingRequest(idDoctor, idMedicalInsurance) {
@@ -34,11 +38,26 @@ class DoctorRequestRepository {
 
   getRequestsByMedicalInsurance(idMedicalInsurance) {
     return knex
-      .select()
+      .select(`${DOCTOR_REQUEST}.id as idRequest`)
+      .select(`${DOCTOR_REQUEST}.*`)
+      .select(`${DOCTOR}.* `)
       .from(DOCTOR_REQUEST)
       .where({
         idMedicalInsurance,
       })
+      .leftJoin(DOCTOR, `${DOCTOR_REQUEST}.id_doctor`, `${DOCTOR}.id`)
+      .then(requests => requests.map(request => {
+        const user = Doctor.fromJson(request)
+        const { idRequest, status, reason, dateCreated } = request
+        return {
+          idRequest,
+          status,
+          reason,
+          dateCreated,
+          ...user.toPlainObject(),
+        }
+      }))
+
   }
 
   updateStatus(id, { status, reason = null }) {
