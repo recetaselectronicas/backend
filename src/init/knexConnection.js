@@ -4,6 +4,7 @@ const initKnex = require('knex')
 const { snakeCase } = require('lodash')
 const addKnexHooks = require('./knexHooks')
 const { formats, dateTimeFormat } = require('../utils/utils')
+const { mustTransformDate, getTransformedDate } = require('../repositories/tablesNames')
 
 const toCamel = s => s.replace(/([-_][a-z])/gi, $1 => $1
   .toUpperCase()
@@ -47,10 +48,8 @@ const knex = initKnex({
       if (field.type === 'TINY' && field.length === 1) {
         return (field.string() === '1')
       }
-      if (field.table === 'prescription_statistics') {
-        if (field.name === 'prescription_issued_date' || field.name === 'item_sold_date' || field.name === 'prescription_audited_date') {
-          return dateTimeFormat.toString(dateTimeFormat.toDate(field.string()))
-        }
+      if (mustTransformDate(field)) {
+        return getTransformedDate(field)
       }
       return next()
     }

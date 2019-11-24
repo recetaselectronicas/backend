@@ -4,8 +4,8 @@ const config = {
     mysql: false
   },
   executeDaemon: {
-    issued: false,
-    expired: false
+    issued: true,
+    expired: true
   },
   conections: {
     mongo: {

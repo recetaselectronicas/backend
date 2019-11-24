@@ -34,11 +34,15 @@ const formatter = {
       return null
     }
     if (moment.isDate(date)) {
-      const newDate = formatter.toDate(date, format)
+      const newDate = moment(date)
       if (newDate.isValid()) {
         return newDate.format(format)
       }
       return null
+    }
+    if (typeof date === 'string') {
+      const newDate = formatter.toDate(date, format)
+      return formatter.toString(newDate)
     }
     return null
   },
