@@ -195,10 +195,9 @@ class AffiliateRepository {
       .from(PLAN)
       .where({ idMedicalInsurance })
       .whereNull('to_date')
-      .leftJoin(AFFILIATE, `${AFFILIATE}.id_plan`, `${PLAN}.id`)
+      .rightJoin(AFFILIATE, `${AFFILIATE}.id_plan`, `${PLAN}.id`)
       .leftJoin(PATIENT, `${PATIENT}.id`, `${AFFILIATE}.id_patient`)
       .then(affiliates => affiliates.map((affiliate) => {
-        console.debug(affiliate)
         // eslint-disable-next-line no-param-reassign
         affiliate.plan = {
           id: affiliate.idPlan,

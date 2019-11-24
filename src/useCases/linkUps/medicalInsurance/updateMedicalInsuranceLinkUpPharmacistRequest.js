@@ -9,7 +9,7 @@ const { buildUpdateRequest } = require('../buildUpdateRequest')
 const updateMedicalInsuranceLinkUpPharmacistRequest = async (user, body) => {
   const request = await PharmacistRequestRepository.getRequest(body.id)
   if (!request || request.status !== requestStatus.PENDING) {
-    throw errors.newForbiddenResourceException()
+    throw errors.newBadRequestError("El pedido no se encuentra en un estado valido")
   }
   await PharmacistRequestRepository.updateStatus(request.id, buildUpdateRequest(body))
   if (body.status === requestStatus.ACCEPTED) {

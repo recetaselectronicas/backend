@@ -1,9 +1,10 @@
 
 
 /* eslint-disable class-methods-use-this */
-const { PHARMACIST_REQUEST, MEDICAL_INSURANCE } = require('./tablesNames')
+const { PHARMACIST_REQUEST, MEDICAL_INSURANCE, PHARMACIST } = require('./tablesNames')
 const knex = require('../init/knexConnection')
 const { requestStatus } = require('./defaults')
+const { Pharmacist } = require('../domain/pharmacist')
 
 class PharmacistRequestRepository {
   create(pharmacistRequest) {
@@ -14,7 +15,9 @@ class PharmacistRequestRepository {
 
   getRequests(idPharmacist) {
     return knex
-      .select('*')
+      .select(`${PHARMACIST_REQUEST}.id as idRequest`)
+      .select(`${PHARMACIST_REQUEST}.*`)
+      .select(`${MEDICAL_INSURANCE}.*`)
       .from(PHARMACIST_REQUEST)
       .where({ idPharmacist })
       .leftJoin(MEDICAL_INSURANCE, `${PHARMACIST_REQUEST}.id_medical_insurance`, `${MEDICAL_INSURANCE}.id`)
@@ -22,7 +25,7 @@ class PharmacistRequestRepository {
 
   getRequest(requestId) {
     return knex
-      .select('*')
+      .select()
       .from(PHARMACIST_REQUEST)
       .where({ id: requestId })
       .first()
@@ -50,11 +53,25 @@ class PharmacistRequestRepository {
 
   getRequestsByMedicalInsurance(idMedicalInsurance) {
     return knex
-      .select()
+      .select(`${PHARMACIST_REQUEST}.id as idRequest`)
+      .select(`${PHARMACIST_REQUEST}.*`)
+      .select(`${PHARMACIST}.*`)
       .from(PHARMACIST_REQUEST)
       .where({
         idMedicalInsurance,
       })
+      .leftJoin(PHARMACIST, `${PHARMACIST_REQUEST}.id_pharmacist`, `${PHARMACIST}.id`)
+      .then(requests => requests.map(request => {
+        const user = Pharmacist.fromJson(request)
+        const { idRequest, status, reason, dateCreated } = request
+        return {
+          idRequest,
+          status,
+          reason,
+          dateCreated,
+          ...user.toPlainObject(),
+        }
+      }))
   }
 }
 
