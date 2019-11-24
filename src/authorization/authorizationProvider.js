@@ -105,7 +105,7 @@ class AuthorizationProvider {
     if (authorizerEntity.defaultAuthenticationMethod !== authentication.type) {
       throw newForbiddenResourceException('The authentication type given is not the default')
     }
-    if (authorizerEntity.id !== authorizerUser.id) {
+    if (authorizerEntity.id !== authorizerUser.idPatient) {
       throw newForbiddenResourceException('The authorizer user doesn`t match with the authorization requester')
     }
     const affiliate = {

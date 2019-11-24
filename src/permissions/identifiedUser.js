@@ -79,7 +79,7 @@ const identifiedAffiliate = {
     return filters.getAffiliateQueryByParams(params, this.id)
   },
   checkForbiden(prescription) {
-    if (prescription.affiliate.id !== this.id) {
+    if (prescription.affiliate.idPatient !== this.id) {
       throw newForbiddenResourceException("Can't access this prescription")
     }
   },

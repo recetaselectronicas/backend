@@ -226,7 +226,7 @@ class PrescriptionRepository {
         knexQuery.whereIn(`${PRESCRIPTION}.id_institution`, institution)
       }
       if (affiliate) {
-        knexQuery.where(`${AFFILIATE}.id`, affiliate)
+        knexQuery.where(`${AFFILIATE}.id_patient`, affiliate)
       }
       if (doctor) {
         knexQuery.where(`${DOCTOR}.id`, doctor)
@@ -427,7 +427,30 @@ class PrescriptionRepository {
 
   getStatistics(medicalInsuranceId, appliedFilters, appliedOrders) {
     const query = knex
-      .select()
+      .select(
+        'prescription_id',
+        'item_id',
+        'prescription_issued_date',
+        'item_sold_date',
+        'prescription_audited_date',
+        'affiliate_credential',
+        'patient_name',
+        'doctor_national_matriculation',
+        'doctor_name',
+        'pharmacist_matriculation',
+        'pharmacist_name',
+        'item_prescribed_quantity',
+        'item_received_quantity',
+        'item_audited_quantity',
+        'medicine_prescribed_price',
+        'medicine_receivedd_price',
+        'medicine_audited_price',
+        'medicine_prescribed_description',
+        'medicine_received_description',
+        'medicine_audited_description',
+        'prescription_status',
+        'prescription_norm'
+      )
       .from(PRESCRIPTIONS_STATISTICS_VIEW)
       .where({ medicalInsuranceId })
 
