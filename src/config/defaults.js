@@ -46,7 +46,7 @@ const defaults = {
   emails: {
     corporative: {
       email: 'unify.prescriptions@gmail.com',
-      pass: 'unify_94825'
+      pass: 'unify.prescriptions123'
     }
   }
 }
