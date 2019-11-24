@@ -1,6 +1,7 @@
 /* eslint-disable class-methods-use-this */
 const { Prescription } = require('../domain/prescription')
 const { newNotFoundError, newEntityAlreadyCreated } = require('../utils/errors')
+const { dateTimeFormat } = require('../utils/utils')
 const { AffiliateRepository } = require('../repositories/affiliateRepository')
 const { InstitutionRepository } = require('../repositories/institutionRepository')
 const { MedicalInsuranceRepository } = require('../repositories/medicalInsuranceRepository')
@@ -8,7 +9,7 @@ const { MedicineRepository } = require('../repositories/medicineRepository')
 const { DoctorRepository } = require('../repositories/doctorRepository')
 const { PharmacistRepository } = require('../repositories/pharmacistRepository')
 const {
-  ITEM, PRESCRIPTION, INSTITUTION, STATE, MEDICINE, AFFILIATE, PATIENT, MEDICAL_INSURANCE, DOCTOR
+  ITEM, PRESCRIPTION, INSTITUTION, STATE, MEDICINE, AFFILIATE, PATIENT, MEDICAL_INSURANCE, DOCTOR, PRESCRIPTIONS_STATISTICS_VIEW
 } = require('./tablesNames')
 const knex = require('../init/knexConnection')
 const { states } = require('./../state-machine/state')
@@ -422,6 +423,32 @@ class PrescriptionRepository {
       throw errors
     }
     return muttedPrescription
+  }
+
+  getStatistics(medicalInsuranceId, appliedFilters, appliedOrders) {
+    const query = knex
+      .select()
+      .from(PRESCRIPTIONS_STATISTICS_VIEW)
+      .where({ medicalInsuranceId })
+
+    if (appliedFilters && appliedFilters.length) {
+      appliedFilters.forEach((filter) => {
+        if (filter.type === 'equal') {
+          query.where(filter.key, filter.value)
+        } else if (filter.type === 'like') {
+          query.where(filter.key, 'like', `%${filter.value}%`)
+        } else if (filter.type === 'in') {
+          query.where(filter.key, filter.value)
+        }
+      })
+    }
+
+    if (appliedOrders && appliedOrders.length) {
+      appliedOrders.forEach((order) => {
+        query.orderBy(order.key, order.order)
+      })
+    }
+    return query
   }
 }
 

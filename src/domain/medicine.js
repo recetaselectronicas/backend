@@ -15,6 +15,7 @@ class Medicine {
     this.drugDescription = null
     this.laboratoryDescription = null
     this.potencyDescription = null
+    this.price = null
   }
 
   setEntryDate(date) {
@@ -48,6 +49,7 @@ class Medicine {
       drugDescription: this.drugDescription,
       laboratoryDescription: this.laboratoryDescription,
       potencyDescription: this.potencyDescription,
+      price: this.price
     })
   }
 
@@ -71,6 +73,7 @@ class Medicine {
     medicine.drugDescription = object.drugDescription || medicine.drugDescription
     medicine.laboratoryDescription = object.laboratoryDescription || medicine.laboratoryDescription
     medicine.potencyDescription = object.potencyDescription || medicine.potencyDescription
+    medicine.price = object.price || medicine.price
     return medicine
   }
 

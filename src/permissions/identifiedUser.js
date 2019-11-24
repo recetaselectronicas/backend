@@ -62,6 +62,7 @@ const routes = {
   LINKUPS: { label: 'Solicitudes', url: '/solicitudes' },
   MEDICAL_INSURANCE: { label: 'Obra sociales', url: '/obras-sociales' },
   PHARMACISTS: { label: 'Farmaceuticos', url: '/farmaceuticos' },
+  STATISTICS: { label: 'Estadísticos', url: '/statistics' },
   AFFILIATES: { label: 'Afiliados', url: '/afiliados' },
   DOCTORS: { label: 'Doctores', url: '/doctores' }
 }
@@ -178,7 +179,7 @@ const identifiedMedicalInsurance = {
       }
     ]
   },
-  getMenu: () => [routes.PROFILE, routes.NORMS, routes.RECIPES, routes.LINKUPS, routes.AFFILIATES, routes.DOCTORS, routes.PHARMACISTS],
+  getMenu: () => [routes.PROFILE, routes.NORMS, routes.RECIPES, routes.LINKUPS, routes.AFFILIATES, routes.DOCTORS, routes.PHARMACISTS, routes.STATISTICS],
   getData() {
     return MedicalInsuranceRepository.getById(this.id)
   },

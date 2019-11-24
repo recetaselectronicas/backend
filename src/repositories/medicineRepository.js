@@ -55,6 +55,7 @@ class MedicineRepository {
         `${MEDICINE}.entry_date`,
         `${MEDICINE}.leaving_date`,
         `${MEDICINE}.bar_code`,
+        `${MEDICINE}.price`,
         `${BRAND}.description as brand_description`,
         `${SHAPE}.description as presentation_description`,
         `${SIZE}.description as size_description`,

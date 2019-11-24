@@ -30,4 +30,3 @@ module.exports = (knex) => {
   })
   return knex
 }
-

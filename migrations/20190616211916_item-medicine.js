@@ -27,6 +27,7 @@ exports.up = knex => knex.schema
     table.string('troquel', 255).notNullable()
     table.string('pharmaceutical_action', 255).notNullable()
     table.string('description', 255).notNullable()
+    table.float('price').notNullable()
     table.datetime('entry_date').notNullable()
     table.datetime('leaving_date')
     table.string('bar_code', 255).notNullable()

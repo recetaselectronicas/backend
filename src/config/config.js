@@ -4,7 +4,7 @@ const config = {
     mysql: false
   },
   executeDaemon: {
-    issued: true,
+    issued: false,
     expired: false
   },
   conections: {

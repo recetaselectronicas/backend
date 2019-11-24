@@ -10,6 +10,7 @@ exports.seed = knex => knex(MEDICINE)
       entry_date: '01/01/2000',
       leaving_date: '',
       bar_code: '7791231827381',
+      price: 630.50,
       id_brand: 6,
       id_size: 1,
       id_shape: 2,
@@ -24,6 +25,7 @@ exports.seed = knex => knex(MEDICINE)
       entry_date: '01/01/2000',
       leaving_date: '',
       bar_code: '7791231827382',
+      price: 765.00,
       id_brand: 6,
       id_size: 4,
       id_shape: 2,
@@ -38,6 +40,7 @@ exports.seed = knex => knex(MEDICINE)
       entry_date: '01/01/2000',
       leaving_date: '',
       bar_code: '77955730132475',
+      price: 150,
       id_brand: 7,
       id_size: 6,
       id_shape: 4,
@@ -52,6 +55,7 @@ exports.seed = knex => knex(MEDICINE)
       entry_date: '01/01/2000',
       leaving_date: '',
       bar_code: '7793827349233',
+      price: 210.30,
       id_brand: 1,
       id_size: 4,
       id_shape: 2,
@@ -66,6 +70,7 @@ exports.seed = knex => knex(MEDICINE)
       entry_date: '01/01/2000',
       leaving_date: '',
       bar_code: '7793827349233',
+      price: 250.90,
       id_brand: 2,
       id_size: 1,
       id_shape: 2,
@@ -80,6 +85,7 @@ exports.seed = knex => knex(MEDICINE)
       entry_date: '01/01/2000',
       leaving_date: '',
       bar_code: '98734903984',
+      price: 108.80,
       id_brand: 3,
       id_size: 4,
       id_shape: 5,
@@ -94,6 +100,7 @@ exports.seed = knex => knex(MEDICINE)
       entry_date: '01/01/2000',
       leaving_date: '',
       bar_code: '23487298390',
+      price: 350.00,
       id_brand: 4,
       id_size: 4,
       id_shape: 2,
@@ -108,6 +115,7 @@ exports.seed = knex => knex(MEDICINE)
       entry_date: '01/01/2000',
       leaving_date: '',
       bar_code: '7791237237',
+      price: 587.90,
       id_brand: 8,
       id_size: 2,
       id_shape: 2,
@@ -116,4 +124,3 @@ exports.seed = knex => knex(MEDICINE)
       id_potency: 11
     }
   ]))
-

@@ -3,7 +3,7 @@ const moment = require('moment')
 const initKnex = require('knex')
 const { snakeCase } = require('lodash')
 const addKnexHooks = require('./knexHooks')
-const { formats } = require('../utils/utils')
+const { formats, dateTimeFormat } = require('../utils/utils')
 
 const toCamel = s => s.replace(/([-_][a-z])/gi, $1 => $1
   .toUpperCase()
@@ -38,6 +38,7 @@ const keysToCamel = function (o) {
 const knex = initKnex({
   client: 'mysql',
   connection: {
+    // debug: ['ComQueryPacket', 'RowDataPacket'],
     host: '127.0.0.1',
     user: 'root',
     password: '1234',
@@ -46,11 +47,10 @@ const knex = initKnex({
       if (field.type === 'TINY' && field.length === 1) {
         return (field.string() === '1')
       }
-      if (field.type === 'DATETIME' || field.type === 'TIMESTAMP') {
-        return moment(field.string()).format(formats.dateTimeFormat)
-      }
-      if (field.type === 'DATE') {
-        return moment(field.string()).format(formats.dateFormat)
+      if (field.table === 'prescription_statistics') {
+        if (field.name === 'prescription_issued_date' || field.name === 'item_sold_date' || field.name === 'prescription_audited_date') {
+          return dateTimeFormat.toString(dateTimeFormat.toDate(field.string()))
+        }
       }
       return next()
     }

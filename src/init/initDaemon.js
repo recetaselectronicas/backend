@@ -8,14 +8,40 @@ const issuedDaemon = defaults.daemons.issued.name
 const expiredDaemon = defaults.daemons.expired.name
 
 const checkIssued = () => PrescriptionRepository.getIssuedToConfirmed()
-  .then(values => values.map(value => PrescriptionRepository.getById(value.id).then(prescription => StateMachine.toConfirmed(prescription))))
-  .then(updates => updates && updates.length && logger.info(`${issuedDaemon}: confirmed ${updates.length} prescriptions`))
-  .catch(e => logger.error(`${issuedDaemon}: error while confirming prescriptions`, e))
+  .then(values => values.map(value => PrescriptionRepository.getById(value.id)
+    .then(prescription => StateMachine.toConfirmed(prescription))
+    .then(res => ({ resultOk: true, res }))
+    .catch(err => ({ resultOk: false, err }))))
+  .then(results => Promise.all(results))
+  .then((results) => {
+    const errorResults = results.filter(result => !result.resultOk)
+    if (errorResults.length) {
+      logger.error(`${issuedDaemon}: error while confirming prescriptions. ${results.length - errorResults.length} updated OK. ${errorResults.length} updating ERROR`)
+      errorResults.forEach((errorResult, index) => {
+        logger.error(`${issuedDaemon}: errors[${index}] ${JSON.stringify(errorResult.err)}`)
+      })
+    } else if (results.length) {
+      logger.info(`${issuedDaemon}: confirmed ${results.length} prescriptions`)
+    }
+  })
 
 const checkExpired = () => PrescriptionRepository.getPrescriptionsToExpirate()
-  .then(values => values.map(value => PrescriptionRepository.getById(value.id).then(prescription => StateMachine.toExpire(prescription))))
-  .then(updates => updates && updates.length && logger.info(`${expiredDaemon}: expired ${updates.length} prescriptions`))
-  .catch(e => logger.error(`${expiredDaemon}: error while expiring prescriptions`, e))
+  .then(values => values.map(value => PrescriptionRepository.getById(value.id)
+    .then(prescription => StateMachine.toExpire(prescription))
+    .then(res => ({ resultOk: true, res }))
+    .catch(err => ({ resultOk: false, err }))))
+  .then(results => Promise.all(results))
+  .then((results) => {
+    const errorResults = results.filter(result => !result.resultOk)
+    if (errorResults.length) {
+      logger.error(`${issuedDaemon}: error while expiring prescriptions. ${results.length - errorResults.length} updated OK. ${errorResults.length} updating ERROR`)
+      errorResults.forEach((errorResult, index) => {
+        logger.error(`${issuedDaemon}: errors[${index}] ${JSON.stringify(errorResult.err)}`)
+      })
+    } else if (results.length) {
+      logger.info(`${expiredDaemon}: expired ${results.length} prescriptions`)
+    }
+  })
 
 const init = () => {
   if (config.executeDaemon.issued) {

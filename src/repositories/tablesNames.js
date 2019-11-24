@@ -26,5 +26,6 @@ module.exports = {
   RECEPTION: 'reception',
   AFFILIATE_REQUEST: 'affiliate_request',
   DOCTOR_REQUEST: 'doctor_request',
-  PHARMACIST_REQUEST: 'pharmacist_request'
+  PHARMACIST_REQUEST: 'pharmacist_request',
+  PRESCRIPTIONS_STATISTICS_VIEW: 'prescription_statistics'
 }

@@ -9,6 +9,8 @@ const { Prescription } = require('../domain/prescription')
 const { StateMachine } = require('../state-machine/state-machine')
 const { newBadRequestError, isBusinessError } = require('../utils/errors')
 const { PrescriptionRepository } = require('../repositories/prescriptions-repository')
+const { getPrescriptionsStatistics } = require('../useCases/statistics/getPrescriptionsStatistics')
+const { downloadPrescriptionStatistics } = require('../useCases/statistics/downloadPrescriptionStatistics')
 const verifiers = require('../middlewares/verifiers')
 const errors = require('../utils/errors')
 
@@ -65,6 +67,41 @@ router.get('/', async (req, res, next) => {
     const filters = await identifiedUser.getFilters()
     const response = { result: prescriptions.map(pres => pres.toPlainObject()), ...filters }
     return res.json(response)
+  } catch (error) {
+    return next(error)
+  }
+})
+
+router.post('/statistics', async (req, res, next) => {
+  const { identifiedUser, body } = req
+  try {
+    const results = await getPrescriptionsStatistics(identifiedUser, body)
+    return res.json(results)
+  } catch (error) {
+    return next(error)
+  }
+})
+
+router.post('/statistics/download', async (req, res, next) => {
+  const { identifiedUser, body, query } = req
+  try {
+    const results = await downloadPrescriptionStatistics(identifiedUser, body, query.type)
+    if (results.type === 'csv') {
+      res.setHeader('Content-Disposition', 'attachment; filename="statistics.csv"')
+      res.type('text/csv')
+      return res.send(results.data)
+    }
+    if (results.type === 'xml') {
+      res.setHeader('Content-Disposition', 'attachment; filename=statistics.xml')
+      res.type('application/xml')
+      return res.send(results.data)
+    }
+    if (results.type === 'json') {
+      res.setHeader('Content-Disposition', 'attachment; filename=statistics.json')
+      res.type('application/json')
+      return res.send(results.data)
+    }
+    throw errors.newBadRequestError('invalid exported format')
   } catch (error) {
     return next(error)
   }

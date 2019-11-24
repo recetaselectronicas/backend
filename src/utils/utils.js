@@ -33,6 +33,13 @@ const formatter = {
       }
       return null
     }
+    if (moment.isDate(date)) {
+      const newDate = formatter.toDate(date, format)
+      if (newDate.isValid()) {
+        return newDate.format(format)
+      }
+      return null
+    }
     return null
   },
   toDate: (date, format) => {
@@ -42,12 +49,9 @@ const formatter = {
     if (moment.isMoment(date)) {
       return date
     }
-    let newDate = moment(date, format)
+    let newDate = moment(date, [format, formats.isoDateFormat, formats.mysqlDateFormat])
     if (!newDate.isValid()) {
-      newDate = moment(date, formats.isoDateFormat)
-      if (!newDate.isValid()) {
-        newDate = null
-      }
+      newDate = null
     }
     return newDate
   },
