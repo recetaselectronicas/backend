@@ -3,7 +3,7 @@ const { MedicalInsurance } = require('../domain/medicalInsurance')
 const { Plan } = require('../domain/plan')
 const { newNotFoundError, newEntityAlreadyCreated } = require('../utils/errors')
 const knex = require('../init/knexConnection')
-const { MEDICAL_INSURANCE, PLAN, MEDICAL_BOOKLET } = require('./tablesNames')
+const { MEDICAL_INSURANCE, PLAN, MEDICAL_BOOKLET, RECEPTION } = require('./tablesNames')
 const { logger } = require('../utils/utils')
 const { dateTimeFormat } = require('../utils/utils')
 
@@ -43,6 +43,16 @@ class MedicalInsuranceRepository {
       .where(`${MEDICAL_BOOKLET}.id_doctor`, Number.parseInt(doctorId, 10))
       .andWhereRaw(`? between ${MEDICAL_BOOKLET}.from_date and IFNULL(${MEDICAL_BOOKLET}.to_date, ?)`, [dateTimeFormat.toMysqlString(datetime), dateTimeFormat.toMysqlString(datetime)])
       .leftJoin(MEDICAL_INSURANCE, `${MEDICAL_BOOKLET}.id_medical_insurance`, `${MEDICAL_INSURANCE}.id`)
+      .then(response => response.map(medicalInsurance => MedicalInsurance.fromObject(medicalInsurance)))
+  }
+
+  getMedicalInsuranceByPharmacist(pharmacistId, datetime) {
+    return knex
+      .select()
+      .table(RECEPTION)
+      .where(`${RECEPTION}.id_pharmacist`, Number.parseInt(pharmacistId, 10))
+      .andWhereRaw(`? between ${RECEPTION}.entry_date and IFNULL(${RECEPTION}.leaving_date, ?)`, [dateTimeFormat.toMysqlString(datetime), dateTimeFormat.toMysqlString(datetime)])
+      .leftJoin(MEDICAL_INSURANCE, `${RECEPTION}.id_medical_insurance`, `${MEDICAL_INSURANCE}.id`)
       .then(response => response.map(medicalInsurance => MedicalInsurance.fromObject(medicalInsurance)))
   }
 

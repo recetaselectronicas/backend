@@ -58,13 +58,13 @@ norm3.ttl = 30
 module.exports = {
   generateNormsData: async () => {
     if (config.executeBootstrap.mongo) {
-      norm1 = normalizeNorm(norm1)
-      norm2 = normalizeNorm(norm2)
-      norm3 = normalizeNorm(norm3)
+      const norms = []
+      for (let i = 1; i <= 18; i++) {
+        const norm = normalizeNorm({ ...lang.cloneDeep(genericNorm), medicalInsurance: i, ttl: 30 })
+        norms.push(NormRepository.create(norm))
+      }
       try {
-        await NormRepository.create(norm1)
-        await NormRepository.create(norm2)
-        await NormRepository.create(norm3)
+        await Promise.all(norms)
       } catch (e) {
         logger.error('Error while generating norms data: ', e)
       }

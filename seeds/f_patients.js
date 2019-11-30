@@ -79,17 +79,17 @@ exports.seed = knex => knex(PATIENT)
       nic_number: '3424352'
     },
     {
-      user_name: 'gasti',
+      user_name: 'demo',
       password: '1234',
       confirmed: true,
       contact_number: '3235433',
-      name: 'Gaston',
-      surname: 'Mastri',
+      name: 'Paciente',
+      surname: 'Apellido',
       birth_date: '01/01/1932',
       gender: 'M',
-      email: 'gasti.mastri@gmail.com',
+      email: 'patient@gmail.com',
       address: 'pepe 54',
-      nationality: 'BRASIL',
+      nationality: 'ARGENTINA',
       nic_type: 'DNI',
       nic_number: '40590213'
     },

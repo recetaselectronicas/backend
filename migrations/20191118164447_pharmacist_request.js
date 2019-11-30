@@ -1,4 +1,4 @@
-const { PHARMACIST_REQUEST, MEDICAL_INSURANCE, DOCTOR } = require('../src/repositories/tablesNames')
+const { PHARMACIST_REQUEST, MEDICAL_INSURANCE, PHARMACIST } = require('../src/repositories/tablesNames')
 const { requestStatus } = require('../src/repositories/defaults')
 
 exports.up = knex => knex.schema.withSchema('recetas').createTable(PHARMACIST_REQUEST, (table) => {
@@ -10,7 +10,7 @@ exports.up = knex => knex.schema.withSchema('recetas').createTable(PHARMACIST_RE
   table.string('reason', 255)
 
   table.foreign('id_medical_insurance').references(`${MEDICAL_INSURANCE}.id`)
-  table.foreign('id_pharmacist').references(`${DOCTOR}.id`)
+  table.foreign('id_pharmacist').references(`${PHARMACIST}.id`)
   table.unique(['id_medical_insurance', 'id_pharmacist', 'date_created'], 'pharmacist_request_unique')
 })
 

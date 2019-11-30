@@ -37,12 +37,5 @@ exports.seed = knex => knex(AFFILIATE)
       category: '01',
       code: '000356293',
       image_credential: ''
-    },
-    {
-      id_patient: 6,
-      id_plan: 10,
-      category: '01',
-      code: '0003762833',
-      image_credential: ''
     }
   ]))

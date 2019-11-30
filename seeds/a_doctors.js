@@ -41,21 +41,21 @@ exports.seed = knex => addKnexHooks(knex)(DOCTOR)
       gender: 'M'
     },
     {
-      user_name: 'rosco',
+      user_name: 'demo',
       password: '1234',
       confirmed: true,
-      name: 'Rosco',
-      last_name: 'Negrini',
+      name: 'Medico',
+      last_name: 'Apellido',
       birth_date: '01/01/1940',
       entry_date: '01/01/2000',
       contact_number: '1520202020',
-      nationality: 'VENEZUELA',
-      address: 'Menro 932',
-      email: 'rosco@medic.com',
+      nationality: 'ARGENTINA',
+      address: 'Demo Street 932',
+      email: 'demoemail@medic.com',
       national_matriculation: '65812639',
-      provincial_matriculation: null,
+      provincial_matriculation: '231112',
       nic_type: 'DNI',
-      nic_number: '123123',
+      nic_number: '20384912',
       gender: 'M'
     }
   ]))
