@@ -26,7 +26,7 @@
     "jsonwebtoken": "^8.5.1",
     "knex": ">=0.19.5",
     "knex-hooks": "0.0.6",
-    "lodash": "^4.17.14",
+    "lodash": "^4.17.19",
     "moment": "^2.24.0",
     "mongodb": "^3.2.7",
     "mysql": "^2.17.1",
